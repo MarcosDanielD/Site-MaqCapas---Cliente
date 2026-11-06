@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initMobileMenu();
   initCatalogFilter();
+  initPhotoToggles();
+  initAboutGallery();
   initSimulator();
   initFAQ();
 });
@@ -164,8 +166,9 @@ function initCatalogFilter() {
       const filter = btn.getAttribute('data-filter');
 
       productItems.forEach(item => {
-        const category = item.getAttribute('data-category');
-        if (filter === 'all' || category === filter) {
+        const category = item.getAttribute('data-category') || '';
+        const categories = category.split(' ');
+        if (filter === 'all' || categories.includes(filter)) {
           item.style.display = 'flex';
           item.style.opacity = '0';
           setTimeout(() => {
@@ -186,6 +189,79 @@ function initCatalogFilter() {
       const itemTitle = btn.getAttribute('data-item');
       const materialCode = btn.getAttribute('data-material');
       carregarItemNoSimulador(itemTitle, materialCode);
+    });
+  });
+}
+
+/* --- Alternador entre Foto de Estúdio e Foto Real de Produção --- */
+function initPhotoToggles() {
+  const toggleBtns = document.querySelectorAll('.btn-photo-toggle');
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetId = btn.getAttribute('data-target');
+      const targetImg = document.getElementById(targetId);
+      const altSrc = btn.getAttribute('data-alt-src');
+      const origSrc = btn.getAttribute('data-orig-src');
+      const labelSpan = btn.querySelector('span');
+
+      if (!targetImg) return;
+
+      const isOriginal = btn.classList.contains('is-original');
+
+      // Efeito de transição suave
+      targetImg.style.transition = 'opacity 0.2s ease';
+      targetImg.style.opacity = '0.3';
+
+      setTimeout(() => {
+        if (isOriginal) {
+          targetImg.src = origSrc;
+          btn.classList.remove('is-original');
+          if (labelSpan) labelSpan.textContent = 'Foto Original';
+          mostrarToast('Exibindo render de estúdio');
+        } else {
+          targetImg.src = altSrc;
+          btn.classList.add('is-original');
+          if (labelSpan) labelSpan.textContent = 'Ver Estúdio';
+          mostrarToast('Exibindo foto original de confecção MaqCapas');
+        }
+        targetImg.style.opacity = '1';
+      }, 150);
+    });
+  });
+}
+
+/* --- Galeria Interativa de Registros Reais (Seção Sobre) --- */
+function initAboutGallery() {
+  const mainPhoto = document.getElementById('aboutPhotoMain');
+  const captionTitle = document.getElementById('aboutCaptionTitle');
+  const captionDesc = document.getElementById('aboutCaptionDesc');
+  const thumbs = document.querySelectorAll('.about-thumb');
+
+  if (!mainPhoto || !thumbs.length) return;
+
+  thumbs.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      if (thumb.classList.contains('active')) return;
+
+      thumbs.forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+
+      const newSrc = thumb.getAttribute('data-src');
+      const newAlt = thumb.getAttribute('data-alt');
+      const newTitle = thumb.getAttribute('data-title');
+      const newDesc = thumb.getAttribute('data-desc');
+
+      mainPhoto.style.transition = 'opacity 0.22s ease';
+      mainPhoto.style.opacity = '0.25';
+
+      setTimeout(() => {
+        mainPhoto.src = newSrc;
+        if (newAlt) mainPhoto.alt = newAlt;
+        if (captionTitle && newTitle) captionTitle.innerHTML = newTitle;
+        if (captionDesc && newDesc) captionDesc.innerHTML = newDesc;
+        mainPhoto.style.opacity = '1';
+      }, 180);
     });
   });
 }
@@ -289,6 +365,8 @@ function carregarItemNoSimulador(nomeItem, materialCode) {
       segmentSelect.value = 'Vestuário (Vestido de Noiva / Festa / Terno)';
     } else if (n.includes('industrial') || n.includes('máquina')) {
       segmentSelect.value = 'Máquinas Industriais / Fábrica';
+    } else if (n.includes('sapato') || n.includes('calçado') || n.includes('embalag') || n.includes('sacola') || n.includes('bolsa')) {
+      segmentSelect.value = 'Embalagens & Acessórios (Sapatos / Bolsas / Sacolas)';
     } else {
       segmentSelect.value = 'Outros Sob Medida (Móveis / Eletros)';
     }

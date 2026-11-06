@@ -330,8 +330,12 @@
         <!-- Produto 1 -->
         <article class="product-item" data-category="tech">
           <div class="product-frame">
-            <img src="assets/images/capa_computador.jpg" alt="Capas para gabinetes e monitores sob medida" class="product-photo">
+            <img src="assets/images/capa_computador.jpg" alt="Capas para gabinetes e monitores sob medida" class="product-photo" id="photoTech">
             <span class="product-pill">Informática</span>
+            <button type="button" class="btn-photo-toggle" data-target="photoTech" data-alt-src="assets/images/capa_computador_real.jpg" data-orig-src="assets/images/capa_computador.jpg" title="Ver foto original de fabricação da oficina" aria-label="Alternar para foto original de fabricação">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Foto Original</span>
+            </button>
           </div>
           <div class="product-details">
             <h3 class="product-name">Capas para Monitores, Gabinetes e Teclados</h3>
@@ -380,8 +384,12 @@
         <!-- Produto 3 -->
         <article class="product-item" data-category="couture">
           <div class="product-frame">
-            <img src="assets/images/porta_terno.jpg" alt="Porta-ternos executivos com visor transparente" class="product-photo">
+            <img src="assets/images/porta_terno.jpg" alt="Porta-ternos executivos com visor transparente" class="product-photo" id="photoSuit">
             <span class="product-pill">Alfaiataria</span>
+            <button type="button" class="btn-photo-toggle" data-target="photoSuit" data-alt-src="assets/images/porta_terno_real.jpg" data-orig-src="assets/images/porta_terno.jpg" title="Ver foto original de fabricação da oficina" aria-label="Alternar para foto original de fabricação">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Foto Original</span>
+            </button>
           </div>
           <div class="product-details">
             <h3 class="product-name">Porta-Ternos Executivos com Visor</h3>
@@ -405,8 +413,12 @@
         <!-- Produto 4 -->
         <article class="product-item" data-category="industrial">
           <div class="product-frame">
-            <img src="assets/images/capa_industrial.jpg" alt="Capas para máquinas industriais sob medida" class="product-photo">
+            <img src="assets/images/capa_industrial.jpg" alt="Capas para máquinas industriais sob medida" class="product-photo" id="photoInd">
             <span class="product-pill">Indústria</span>
+            <button type="button" class="btn-photo-toggle" data-target="photoInd" data-alt-src="assets/images/capa_industrial_real.jpg" data-orig-src="assets/images/capa_industrial.jpg" title="Ver foto original de fabricação da oficina" aria-label="Alternar para foto original de fabricação">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Foto Original</span>
+            </button>
           </div>
           <div class="product-details">
             <h3 class="product-name">Capas para Máquinas Industriais e Equipamentos</h3>
@@ -420,6 +432,56 @@
             </ul>
             <div class="product-action">
               <button class="btn btn-card-action" data-item="Capas para Máquinas Industriais" data-material="bagum">
+                <span>Cotar Este Modelo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 5: Embalagens para Calçados e Artigos Finos (Foto Original) -->
+        <article class="product-item" data-category="industrial couture">
+          <div class="product-frame">
+            <img src="assets/images/embalagem_sapatos.png" alt="Embalagens protetoras para calçados e artigos finos com visor transparente" class="product-photo">
+            <span class="product-pill">Acessórios &bull; Foto Original</span>
+          </div>
+          <div class="product-details">
+            <h3 class="product-name">Embalagens Protetoras para Calçados e Artigos Finos</h3>
+            <p class="product-description">
+              Sacos organizadores sob medida em TNT respirável com visor em PVC cristal e cordão duplo ajustável. Proteção contra atrito, poeira e arranhões para calçados, bolsas e itens finos.
+            </p>
+            <ul class="product-points">
+              <li>Visor frontal em cristal para rápida identificação sem abrir o saco</li>
+              <li>Cordão duplo ajustável com fechamento suave e seguro</li>
+              <li>Material respirável anti-mofo que preserva o brilho e o couro</li>
+            </ul>
+            <div class="product-action">
+              <button class="btn btn-card-action" data-item="Embalagens para Calçados e Artigos Finos" data-material="tnt">
+                <span>Cotar Este Modelo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Produto 6: Sacolas Ecológicas e Promocionais em TNT (Foto Original) -->
+        <article class="product-item" data-category="industrial">
+          <div class="product-frame">
+            <img src="assets/images/sacola_tnt.jpg" alt="Sacolas promocionais e ecobags em TNT sob encomenda" class="product-photo">
+            <span class="product-pill">Institucional &bull; Foto Original</span>
+          </div>
+          <div class="product-details">
+            <h3 class="product-name">Sacolas Promocionais e Ecobags em TNT</h3>
+            <p class="product-description">
+              Sacolas ecológicas resistentes para marcas, eventos corporativos, feiras e ateliês. Acabamento reforçado em costura e possibilidade de estampa da sua logomarca.
+            </p>
+            <ul class="product-points">
+              <li>Alças reforçadas com costura em cruz para alta resistência de carga</li>
+              <li>Opção de estampa serigráfica personalizada de alta definição</li>
+              <li>Material 100% reutilizável, sustentável e de fácil higienização</li>
+            </ul>
+            <div class="product-action">
+              <button class="btn btn-card-action" data-item="Sacolas Promocionais em TNT" data-material="tnt">
                 <span>Cotar Este Modelo</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
@@ -454,6 +516,7 @@
                 <option value="Informática (Monitor / Gabinete / Teclado)">Informática (Monitor, CPU, Teclado)</option>
                 <option value="Vestuário (Vestido de Noiva / Festa / Terno)">Vestuário (Vestido de Noiva, Festa, Terno)</option>
                 <option value="Máquinas Industriais / Fábrica">Máquinas Industriais e Equipamentos</option>
+                <option value="Embalagens &amp; Acessórios (Sapatos / Bolsas / Sacolas)">Embalagens e Acessórios em TNT</option>
                 <option value="Outros Sob Medida (Móveis / Eletros)">Outros Modelos Sob Medida</option>
               </select>
             </div>
@@ -595,10 +658,30 @@
 
         <div class="about-media">
           <div class="about-photo-card">
-            <img src="assets/images/arara_vestuarios.jpg" alt="Confecção e arara de vestuário na MaqCapas" class="about-photo">
-            <div class="about-caption">
-              <strong>MaqCapas &bull; Curitiba / PR</strong>
-              <span>Tradição em corte e costura protetora desde 1987</span>
+            <div class="about-photo-badge">Registro Original de Fabricação</div>
+            <img src="assets/images/capa_computador_real.jpg" alt="Foto original de capas para informática fabricadas sob medida pela MaqCapas" class="about-photo" id="aboutPhotoMain">
+            <div class="about-caption" id="aboutPhotoCaption">
+              <strong id="aboutCaptionTitle">Oficina MaqCapas &bull; Curitiba / PR</strong>
+              <span id="aboutCaptionDesc">Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)</span>
+            </div>
+            <!-- Miniaturas de Registros Reais de Produção -->
+            <div class="about-thumbs" aria-label="Galeria de fotos originais de confecção">
+              <button type="button" class="about-thumb active" data-src="assets/images/capa_computador_real.jpg" data-alt="Conjunto de informática na oficina" data-title="Oficina MaqCapas &bull; Curitiba / PR" data-desc="Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)">
+                <img src="assets/images/capa_computador_real.jpg" alt="Informática">
+                <span>Informática</span>
+              </button>
+              <button type="button" class="about-thumb" data-src="assets/images/arara_vestuarios.jpg" data-alt="Arara de vestuário na confecção" data-title="Arara de Vestuário &bull; MaqCapas" data-desc="Capas protetoras para vestidos de festa, noivas e ternos finos">
+                <img src="assets/images/arara_vestuarios.jpg" alt="Vestuário">
+                <span>Vestuário</span>
+              </button>
+              <button type="button" class="about-thumb" data-src="assets/images/embalagem_sapatos.png" data-alt="Embalagens para calçados com visor" data-title="Acessórios &bull; Embalagens TNT" data-desc="Sacos protetores para calçados com visor transparente em PVC cristal">
+                <img src="assets/images/embalagem_sapatos.png" alt="Embalagens">
+                <span>Embalagens</span>
+              </button>
+              <button type="button" class="about-thumb" data-src="assets/images/porta_terno_real.jpg" data-alt="Porta-ternos com visor na porta" data-title="Alfaiataria &bull; Porta-Ternos" data-desc="Porta-ternos executivos em TNT com visor cristal transparente">
+                <img src="assets/images/porta_terno_real.jpg" alt="Porta-Terno">
+                <span>Porta-Terno</span>
+              </button>
             </div>
           </div>
         </div>

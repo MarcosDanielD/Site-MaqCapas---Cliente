@@ -957,6 +957,7 @@ button, input, select {
   top: 1rem;
   right: 1rem;
   background-color: rgba(24, 22, 20, 0.85);
+  backdrop-filter: blur(4px);
   color: #ffffff;
   font-size: 0.725rem;
   font-weight: 600;
@@ -964,6 +965,46 @@ button, input, select {
   text-transform: uppercase;
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-full);
+  z-index: 2;
+}
+
+.btn-photo-toggle {
+  position: absolute;
+  bottom: 0.85rem;
+  right: 0.85rem;
+  background-color: rgba(24, 22, 20, 0.85);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  z-index: 3;
+}
+
+.btn-photo-toggle:hover {
+  background-color: var(--color-noir);
+  border-color: #d4a373;
+  color: #d4a373;
+  transform: translateY(-1px);
+}
+
+.btn-photo-toggle.is-original {
+  background-color: #24211e;
+  color: #d4a373;
+  font-weight: 600;
+  border-color: #d4a373;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-photo-toggle.is-original svg {
+  stroke: #d4a373;
 }
 
 .product-details {
@@ -1230,11 +1271,32 @@ button, input, select {
 }
 
 .about-photo-card {
+  position: relative;
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1rem;
   box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.about-photo-badge {
+  position: absolute;
+  top: 1.75rem;
+  left: 1.75rem;
+  background-color: rgba(24, 22, 20, 0.88);
+  backdrop-filter: blur(8px);
+  color: #d4a373;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(212, 163, 115, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .about-photo {
@@ -1242,6 +1304,7 @@ button, input, select {
   height: 380px;
   object-fit: cover;
   border-radius: var(--radius-md);
+  transition: opacity 0.3s ease;
 }
 
 .about-caption {
@@ -1254,11 +1317,67 @@ button, input, select {
 .about-caption strong {
   font-size: 0.9rem;
   color: var(--text-primary);
+  transition: color var(--transition);
 }
 
 .about-caption span {
   font-size: 0.775rem;
   color: var(--text-muted);
+  line-height: 1.45;
+  margin-top: 0.2rem;
+  transition: color var(--transition);
+}
+
+.about-thumbs {
+  display: flex;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.about-thumb {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.about-thumb img {
+  width: 100%;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.about-thumb span {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.about-thumb:hover {
+  border-color: var(--color-noir);
+  background: #ffffff;
+}
+
+.about-thumb.active {
+  border-color: #d4a373;
+  background: #ffffff;
+  box-shadow: 0 0 0 1.5px #d4a373;
+}
+
+.about-thumb.active span {
+  color: var(--color-noir);
+  font-weight: 700;
 }
 
 /* ==========================================================================

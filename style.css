@@ -1744,6 +1744,64 @@ button, input, select {
   }
 }
 
+/* ==========================================================================
+   SCROLL REVEAL ANIMATIONS
+   Efeito fluido onde os elementos surgem suavemente ao descer o scroll.
+   ========================================================================== */
+.reveal-init .reveal-item {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-init .reveal-item.reveal-left {
+  transform: translateX(-36px);
+}
+
+.reveal-init .reveal-item.reveal-right {
+  transform: translateX(36px);
+}
+
+.reveal-init .reveal-item.reveal-scale {
+  transform: scale(0.96) translateY(20px);
+}
+
+/* Estado ativo quando o elemento entra no viewport */
+.reveal-init .reveal-item.is-revealed {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+/* Efeito cascata (stagger) para elementos agrupados */
+.reveal-init .reveal-item[data-stagger="1"] { transition-delay: 0.05s; }
+.reveal-init .reveal-item[data-stagger="2"] { transition-delay: 0.12s; }
+.reveal-init .reveal-item[data-stagger="3"] { transition-delay: 0.19s; }
+.reveal-init .reveal-item[data-stagger="4"] { transition-delay: 0.26s; }
+.reveal-init .reveal-item[data-stagger="5"] { transition-delay: 0.33s; }
+.reveal-init .reveal-item[data-stagger="6"] { transition-delay: 0.40s; }
+
+/* Manter o efeito hover após o elemento já estar revelado */
+.reveal-init .showcase-card.is-revealed:hover,
+.reveal-init .product-item.is-revealed:hover {
+  transform: translateY(-4px);
+}
+
+.reveal-init .reason-card.is-revealed:hover,
+.reveal-init .material-card.is-revealed:hover {
+  transform: translateY(-3px);
+}
+
+/* Acessibilidade: respeita quem tem redução de movimento ativada no SO */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init .reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* ===== Assinatura Marq Lab ===== */
 .marqlab-credit {
   margin-top: 20px;

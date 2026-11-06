@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollFilm();
   initHeader();
   initMobileMenu();
+  initScrollReveal();
   initCatalogFilter();
   initPhotoToggles();
   initAboutGallery();
@@ -151,6 +152,84 @@ function initMobileMenu() {
   });
 }
 
+/* ============================================================
+   SCROLL REVEAL - Animação suave e fluida ao descer a página
+   ============================================================ */
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) return;
+
+  // Ativa as regras CSS do reveal
+  document.documentElement.classList.add('reveal-init');
+
+  // Elementos individuais
+  const singleSelectors = [
+    '.hero-pill',
+    '.hero-title',
+    '.hero-description',
+    '.hero-actions',
+    '.section-header',
+    '.filter-group',
+    '.simulator-card',
+    '.about-content',
+    '.about-media',
+    '.footer-grid',
+    '.footer-bottom'
+  ];
+
+  singleSelectors.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      el.classList.add('reveal-item');
+      if (sel === '.about-content') el.classList.add('reveal-left');
+      if (sel === '.about-media') el.classList.add('reveal-right');
+      if (sel === '.simulator-card') el.classList.add('reveal-scale');
+    });
+  });
+
+  // Grupos com animação cascata (stagger progressivo)
+  const groupConfigs = [
+    { container: '.hero-showcase', items: '.showcase-card' },
+    { container: '.trust-strip', items: '.trust-item' },
+    { container: '.reasons-grid', items: '.reason-card' },
+    { container: '.products-grid', items: '.product-item' },
+    { container: '.materials-grid', items: '.material-card' },
+    { container: '.faq-container', items: '.faq-row' }
+  ];
+
+  groupConfigs.forEach(cfg => {
+    const parent = document.querySelector(cfg.container);
+    if (!parent) return;
+    const elements = parent.querySelectorAll(cfg.items);
+    elements.forEach((el, index) => {
+      el.classList.add('reveal-item');
+      el.setAttribute('data-stagger', ((index % 6) + 1).toString());
+    });
+  });
+
+  // Observador com margem para antecipar a revelação suavemente
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px 0px -40px 0px',
+    threshold: 0.1
+  });
+
+  // Observa os elementos marcados
+  document.querySelectorAll('.reveal-item').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('is-revealed');
+    } else {
+      observer.observe(el);
+    }
+  });
+}
+
 /* --- Filtro por Abas do Catálogo --- */
 function initCatalogFilter() {
   const filterBtns = document.querySelectorAll('.filter-button');
@@ -170,10 +249,13 @@ function initCatalogFilter() {
         const categories = category.split(' ');
         if (filter === 'all' || categories.includes(filter)) {
           item.style.display = 'flex';
+          item.classList.add('is-revealed');
           item.style.opacity = '0';
+          item.style.transform = 'translateY(14px)';
           setTimeout(() => {
-            item.style.transition = 'opacity 0.25s ease';
+            item.style.transition = 'opacity 0.28s ease, transform 0.28s ease';
             item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
           }, 10);
         } else {
           item.style.display = 'none';

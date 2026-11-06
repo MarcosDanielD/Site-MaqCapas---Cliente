@@ -1743,3 +1743,50 @@ button, input, select {
     display: none;
   }
 }
+
+/* ===== Assinatura Marq Lab ===== */
+.marqlab-credit {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(28, 28, 30, 0.06);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.marqlab-credit__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1;
+  color: #6b6b70;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.marqlab-credit__text { color: #6b6b70; }
+.marqlab-credit .marqlab-credit__logo {
+  width: 28px;
+  height: 16px;
+  max-width: none;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+  transition: transform .2s ease;
+}
+.marqlab-credit__brand {
+  font-weight: 600;
+  color: #1c1c1e;
+  letter-spacing: -0.01em;
+  transition: color .2s ease;
+}
+.marqlab-credit__link:hover .marqlab-credit__logo { transform: scale(1.06); }
+.marqlab-credit__link:hover .marqlab-credit__brand { color: #d4a373; }
+
+/* Versão para sites com fundo ESCURO: adicione a classe "marqlab-credit--dark" na div */
+.marqlab-credit--dark { border-top-color: rgba(255, 255, 255, 0.1); }
+.marqlab-credit--dark .marqlab-credit__link,
+.marqlab-credit--dark .marqlab-credit__text { color: #a1a1a6; }
+.marqlab-credit--dark .marqlab-credit__brand { color: #ffffff; }
+.marqlab-credit--dark .marqlab-credit__logo { filter: invert(1); }
+.marqlab-credit--dark .marqlab-credit__link:hover .marqlab-credit__brand { color: #d4a373; }
+.marqlab-credit--dark .marqlab-credit__link:hover .marqlab-credit__text { color: #ffffff; }

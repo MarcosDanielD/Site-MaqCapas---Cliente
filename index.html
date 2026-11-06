@@ -101,54 +101,70 @@
     <!-- Canvas fixo no viewport -->
     <div class="film-sticky" id="filmSticky">
 
-      <!-- ── Cena 1: Porta-Ternos ── -->
+      <!-- ── Cena 1: Porta-Ternos (IA) ── -->
       <div class="film-scene" id="scene0">
         <div class="film-scene-photo" style="background-image: url('assets/images/porta_terno.jpg')"></div>
         <div class="film-scene-panel">
           <div class="film-scene-content">
             <span class="film-scene-num">01</span>
-            <span class="film-scene-tag">Vestuário & Alta Costura</span>
+            <span class="film-scene-tag">Vestuário &bull; Modelo Estúdio IA</span>
             <h2 class="film-scene-title">O seu terno merece mais<br>do que uma arara.</h2>
             <p class="film-scene-desc">Porta-ternos executivos em TNT respirável com visor em PVC cristal — fabricados sob medida para proteger o caimento e o tecido.</p>
+            <button type="button" class="btn-film-toggle" data-scene="scene0" data-alt-bg="assets/images/porta_terno_real.jpg" data-orig-bg="assets/images/porta_terno.jpg" title="Alternar entre render de estúdio e foto original de fabricação">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Ver Foto Original</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- ── Cena 2: Vestido de Noiva ── -->
+      <!-- ── Cena 2: Informática (FOTO ORIGINAL) ── -->
       <div class="film-scene" id="scene1">
-        <div class="film-scene-photo" style="background-image: url('assets/images/capa_noiva_terno.png')"></div>
+        <div class="film-scene-photo" style="background-image: url('assets/images/capa_computador_real.jpg')"></div>
         <div class="film-scene-panel">
           <div class="film-scene-content">
             <span class="film-scene-num">02</span>
-            <span class="film-scene-tag">Noivas & Ateliês</span>
-            <h2 class="film-scene-title">Cada ponto de renda,<br>guardado para sempre.</h2>
-            <p class="film-scene-desc">Capas para vestidos de noiva com visor de PVC cristal e fechamento por zíper — preservando o estado original até o grande dia.</p>
+            <span class="film-scene-tag film-scene-tag--real">Informática &bull; Foto Original da Oficina</span>
+            <h2 class="film-scene-title">Poeira e umidade não<br>têm acesso aqui.</h2>
+            <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT técnico — corte e acabamento artesanal confeccionados em nossa oficina desde 1987.</p>
+            <button type="button" class="btn-film-toggle is-original" data-scene="scene1" data-alt-bg="assets/images/capa_computador.jpg" data-orig-bg="assets/images/capa_computador_real.jpg" title="Alternar entre foto original e render de estúdio">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Ver Estúdio IA</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- ── Cena 3: Informática ── -->
+      <!-- ── Cena 3: Vestido de Noiva (IA) ── -->
       <div class="film-scene" id="scene2">
-        <div class="film-scene-photo" style="background-image: url('assets/images/capa_computador.jpg')"></div>
+        <div class="film-scene-photo" style="background-image: url('assets/images/capa_noiva_terno.png')"></div>
         <div class="film-scene-panel">
           <div class="film-scene-content">
             <span class="film-scene-num">03</span>
-            <span class="film-scene-tag">Informática & Eletrônicos</span>
-            <h2 class="film-scene-title">Poeira e umidade não<br>têm acesso aqui.</h2>
-            <p class="film-scene-desc">Capas para monitores, gabinetes e teclados em PVC cristal ou TNT — proteção técnica que encaixa no seu equipamento como uma luva.</p>
+            <span class="film-scene-tag">Noivas &bull; Modelo Estúdio IA</span>
+            <h2 class="film-scene-title">Cada ponto de renda,<br>guardado para sempre.</h2>
+            <p class="film-scene-desc">Capas para vestidos de noiva com visor de PVC cristal e fechamento por zíper — preservando o estado original até o grande dia.</p>
+            <button type="button" class="btn-film-toggle" data-scene="scene2" data-alt-bg="assets/images/arara_vestuarios.jpg" data-orig-bg="assets/images/capa_noiva_terno.png" title="Alternar entre render de estúdio e foto original de fabricação">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Ver Foto Original</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- ── Cena 4: Industrial ── -->
+      <!-- ── Cena 4: Industrial (FOTO ORIGINAL) ── -->
       <div class="film-scene" id="scene3">
-        <div class="film-scene-photo" style="background-image: url('assets/images/capa_industrial.jpg')"></div>
+        <div class="film-scene-photo" style="background-image: url('assets/images/capa_industrial_real.jpg')"></div>
         <div class="film-scene-panel">
           <div class="film-scene-content">
             <span class="film-scene-num">04</span>
-            <span class="film-scene-tag">Maquinário Industrial</span>
+            <span class="film-scene-tag film-scene-tag--real">Maquinário Industrial &bull; Produção Real</span>
             <h2 class="film-scene-title">Do torno CNC ao<br>painel de controle.</h2>
-            <p class="film-scene-desc">Capas industriais de grande porte em lona impermeável reforçada — desenvolvidas para proteger maquinário entre turnos e no transporte.</p>
+            <p class="film-scene-desc">Capas industriais de grande porte em lona impermeável reforçada — desenvolvidas para proteger maquinário pesado entre turnos e no transporte.</p>
+            <button type="button" class="btn-film-toggle is-original" data-scene="scene3" data-alt-bg="assets/images/capa_industrial.jpg" data-orig-bg="assets/images/capa_industrial_real.jpg" title="Alternar entre foto original e render de estúdio">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Ver Estúdio IA</span>
+            </button>
           </div>
         </div>
         <!-- CTA final apenas na última cena -->
@@ -197,12 +213,18 @@
         <a href="#produtos" class="btn btn-outline btn-lg">Ver Produtos</a>
       </div>
 
-      <!-- Studio Product Showcase Grid -->
+      <!-- Intercalado: Showcase com Fotos Originais e Modelos 3D -->
       <div class="hero-showcase">
         
+        <!-- Card 1: Informática (FOTO ORIGINAL) -->
         <div class="showcase-card">
           <div class="showcase-media">
-            <img src="assets/images/capa_computador.jpg" alt="Conjunto de capas para monitores, gabinete e teclado" class="showcase-img">
+            <img src="assets/images/capa_computador_real.jpg" alt="Conjunto de capas para monitores, gabinete e teclado sob medida" class="showcase-img" id="showcasePhoto0">
+            <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
+            <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto0" data-alt-src="assets/images/capa_computador.jpg" data-orig-src="assets/images/capa_computador_real.jpg" title="Alternar entre foto original e modelo digital">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Ver Estúdio IA</span>
+            </button>
           </div>
           <div class="showcase-info">
             <span class="showcase-category">Informática &amp; TI</span>
@@ -211,9 +233,15 @@
           </div>
         </div>
 
+        <!-- Card 2: Vestuário & Noivas (MODELO ESTÚDIO IA) -->
         <div class="showcase-card">
           <div class="showcase-media">
-            <img src="assets/images/capa_noiva_terno.png" alt="Capas longas para vestidos de noiva e ternos" class="showcase-img">
+            <img src="assets/images/capa_noiva_terno.png" alt="Capas longas para vestidos de noiva e ternos" class="showcase-img" id="showcasePhoto1">
+            <span class="showcase-badge">Modelo Estúdio IA</span>
+            <button type="button" class="btn-photo-toggle" data-target="showcasePhoto1" data-alt-src="assets/images/arara_vestuarios.jpg" data-orig-src="assets/images/capa_noiva_terno.png" title="Alternar para registro original">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Foto Original</span>
+            </button>
           </div>
           <div class="showcase-info">
             <span class="showcase-category">Alta Costura &amp; Ateliês</span>
@@ -222,9 +250,15 @@
           </div>
         </div>
 
+        <!-- Card 3: Indústria (FOTO ORIGINAL) -->
         <div class="showcase-card">
           <div class="showcase-media">
-            <img src="assets/images/capa_industrial.jpg" alt="Capas técnicas industriais para máquinas pesadas" class="showcase-img">
+            <img src="assets/images/capa_industrial_real.jpg" alt="Capas técnicas industriais para máquinas pesadas" class="showcase-img" id="showcasePhoto2">
+            <span class="showcase-badge showcase-badge--real">Produção Real</span>
+            <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto2" data-alt-src="assets/images/capa_industrial.jpg" data-orig-src="assets/images/capa_industrial_real.jpg" title="Alternar entre foto original e modelo digital">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Ver Estúdio IA</span>
+            </button>
           </div>
           <div class="showcase-info">
             <span class="showcase-category">Indústria &amp; Oficinas</span>

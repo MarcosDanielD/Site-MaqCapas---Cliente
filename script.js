@@ -277,6 +277,7 @@ function initCatalogFilter() {
 
 /* --- Alternador entre Foto de Estúdio e Foto Real de Produção --- */
 function initPhotoToggles() {
+  // Toggle nos cards do Showcase e Catálogo
   const toggleBtns = document.querySelectorAll('.btn-photo-toggle');
   toggleBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -289,26 +290,92 @@ function initPhotoToggles() {
 
       if (!targetImg) return;
 
-      const isOriginal = btn.classList.contains('is-original');
+      const currentSrc = targetImg.getAttribute('src');
+      const nextSrc = currentSrc === origSrc ? altSrc : origSrc;
 
       // Efeito de transição suave
       targetImg.style.transition = 'opacity 0.2s ease';
       targetImg.style.opacity = '0.3';
 
       setTimeout(() => {
-        if (isOriginal) {
-          targetImg.src = origSrc;
+        targetImg.src = nextSrc;
+        const isNowReal = nextSrc.includes('real') || nextSrc.includes('sapatos') || nextSrc.includes('sacola');
+
+        const card = btn.closest('.showcase-card') || btn.closest('.product-item');
+        if (card) {
+          const badge = card.querySelector('.showcase-badge');
+          if (badge) {
+            if (isNowReal) {
+              badge.textContent = 'Foto Real da Oficina';
+              badge.classList.add('showcase-badge--real');
+            } else {
+              badge.textContent = 'Modelo Estúdio IA';
+              badge.classList.remove('showcase-badge--real');
+            }
+          }
+        }
+
+        if (isNowReal) {
+          btn.classList.add('is-original');
+          if (labelSpan) labelSpan.textContent = 'Ver Estúdio IA';
+          mostrarToast('Exibindo foto original de confecção');
+        } else {
           btn.classList.remove('is-original');
           if (labelSpan) labelSpan.textContent = 'Foto Original';
-          mostrarToast('Exibindo render de estúdio');
-        } else {
-          targetImg.src = altSrc;
-          btn.classList.add('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Estúdio';
-          mostrarToast('Exibindo foto original de confecção MaqCapas');
+          mostrarToast('Exibindo modelo digital de estúdio');
         }
         targetImg.style.opacity = '1';
       }, 150);
+    });
+  });
+
+  // Toggle nas Cenas do Scroll Film da Tela Principal
+  const filmToggleBtns = document.querySelectorAll('.btn-film-toggle');
+  filmToggleBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const sceneId = btn.getAttribute('data-scene');
+      const sceneEl = document.getElementById(sceneId);
+      if (!sceneEl) return;
+      const photoEl = sceneEl.querySelector('.film-scene-photo');
+      const tagEl = sceneEl.querySelector('.film-scene-tag');
+      const labelSpan = btn.querySelector('span');
+
+      const altBg = btn.getAttribute('data-alt-bg');
+      const origBg = btn.getAttribute('data-orig-bg');
+
+      const bgStyle = photoEl.style.backgroundImage || '';
+      const isAlt = bgStyle.includes(altBg);
+      const nextBg = isAlt ? origBg : altBg;
+
+      photoEl.style.transition = 'opacity 0.25s ease';
+      photoEl.style.opacity = '0.35';
+
+      setTimeout(() => {
+        photoEl.style.backgroundImage = `url('${nextBg}')`;
+        const isNowReal = nextBg.includes('real') || nextBg.includes('vestuarios');
+
+        if (isNowReal) {
+          btn.classList.add('is-original');
+          if (labelSpan) labelSpan.textContent = 'Ver Estúdio IA';
+          if (tagEl) {
+            tagEl.classList.add('film-scene-tag--real');
+            const segName = tagEl.textContent.split('•')[0].trim();
+            tagEl.innerHTML = `${segName} &bull; Foto Original da Oficina`;
+          }
+          mostrarToast('Exibindo foto original de confecção');
+        } else {
+          btn.classList.remove('is-original');
+          if (labelSpan) labelSpan.textContent = 'Ver Foto Original';
+          if (tagEl) {
+            tagEl.classList.remove('film-scene-tag--real');
+            const segName = tagEl.textContent.split('•')[0].trim();
+            tagEl.innerHTML = `${segName} &bull; Modelo Estúdio IA`;
+          }
+          mostrarToast('Exibindo modelo digital de estúdio');
+        }
+        photoEl.style.opacity = '1';
+      }, 160);
     });
   });
 }

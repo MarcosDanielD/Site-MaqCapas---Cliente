@@ -6,22 +6,34 @@
 /* --- Variáveis & Paleta de Cores --- */
 :root {
   /* Cores Base: Off-White Nobre & Linho */
-  --bg-body: #f9f8f5;           /* Off-white quente e acolhedor */
-  --bg-alt: #f2efe8;            /* Linho suave para seções alternadas */
-  --bg-card: #ffffff;           /* Cartões brancos de alto contraste limpo */
-  --bg-muted: #e7e2d7;          /* Apoio neutro */
-  --bg-photo: #efece5;          /* Moldura neutra para fotos */
+  --bg-body: #f9f8f5;
+  /* Off-white quente e acolhedor */
+  --bg-alt: #f2efe8;
+  /* Linho suave para seções alternadas */
+  --bg-card: #ffffff;
+  /* Cartões brancos de alto contraste limpo */
+  --bg-muted: #e7e2d7;
+  /* Apoio neutro */
+  --bg-photo: #efece5;
+  /* Moldura neutra para fotos */
 
   /* Cores Nobres (Sem azul, sem verde berrante) */
-  --color-noir: #181614;        /* Grafite profundo, quase preto */
-  --color-noir-hover: #2d2926;  /* Grafite aquecido */
-  --color-bronze: #9c5825;      /* Terracota / Bronze Artesanal discreto */
-  --color-sand: #e6e1d7;        /* Borda papel nobre */
-  
+  --color-noir: #181614;
+  /* Grafite profundo, quase preto */
+  --color-noir-hover: #2d2926;
+  /* Grafite aquecido */
+  --color-bronze: #9c5825;
+  /* Terracota / Bronze Artesanal discreto */
+  --color-sand: #e6e1d7;
+  /* Borda papel nobre */
+
   /* Textos */
-  --text-primary: #181614;      /* Títulos e destaque */
-  --text-secondary: #44403c;    /* Texto corrido legível */
-  --text-muted: #78716c;        /* Informações secundárias */
+  --text-primary: #181614;
+  /* Títulos e destaque */
+  --text-secondary: #44403c;
+  /* Texto corrido legível */
+  --text-muted: #78716c;
+  /* Informações secundárias */
   --text-faint: #a8a29e;
 
   /* Bordas e Sombras */
@@ -47,7 +59,9 @@
 }
 
 /* --- Reset & Base --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -82,7 +96,9 @@ ul {
   list-style: none;
 }
 
-button, input, select {
+button,
+input,
+select {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
@@ -286,7 +302,8 @@ button, input, select {
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: 40% 60%; /* painel esquerdo + foto direita */
+  grid-template-columns: 40% 60%;
+  /* painel esquerdo + foto direita */
   opacity: 0;
   will-change: opacity;
   pointer-events: none;
@@ -305,8 +322,8 @@ button, input, select {
   background-repeat: no-repeat;
   will-change: transform;
   /* Overlay sutil na borda esquerda para fundir com o painel */
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 6%, black 18%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.1) 6%, black 18%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.1) 6%, black 18%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.1) 6%, black 18%);
 }
 
 /* Painel editorial escuro: 40% da esquerda */
@@ -330,7 +347,7 @@ button, input, select {
   transform: translateY(24px);
   will-change: opacity, transform;
   transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .film-scene.is-active .film-scene-content {
@@ -499,13 +516,20 @@ button, input, select {
 .film-scroll-line {
   width: 1px;
   height: 44px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), transparent);
   animation: filmScrollPulse 1.9s ease-in-out infinite;
 }
 
 @keyframes filmScrollPulse {
-  0%, 100% { opacity: 0.25; }
-  50%       { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 /* ── Responsivo ── */
@@ -575,7 +599,8 @@ button, input, select {
   width: 100%;
   max-width: 100%;
   height: 94px;
-  padding: 0 1.25rem; /* Colado nas extremidades */
+  padding: 0 1.25rem;
+  /* Colado nas extremidades */
   box-sizing: border-box;
   gap: 1.5rem;
 }
@@ -1821,7 +1846,7 @@ button, input, select {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -1844,12 +1869,29 @@ button, input, select {
 }
 
 /* Efeito cascata (stagger) para elementos agrupados */
-.reveal-init .reveal-item[data-stagger="1"] { transition-delay: 0.05s; }
-.reveal-init .reveal-item[data-stagger="2"] { transition-delay: 0.12s; }
-.reveal-init .reveal-item[data-stagger="3"] { transition-delay: 0.19s; }
-.reveal-init .reveal-item[data-stagger="4"] { transition-delay: 0.26s; }
-.reveal-init .reveal-item[data-stagger="5"] { transition-delay: 0.33s; }
-.reveal-init .reveal-item[data-stagger="6"] { transition-delay: 0.40s; }
+.reveal-init .reveal-item[data-stagger="1"] {
+  transition-delay: 0.05s;
+}
+
+.reveal-init .reveal-item[data-stagger="2"] {
+  transition-delay: 0.12s;
+}
+
+.reveal-init .reveal-item[data-stagger="3"] {
+  transition-delay: 0.19s;
+}
+
+.reveal-init .reveal-item[data-stagger="4"] {
+  transition-delay: 0.26s;
+}
+
+.reveal-init .reveal-item[data-stagger="5"] {
+  transition-delay: 0.33s;
+}
+
+.reveal-init .reveal-item[data-stagger="6"] {
+  transition-delay: 0.40s;
+}
 
 /* Manter o efeito hover após o elemento já estar revelado */
 .reveal-init .showcase-card.is-revealed:hover,
@@ -1880,6 +1922,7 @@ button, input, select {
   justify-content: center;
   align-items: center;
 }
+
 .marqlab-credit__link {
   display: inline-flex;
   align-items: center;
@@ -1890,7 +1933,11 @@ button, input, select {
   text-decoration: none;
   transition: color .2s ease;
 }
-.marqlab-credit__text { color: #6b6b70; }
+
+.marqlab-credit__text {
+  color: #6b6b70;
+}
+
 .marqlab-credit .marqlab-credit__logo {
   width: 28px;
   height: 16px;
@@ -1900,20 +1947,154 @@ button, input, select {
   object-fit: contain;
   transition: transform .2s ease;
 }
+
 .marqlab-credit__brand {
   font-weight: 600;
   color: #1c1c1e;
   letter-spacing: -0.01em;
   transition: color .2s ease;
 }
-.marqlab-credit__link:hover .marqlab-credit__logo { transform: scale(1.06); }
-.marqlab-credit__link:hover .marqlab-credit__brand { color: #d4a373; }
+
+.marqlab-credit__link:hover .marqlab-credit__logo {
+  transform: scale(1.06);
+}
+
+.marqlab-credit__link:hover .marqlab-credit__brand {
+  color: #d4a373;
+}
 
 /* Versão para sites com fundo ESCURO: adicione a classe "marqlab-credit--dark" na div */
-.marqlab-credit--dark { border-top-color: rgba(255, 255, 255, 0.1); }
+.marqlab-credit--dark {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
 .marqlab-credit--dark .marqlab-credit__link,
-.marqlab-credit--dark .marqlab-credit__text { color: #a1a1a6; }
-.marqlab-credit--dark .marqlab-credit__brand { color: #ffffff; }
-.marqlab-credit--dark .marqlab-credit__logo { filter: invert(1); }
-.marqlab-credit--dark .marqlab-credit__link:hover .marqlab-credit__brand { color: #d4a373; }
-.marqlab-credit--dark .marqlab-credit__link:hover .marqlab-credit__text { color: #ffffff; }
+.marqlab-credit--dark .marqlab-credit__text {
+  color: #a1a1a6;
+}
+
+.marqlab-credit--dark .marqlab-credit__brand {
+  color: #ffffff;
+}
+
+.marqlab-credit--dark .marqlab-credit__logo {
+  filter: invert(1);
+}
+
+.marqlab-credit--dark .marqlab-credit__link:hover .marqlab-credit__brand {
+  color: #d4a373;
+}
+
+.marqlab-credit--dark .marqlab-credit__link:hover .marqlab-credit__text {
+  color: #ffffff;
+}
+
+/* ============================================================
+   ACESSIBILIDADE, CONTROLES DE FILME E DADOS CADASTRAIS
+   ============================================================ */
+
+/* Utility: Apenas Leitor de Tela (Screen Reader Only) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Backgrounds padrão (fotos reais) para o Scroll Film sem inline style */
+.film-photo-scene0 {
+  background-image: url('assets/images/porta_terno_real.webp');
+}
+.film-photo-scene1 {
+  background-image: url('assets/images/capa_computador_real.webp');
+}
+.film-photo-scene2 {
+  background-image: url('assets/images/capa_noiva_clean_real.webp');
+}
+.film-photo-scene3 {
+  background-image: url('assets/images/capa_industrial_real.webp');
+}
+
+/* Barra de Controles e Pausa do Scroll Film */
+.film-controls {
+  position: absolute;
+  bottom: 1.25rem;
+  right: clamp(1.5rem, 4vw, 3.5rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 35;
+  background: rgba(12, 11, 9, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.65rem;
+}
+
+.film-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #f0ece4;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.film-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #d4a373;
+}
+
+.film-ctrl-btn:focus-visible {
+  outline: 2px solid #d4a373;
+  outline-offset: 2px;
+}
+
+.film-ctrl-btn.is-paused .icon-pause {
+  display: none !important;
+}
+
+.film-ctrl-btn.is-paused .icon-play {
+  display: block !important;
+}
+
+/* Rodapé: Dados Cadastrais e Legais (Config / Marcadores) */
+.footer-legal-block {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.82rem;
+  color: #a8a29e;
+  line-height: 1.6;
+}
+
+.footer-legal-item {
+  margin-bottom: 0.4rem;
+}
+
+.footer-legal-item strong {
+  color: #f0ece4;
+  font-weight: 600;
+}
+
+.footer-marker-alert {
+  display: inline-block;
+  background: rgba(212, 163, 115, 0.15);
+  color: #d4a373;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px dashed rgba(212, 163, 115, 0.4);
+}

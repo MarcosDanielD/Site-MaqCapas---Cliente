@@ -1,3 +1,11 @@
+# Dependências
+node_modules/
+
+# Variáveis locais
+.env
+.env.*
+!.env.example
+
 # Sistema operacional
 Thumbs.db
 ehthumbs.db

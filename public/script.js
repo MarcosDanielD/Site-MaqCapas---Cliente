@@ -1,9 +1,10 @@
 /**
- * MAQCAPAS - Script de Interatividade Minimalista & Editorial
- * Inclui motor de Scroll Film cinematográfico (parallax + text reveals).
+ * MAQCAPAS - Script de Interatividade & Acessibilidade
+ * Fabricação sob medida desde 1987.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initDynamicYears();
   initScrollFilm();
   initHeader();
   initMobileMenu();
@@ -13,83 +14,116 @@ document.addEventListener('DOMContentLoaded', () => {
   initAboutGallery();
   initSimulator();
   initFAQ();
+  initWhatsAppTracking();
 });
 
 /* ============================================================
-   SCROLL FILM ENGINE — 4 Cenas de Produto
-   Crossfade entre cenas guiado pelo scrollY, sem bibliotecas.
+   0. CONTAGEM DINÂMICA DE ANOS E DATA
+   ============================================================ */
+function initDynamicYears() {
+  const currentYear = new Date().getFullYear();
+  const foundingYear = 1987;
+  const years = currentYear - foundingYear;
+  const yearsText = years > 35 ? `${years} Anos` : 'Mais de 35 anos';
+
+  document.querySelectorAll('.calculated-years').forEach(el => {
+    el.textContent = yearsText;
+  });
+
+  document.querySelectorAll('.calculated-years-number').forEach(el => {
+    el.textContent = String(years);
+  });
+
+  const yrEl = document.getElementById('currentYear');
+  if (yrEl) {
+    yrEl.textContent = String(currentYear);
+  }
+}
+
+/* ============================================================
+   1. SCROLL FILM ENGINE — 4 Cenas de Produto com Controles
    ============================================================ */
 function initScrollFilm() {
   const film = document.getElementById('scrollFilm');
   if (!film) return;
 
-  const scenes       = Array.from(film.querySelectorAll('.film-scene'));
-  const hint         = document.getElementById('filmScrollHint');
+  const scenes = Array.from(film.querySelectorAll('.film-scene'));
+  const hint = document.getElementById('filmScrollHint');
   const progressTrack = document.getElementById('filmProgressTrack');
-  const TOTAL        = scenes.length;       // 4 cenas
-  const FILM_H       = film.offsetHeight;   // 650vh em px
-  const VIEW_H       = window.innerHeight;
-  const FILM_SCROLL  = FILM_H - VIEW_H;     // espaço útil de scroll
+  const pauseBtn = document.getElementById('filmPauseBtn');
+  const prevBtn = document.getElementById('filmPrevBtn');
+  const nextBtn = document.getElementById('filmNextBtn');
 
-  // Cada cena ocupa 1/TOTAL do espaço de scroll,
-  // com 15% de overlap/crossfade entre elas
-  const SCENE_SPAN   = 1 / TOTAL;
-  const CROSSFADE    = 0.12; // fração do span p/ dissolve
+  const TOTAL = scenes.length;       // 4 cenas
+  const SCENE_SPAN = 1 / TOTAL;
+  const CROSSFADE = 0.12;
 
-  let currentActive = -1;
+  let currentActive = 0;
+  let isAutoAdvancing = false;
+  let autoAdvanceTimer = null;
 
   function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
   function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   }
 
+  function getScrollMetrics() {
+    const filmH = film.offsetHeight;
+    const viewH = window.innerHeight;
+    const filmScroll = Math.max(1, filmH - viewH);
+    return { filmH, viewH, filmScroll, filmTop: film.offsetTop };
+  }
+
+  function scrollToScene(index) {
+    const clampedIndex = clamp(index, 0, TOTAL - 1);
+    const { filmTop, filmScroll } = getScrollMetrics();
+    const targetY = filmTop + (clampedIndex * SCENE_SPAN * filmScroll) + 10;
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+  }
+
   function tick() {
-    const scrollY  = window.scrollY;
-    const filmTop  = film.offsetTop;
+    const { filmTop, filmScroll } = getScrollMetrics();
+    const scrollY = window.scrollY;
 
     // Progresso normalizado dentro do filme [0..1]
-    const raw = (scrollY - filmTop) / FILM_SCROLL;
-    const p   = clamp(raw, 0, 1);
+    const raw = (scrollY - filmTop) / filmScroll;
+    const p = clamp(raw, 0, 1);
 
-    // Barra de progresso (vai de 0% até 100% de toda a largura da tela)
+    // Barra de progresso
     if (progressTrack) {
       const progressPercent = Math.min(100, Math.max(0, (p / 0.98) * 100));
       progressTrack.style.width = progressPercent.toFixed(1) + '%';
     }
 
-    // Hint some logo que o usuário começa a rolar
+    // Hint desaparece quando o usuário inicia a rolagem
     if (hint) {
       hint.style.opacity = clamp(1 - p / 0.06, 0, 1);
     }
 
-    // Determina qual cena mostrar e com qual opacidade
+    // Determina qual cena mostrar e opacidade correspondente
     scenes.forEach((scene, i) => {
       const start = i * SCENE_SPAN;
-      const end   = start + SCENE_SPAN;
-      const fadeInEnd   = start + CROSSFADE;
+      const end = start + SCENE_SPAN;
+      const fadeInEnd = start + CROSSFADE;
       const fadeOutStart = end - CROSSFADE;
 
       let opacity = 0;
       if (p >= start && p <= end) {
         if (p < fadeInEnd) {
-          // Fade in
           opacity = easeInOut((p - start) / CROSSFADE);
         } else if (p > fadeOutStart && i < TOTAL - 1) {
-          // Fade out (exceto última cena)
           opacity = easeInOut(1 - (p - fadeOutStart) / CROSSFADE);
         } else {
           opacity = 1;
         }
       }
-      // Última cena permanece 100% até o fim
       if (i === TOTAL - 1 && p >= start) {
         opacity = easeInOut(clamp((p - start) / CROSSFADE, 0, 1));
       }
 
       scene.style.opacity = opacity.toFixed(3);
 
-      // Ativa/desativa classe para animar o texto via CSS transition
-      const isActive = opacity > 0.5;
+      const isActive = opacity > 0.45;
       if (isActive && !scene.classList.contains('is-active')) {
         scene.classList.add('is-active');
         currentActive = i;
@@ -97,17 +131,16 @@ function initScrollFilm() {
         scene.classList.remove('is-active');
       }
 
-      // Parallax sutil na foto: sobe levemente conforme a cena progride
       const photo = scene.querySelector('.film-scene-photo');
       if (photo && opacity > 0) {
         const localP = clamp((p - start) / SCENE_SPAN, 0, 1);
-        const py = (localP * -30).toFixed(1);
+        const py = (localP * -25).toFixed(1);
         photo.style.backgroundPositionY = `calc(50% + ${py}px)`;
       }
     });
   }
 
-  // rAF throttle
+  // Throttle com requestAnimationFrame
   let rafId = null;
   function onScroll() {
     if (rafId) return;
@@ -115,11 +148,92 @@ function initScrollFilm() {
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  tick(); // estado inicial
+  tick();
+
+  // Controles de Pausa / Reprodução Automática
+  function togglePause() {
+    if (isAutoAdvancing) {
+      // Pausar
+      isAutoAdvancing = false;
+      if (autoAdvanceTimer) clearInterval(autoAdvanceTimer);
+      if (pauseBtn) {
+        pauseBtn.classList.add('is-paused');
+        pauseBtn.setAttribute('aria-pressed', 'true');
+        pauseBtn.setAttribute('aria-label', 'Reproduzir apresentação automática');
+      }
+      mostrarToast('Apresentação pausada');
+    } else {
+      // Reproduzir
+      isAutoAdvancing = true;
+      if (pauseBtn) {
+        pauseBtn.classList.remove('is-paused');
+        pauseBtn.setAttribute('aria-pressed', 'false');
+        pauseBtn.setAttribute('aria-label', 'Pausar apresentação automática');
+      }
+      mostrarToast('Avanço automático ativado');
+      autoAdvanceTimer = setInterval(() => {
+        const { filmTop, filmScroll } = getScrollMetrics();
+        const scrollY = window.scrollY;
+        if (scrollY < filmTop - 100 || scrollY > filmTop + filmScroll + 100) {
+          // Usuário saiu da seção do filme
+          return;
+        }
+        const nextScene = (currentActive + 1) % TOTAL;
+        scrollToScene(nextScene);
+      }, 4500);
+    }
+  }
+
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', togglePause);
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      scrollToScene(currentActive - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      scrollToScene(currentActive + 1);
+    });
+  }
+
+  // Controle por Teclado Acessível (ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Space, Home, End)
+  window.addEventListener('keydown', (e) => {
+    const { filmTop, filmScroll } = getScrollMetrics();
+    const scrollY = window.scrollY;
+    const isWithinFilm = scrollY >= filmTop - 50 && scrollY <= filmTop + filmScroll + 50;
+
+    // Não intercepta se o foco estiver dentro de um campo de formulário
+    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+    if (['input', 'textarea', 'select'].includes(activeTag)) return;
+
+    if (isWithinFilm) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        scrollToScene(currentActive + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        scrollToScene(currentActive - 1);
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        togglePause();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        scrollToScene(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        scrollToScene(TOTAL - 1);
+      }
+    }
+  });
 }
 
-
-/* --- Header Sombra no Scroll --- */
+/* ============================================================
+   2. HEADER & MENU MOBILE
+   ============================================================ */
 function initHeader() {
   const header = document.getElementById('header');
   if (!header) return;
@@ -133,7 +247,6 @@ function initHeader() {
   }, { passive: true });
 }
 
-/* --- Menu Mobile Drawer --- */
 function initMobileMenu() {
   const toggleBtn = document.getElementById('mobileMenuBtn');
   const drawer = document.getElementById('mobileDrawer');
@@ -142,26 +255,26 @@ function initMobileMenu() {
   if (!toggleBtn || !drawer) return;
 
   toggleBtn.addEventListener('click', () => {
-    drawer.classList.toggle('open');
+    const isOpen = drawer.classList.toggle('open');
+    toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
   links.forEach(link => {
     link.addEventListener('click', () => {
       drawer.classList.remove('open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
     });
   });
 }
 
 /* ============================================================
-   SCROLL REVEAL - Animação suave e fluida ao descer a página
+   3. SCROLL REVEAL - Revelação Suave ao Rolar a Página
    ============================================================ */
 function initScrollReveal() {
   if (!('IntersectionObserver' in window)) return;
 
-  // Ativa as regras CSS do reveal
   document.documentElement.classList.add('reveal-init');
 
-  // Elementos individuais
   const singleSelectors = [
     '.hero-pill',
     '.hero-title',
@@ -185,7 +298,6 @@ function initScrollReveal() {
     });
   });
 
-  // Grupos com animação cascata (stagger progressivo)
   const groupConfigs = [
     { container: '.hero-showcase', items: '.showcase-card' },
     { container: '.trust-strip', items: '.trust-item' },
@@ -205,7 +317,6 @@ function initScrollReveal() {
     });
   });
 
-  // Observador com margem para antecipar a revelação suavemente
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -219,7 +330,6 @@ function initScrollReveal() {
     threshold: 0.1
   });
 
-  // Observa os elementos marcados
   document.querySelectorAll('.reveal-item').forEach(el => {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) {
@@ -230,7 +340,9 @@ function initScrollReveal() {
   });
 }
 
-/* --- Filtro por Abas do Catálogo --- */
+/* ============================================================
+   4. FILTRO DE CATÁLOGO & BOTÕES DE COTAÇÃO RÁPIDA
+   ============================================================ */
 function initCatalogFilter() {
   const filterBtns = document.querySelectorAll('.filter-button');
   const productItems = document.querySelectorAll('.product-item');
@@ -264,7 +376,6 @@ function initCatalogFilter() {
     });
   });
 
-  // Botões de Cotação Rápida dentro dos cards
   const quoteBtns = document.querySelectorAll('.btn-card-action');
   quoteBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -275,7 +386,9 @@ function initCatalogFilter() {
   });
 }
 
-/* --- Alternador entre Foto de Estúdio e Foto Real de Produção --- */
+/* ============================================================
+   5. ALTERNADOR: FOTO REAL (PADRÃO) vs IMAGEM ILUSTRATIVA (IA)
+   ============================================================ */
 function initPhotoToggles() {
   // Toggle nos cards do Showcase e Catálogo
   const toggleBtns = document.querySelectorAll('.btn-photo-toggle');
@@ -284,32 +397,32 @@ function initPhotoToggles() {
       e.stopPropagation();
       const targetId = btn.getAttribute('data-target');
       const targetImg = document.getElementById(targetId);
-      const altSrc = btn.getAttribute('data-alt-src');
-      const origSrc = btn.getAttribute('data-orig-src');
+      const altSrc = btn.getAttribute('data-alt-src');    // Imagem IA
+      const origSrc = btn.getAttribute('data-orig-src');  // Foto Real (Padrão)
       const labelSpan = btn.querySelector('span');
 
       if (!targetImg) return;
 
       const currentSrc = targetImg.getAttribute('src');
-      const nextSrc = currentSrc === origSrc ? altSrc : origSrc;
+      const isCurrentlyOrig = currentSrc.includes(origSrc) || (!currentSrc.includes(altSrc));
+      const nextSrc = isCurrentlyOrig ? altSrc : origSrc;
 
-      // Efeito de transição suave
       targetImg.style.transition = 'opacity 0.2s ease';
       targetImg.style.opacity = '0.3';
 
       setTimeout(() => {
         targetImg.src = nextSrc;
-        const isNowReal = nextSrc.includes('real') || nextSrc.includes('sapatos') || nextSrc.includes('sacola');
+        const isNowReal = nextSrc === origSrc || nextSrc.includes('real') || nextSrc.includes('sapatos') || nextSrc.includes('sacola');
 
         const card = btn.closest('.showcase-card') || btn.closest('.product-item');
         if (card) {
-          const badge = card.querySelector('.showcase-badge');
+          const badge = card.querySelector('.showcase-badge') || card.querySelector('.product-pill');
           if (badge) {
             if (isNowReal) {
               badge.textContent = 'Foto Real da Oficina';
               badge.classList.add('showcase-badge--real');
             } else {
-              badge.textContent = 'Modelo Estúdio IA';
+              badge.textContent = 'Imagem ilustrativa (IA)';
               badge.classList.remove('showcase-badge--real');
             }
           }
@@ -317,19 +430,19 @@ function initPhotoToggles() {
 
         if (isNowReal) {
           btn.classList.add('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Estúdio IA';
-          mostrarToast('Exibindo foto original de confecção');
+          if (labelSpan) labelSpan.textContent = 'Ver Imagem ilustrativa (IA)';
+          mostrarToast('Exibindo foto real de confecção');
         } else {
           btn.classList.remove('is-original');
-          if (labelSpan) labelSpan.textContent = 'Foto Original';
-          mostrarToast('Exibindo modelo digital de estúdio');
+          if (labelSpan) labelSpan.textContent = 'Ver Foto Real';
+          mostrarToast('Exibindo imagem ilustrativa (IA)');
         }
         targetImg.style.opacity = '1';
       }, 150);
     });
   });
 
-  // Toggle nas Cenas do Scroll Film da Tela Principal
+  // Toggle nas Cenas do Scroll Film
   const filmToggleBtns = document.querySelectorAll('.btn-film-toggle');
   filmToggleBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -341,8 +454,8 @@ function initPhotoToggles() {
       const tagEl = sceneEl.querySelector('.film-scene-tag');
       const labelSpan = btn.querySelector('span');
 
-      const altBg = btn.getAttribute('data-alt-bg');
-      const origBg = btn.getAttribute('data-orig-bg');
+      const altBg = btn.getAttribute('data-alt-bg');    // IA
+      const origBg = btn.getAttribute('data-orig-bg');  // Real
 
       const bgStyle = photoEl.style.backgroundImage || '';
       const isAlt = bgStyle.includes(altBg);
@@ -353,26 +466,26 @@ function initPhotoToggles() {
 
       setTimeout(() => {
         photoEl.style.backgroundImage = `url('${nextBg}')`;
-        const isNowReal = nextBg.includes('real') || nextBg.includes('vestuarios');
+        const isNowReal = !isAlt;
 
         if (isNowReal) {
           btn.classList.add('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Estúdio IA';
+          if (labelSpan) labelSpan.textContent = 'Ver Imagem ilustrativa (IA)';
           if (tagEl) {
             tagEl.classList.add('film-scene-tag--real');
             const segName = tagEl.textContent.split('•')[0].trim();
-            tagEl.innerHTML = `${segName} &bull; Foto Original da Oficina`;
+            tagEl.innerHTML = `${segName} &bull; Foto Real de Fabricação`;
           }
-          mostrarToast('Exibindo foto original de confecção');
+          mostrarToast('Exibindo foto real de fabricação');
         } else {
           btn.classList.remove('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Foto Original';
+          if (labelSpan) labelSpan.textContent = 'Ver Foto Real';
           if (tagEl) {
             tagEl.classList.remove('film-scene-tag--real');
             const segName = tagEl.textContent.split('•')[0].trim();
-            tagEl.innerHTML = `${segName} &bull; Modelo Estúdio IA`;
+            tagEl.innerHTML = `${segName} &bull; Imagem ilustrativa (IA)`;
           }
-          mostrarToast('Exibindo modelo digital de estúdio');
+          mostrarToast('Exibindo imagem ilustrativa (IA)');
         }
         photoEl.style.opacity = '1';
       }, 160);
@@ -380,7 +493,9 @@ function initPhotoToggles() {
   });
 }
 
-/* --- Galeria Interativa de Registros Reais (Seção Sobre) --- */
+/* ============================================================
+   6. GALERIA INTERATIVA DA HISTÓRIA (FOTOS REAIS)
+   ============================================================ */
 function initAboutGallery() {
   const mainPhoto = document.getElementById('aboutPhotoMain');
   const captionTitle = document.getElementById('aboutCaptionTitle');
@@ -415,8 +530,11 @@ function initAboutGallery() {
   });
 }
 
-/* --- Simulador de Medidas & WhatsApp --- */
+/* ============================================================
+   7. SIMULADOR DE MEDIDAS & ORÇAMENTO RÁPIDO
+   ============================================================ */
 function initSimulator() {
+  const form = document.getElementById('simulatorForm');
   const segmentSelect = document.getElementById('calcSegment');
   const materialRadios = document.querySelectorAll('input[name="calcMaterial"]');
   const widthInput = document.getElementById('inputWidth');
@@ -427,25 +545,34 @@ function initSimulator() {
   const summaryContent = document.getElementById('liveSummaryText');
   const sendBtn = document.getElementById('btnSendQuote');
 
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+    });
+  }
+
   if (!summaryContent) return;
 
   function atualizarResumo() {
-    const segmento = segmentSelect.value;
+    const segmento = segmentSelect ? segmentSelect.value : '';
     let material = 'PVC Cristal Transparente';
     materialRadios.forEach(radio => {
       if (radio.checked) material = radio.value;
     });
 
-    const l = widthInput.value ? `${widthInput.value} cm` : 'A definir';
-    const a = heightInput.value ? `${heightInput.value} cm` : 'A definir';
-    const p = depthInput.value ? `${depthInput.value} cm` : 'Padrao';
-    const qtd = qtyInput.value || 1;
-    const obs = notesInput.value.trim() ? notesInput.value.trim() : 'Sem observacoes extras';
+    const hasDimensions = (widthInput && widthInput.value) || (heightInput && heightInput.value);
+    const l = (widthInput && widthInput.value) ? `${widthInput.value} cm` : 'A definir';
+    const a = (heightInput && heightInput.value) ? `${heightInput.value} cm` : 'A definir';
+    const p = (depthInput && depthInput.value) ? `${depthInput.value} cm` : 'Padrão';
+    const qtd = (qtyInput && qtyInput.value) ? qtyInput.value : 1;
+    const obs = (notesInput && notesInput.value.trim()) ? notesInput.value.trim() : 'Sem observações extras';
 
+    summaryContent.style.display = 'block';
+    summaryContent.classList.remove('is-empty');
     summaryContent.innerHTML = `
-      <strong>Aplicacao:</strong> ${segmento}<br>
+      <strong>Aplicação:</strong> ${segmento}<br>
       <strong>Material:</strong> ${material}<br>
-      <strong>Dimensoes:</strong> ${l} (L) &times; ${a} (A) &times; ${p} (P)<br>
+      <strong>Dimensões:</strong> ${l} (L) &times; ${a} (A) &times; ${p} (P)<br>
       <strong>Quantidade:</strong> ${qtd} unidade(s) | <strong>Obs:</strong> ${obs}
     `;
   }
@@ -463,19 +590,18 @@ function initSimulator() {
 
   if (sendBtn) {
     sendBtn.addEventListener('click', () => {
-      const segmento = segmentSelect.value;
+      const segmento = segmentSelect ? segmentSelect.value : 'Geral';
       let material = 'PVC Cristal Transparente';
       materialRadios.forEach(radio => {
         if (radio.checked) material = radio.value;
       });
 
-      const l = widthInput.value ? `${widthInput.value} cm` : 'A combinar';
-      const a = heightInput.value ? `${heightInput.value} cm` : 'A combinar';
-      const p = depthInput.value ? `${depthInput.value} cm` : 'A combinar';
-      const qtd = qtyInput.value || 1;
-      const obs = notesInput.value.trim() ? notesInput.value.trim() : 'Nao informado';
+      const l = (widthInput && widthInput.value) ? `${widthInput.value} cm` : 'A combinar';
+      const a = (heightInput && heightInput.value) ? `${heightInput.value} cm` : 'A combinar';
+      const p = (depthInput && depthInput.value) ? `${depthInput.value} cm` : 'A combinar';
+      const qtd = (qtyInput && qtyInput.value) ? qtyInput.value : 1;
+      const obs = (notesInput && notesInput.value.trim()) ? notesInput.value.trim() : 'Não informado';
 
-      // Mensagem clean e profissional, sem emojis
       const texto = 
 `SOLICITACAO DE ORCAMENTO - MAQCAPAS
 Ola. Gostaria de solicitar um orcamento sob medida:
@@ -493,10 +619,10 @@ Poderiam informar o valor estimado e prazo de confeccao?`;
     });
   }
 
+  // Inicializa o resumo com os valores padrão
   atualizarResumo();
 }
 
-/* --- Carrega item do catálogo no simulador --- */
 function carregarItemNoSimulador(nomeItem, materialCode) {
   const notesInput = document.getElementById('inputNotes');
   const segmentSelect = document.getElementById('calcSegment');
@@ -508,7 +634,7 @@ function carregarItemNoSimulador(nomeItem, materialCode) {
 
   if (segmentSelect) {
     const n = nomeItem.toLowerCase();
-    if (n.includes('computador') || n.includes('monitor')) {
+    if (n.includes('computador') || n.includes('monitor') || n.includes('teclado')) {
       segmentSelect.value = 'Informática (Monitor / Gabinete / Teclado)';
     } else if (n.includes('noiva') || n.includes('terno') || n.includes('festa')) {
       segmentSelect.value = 'Vestuário (Vestido de Noiva / Festa / Terno)';
@@ -541,7 +667,9 @@ function carregarItemNoSimulador(nomeItem, materialCode) {
   mostrarToast(`Item "${nomeItem}" selecionado`);
 }
 
-/* --- Accordions de FAQ --- */
+/* ============================================================
+   8. ACCORDIONS DE FAQ
+   ============================================================ */
 function initFAQ() {
   const rows = document.querySelectorAll('.faq-row');
 
@@ -571,7 +699,54 @@ function initFAQ() {
   });
 }
 
-/* --- Toast Discreto --- */
+/* ============================================================
+   9. RASTREAMENTO SEGURO DE CLIQUES NO WHATSAPP (SEM PII)
+   ============================================================ */
+function initWhatsAppTracking() {
+  const links = document.querySelectorAll('a[href*="wa.me"]');
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      const placement = link.getAttribute('data-tracking-placement') || 
+                        link.id || 
+                        link.className.split(' ')[0] || 
+                        'link_whatsapp';
+      const eventData = {
+        event: 'whatsapp_click',
+        placement: placement,
+        timestamp: new Date().toISOString()
+      };
+
+      if (window.dataLayer && Array.isArray(window.dataLayer)) {
+        window.dataLayer.push(eventData);
+      }
+
+      if (window.__DEBUG_ANALYTICS__ || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        console.info('[Analytics] WhatsApp Click:', eventData);
+      }
+    });
+  });
+
+  const sendBtn = document.getElementById('btnSendQuote');
+  if (sendBtn) {
+    sendBtn.addEventListener('click', () => {
+      const eventData = {
+        event: 'whatsapp_click',
+        placement: 'simulator_submit',
+        timestamp: new Date().toISOString()
+      };
+      if (window.dataLayer && Array.isArray(window.dataLayer)) {
+        window.dataLayer.push(eventData);
+      }
+      if (window.__DEBUG_ANALYTICS__ || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        console.info('[Analytics] WhatsApp Click:', eventData);
+      }
+    });
+  }
+}
+
+/* ============================================================
+   10. TOAST DISCRETO & ACESSÍVEL
+   ============================================================ */
 function mostrarToast(mensagem) {
   const toast = document.getElementById('toastCard');
   const text = document.getElementById('toastMessage');
@@ -579,9 +754,15 @@ function mostrarToast(mensagem) {
   if (!toast || !text) return;
 
   text.textContent = mensagem;
+  toast.style.display = 'flex';
   toast.classList.add('show');
 
   setTimeout(() => {
     toast.classList.remove('show');
+    setTimeout(() => {
+      if (!toast.classList.contains('show')) {
+        toast.style.display = 'none';
+      }
+    }, 300);
   }, 3000);
 }

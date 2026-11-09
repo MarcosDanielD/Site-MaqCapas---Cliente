@@ -1,0 +1,276 @@
+{
+  "arara_vestuarios.jpg": {
+    "base": "arara_vestuarios.webp",
+    "orig": "arara_vestuarios.jpg",
+    "width": 1320,
+    "height": 680,
+    "aspectRatio": "1.941"
+  },
+  "arara_vestuarios.webp": {
+    "base": "arara_vestuarios.webp",
+    "orig": "arara_vestuarios.jpg",
+    "width": 1320,
+    "height": 680,
+    "aspectRatio": "1.941"
+  },
+  "capa_computador.jpg": {
+    "base": "capa_computador.webp",
+    "orig": "capa_computador.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "capa_computador.webp": {
+    "base": "capa_computador.webp",
+    "orig": "capa_computador.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "capa_computador_real.jpg": {
+    "base": "capa_computador_real.webp",
+    "orig": "capa_computador_real.jpg",
+    "width": 2592,
+    "height": 1944,
+    "aspectRatio": "1.333"
+  },
+  "capa_computador_real.webp": {
+    "base": "capa_computador_real.webp",
+    "orig": "capa_computador_real.jpg",
+    "width": 2592,
+    "height": 1944,
+    "aspectRatio": "1.333"
+  },
+  "capa_industrial.jpg": {
+    "base": "capa_industrial.webp",
+    "orig": "capa_industrial.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "capa_industrial.webp": {
+    "base": "capa_industrial.webp",
+    "orig": "capa_industrial.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "capa_industrial_real.jpg": {
+    "base": "capa_industrial_real.webp",
+    "orig": "capa_industrial_real.jpg",
+    "width": 720,
+    "height": 529,
+    "aspectRatio": "1.361"
+  },
+  "capa_industrial_real.webp": {
+    "base": "capa_industrial_real.webp",
+    "orig": "capa_industrial_real.jpg",
+    "width": 720,
+    "height": 529,
+    "aspectRatio": "1.361"
+  },
+  "capa_noiva_clean_real.png": {
+    "base": "capa_noiva_clean_real.webp",
+    "orig": "capa_noiva_clean_real.png",
+    "width": 454,
+    "height": 700,
+    "aspectRatio": "0.649"
+  },
+  "capa_noiva_clean_real.webp": {
+    "base": "capa_noiva_clean_real.webp",
+    "orig": "capa_noiva_clean_real.png",
+    "width": 454,
+    "height": 700,
+    "aspectRatio": "0.649"
+  },
+  "capa_noiva_real.jpg": {
+    "base": "capa_noiva_real.webp",
+    "orig": "capa_noiva_real.jpg",
+    "width": 717,
+    "height": 1180,
+    "aspectRatio": "0.608"
+  },
+  "capa_noiva_real.webp": {
+    "base": "capa_noiva_real.webp",
+    "orig": "capa_noiva_real.jpg",
+    "width": 717,
+    "height": 1180,
+    "aspectRatio": "0.608"
+  },
+  "capa_noiva_terno.png": {
+    "base": "capa_noiva_terno.webp",
+    "orig": "capa_noiva_terno.png",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "capa_noiva_terno.webp": {
+    "base": "capa_noiva_terno.webp",
+    "orig": "capa_noiva_terno.png",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "couture.jpg": {
+    "base": "couture.webp",
+    "orig": "couture.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "couture.webp": {
+    "base": "couture.webp",
+    "orig": "couture.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "embalagem_sapatos.png": {
+    "base": "embalagem_sapatos.webp",
+    "orig": "embalagem_sapatos.png",
+    "width": 473,
+    "height": 324,
+    "aspectRatio": "1.460"
+  },
+  "embalagem_sapatos.webp": {
+    "base": "embalagem_sapatos.webp",
+    "orig": "embalagem_sapatos.png",
+    "width": 473,
+    "height": 324,
+    "aspectRatio": "1.460"
+  },
+  "hero.jpg": {
+    "base": "hero.webp",
+    "orig": "hero.jpg",
+    "width": 1376,
+    "height": 768,
+    "aspectRatio": "1.792"
+  },
+  "hero.webp": {
+    "base": "hero.webp",
+    "orig": "hero.jpg",
+    "width": 1376,
+    "height": 768,
+    "aspectRatio": "1.792"
+  },
+  "industrial.jpg": {
+    "base": "industrial.webp",
+    "orig": "industrial.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "industrial.webp": {
+    "base": "industrial.webp",
+    "orig": "industrial.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "logo_original.png": {
+    "base": "logo_original.webp",
+    "orig": "logo_original.png",
+    "width": 489,
+    "height": 217,
+    "aspectRatio": "2.253"
+  },
+  "logo_original.webp": {
+    "base": "logo_original.webp",
+    "orig": "logo_original.png",
+    "width": 489,
+    "height": 217,
+    "aspectRatio": "2.253"
+  },
+  "marq-lab.png": {
+    "base": "marq-lab.webp",
+    "orig": "marq-lab.png",
+    "width": 128,
+    "height": 72,
+    "aspectRatio": "1.778"
+  },
+  "marq-lab.webp": {
+    "base": "marq-lab.webp",
+    "orig": "marq-lab.png",
+    "width": 128,
+    "height": 72,
+    "aspectRatio": "1.778"
+  },
+  "porta_terno.jpg": {
+    "base": "porta_terno.webp",
+    "orig": "porta_terno.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "porta_terno.webp": {
+    "base": "porta_terno.webp",
+    "orig": "porta_terno.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "porta_terno_detalhe_real.jpg": {
+    "base": "porta_terno_detalhe_real.webp",
+    "orig": "porta_terno_detalhe_real.jpg",
+    "width": 960,
+    "height": 1280,
+    "aspectRatio": "0.750"
+  },
+  "porta_terno_detalhe_real.webp": {
+    "base": "porta_terno_detalhe_real.webp",
+    "orig": "porta_terno_detalhe_real.jpg",
+    "width": 960,
+    "height": 1280,
+    "aspectRatio": "0.750"
+  },
+  "porta_terno_real.jpg": {
+    "base": "porta_terno_real.webp",
+    "orig": "porta_terno_real.jpg",
+    "width": 960,
+    "height": 1280,
+    "aspectRatio": "0.750"
+  },
+  "porta_terno_real.webp": {
+    "base": "porta_terno_real.webp",
+    "orig": "porta_terno_real.jpg",
+    "width": 960,
+    "height": 1280,
+    "aspectRatio": "0.750"
+  },
+  "sacola_tnt.jpg": {
+    "base": "sacola_tnt.webp",
+    "orig": "sacola_tnt.jpg",
+    "width": 500,
+    "height": 375,
+    "aspectRatio": "1.333"
+  },
+  "sacola_tnt.webp": {
+    "base": "sacola_tnt.webp",
+    "orig": "sacola_tnt.jpg",
+    "width": 500,
+    "height": 375,
+    "aspectRatio": "1.333"
+  },
+  "tech.jpg": {
+    "base": "tech.webp",
+    "orig": "tech.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "tech.webp": {
+    "base": "tech.webp",
+    "orig": "tech.jpg",
+    "width": 1200,
+    "height": 896,
+    "aspectRatio": "1.339"
+  },
+  "og-image.jpg": {
+    "width": 1200,
+    "height": 630
+  },
+  "og-image.webp": {
+    "width": 1200,
+    "height": 630
+  }
+}

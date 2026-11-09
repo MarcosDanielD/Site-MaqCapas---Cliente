@@ -1,0 +1,15 @@
+{
+  "name": "maqcapas",
+  "version": "1.0.0",
+  "description": "Website MaqCapas - Fabricação Sob Medida de Capas de Proteção Desde 1987",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.js",
+    "audit": "node audit.js",
+    "audit:prod": "node audit.js --prod",
+    "smoke": "node scripts/smoke.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

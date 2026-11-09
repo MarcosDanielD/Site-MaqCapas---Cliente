@@ -2060,6 +2060,10 @@ select {
   outline-offset: 2px;
 }
 
+.film-ctrl-btn .icon-play {
+  display: none;
+}
+
 .film-ctrl-btn.is-paused .icon-pause {
   display: none !important;
 }
@@ -2098,3 +2102,73 @@ select {
   font-weight: 600;
   border: 1px dashed rgba(212, 163, 115, 0.4);
 }
+
+/* ============================================================
+   ENQUADRAMENTO CENTRALIZADO & OBJECT-POSITION DO MANIFESTO
+   ============================================================ */
+.showcase-img,
+.product-photo,
+.about-photo,
+.about-thumb img {
+  object-fit: cover;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+#showcasePhoto0, #photoTech {
+  object-position: 50% 50%;
+}
+#showcasePhoto1, #photoBridal {
+  object-position: 50% 38%;
+}
+#showcasePhoto2, #photoInd {
+  object-position: 50% 50%;
+}
+#photoSuit {
+  object-position: 50% 32%;
+}
+#aboutPhotoMain {
+  object-position: 50% 50%;
+}
+
+.film-photo-scene0 {
+  background-position: 50% 32%;
+}
+.film-photo-scene1 {
+  background-position: 50% 50%;
+}
+.film-photo-scene2 {
+  background-position: 50% 38%;
+}
+.film-photo-scene3 {
+  background-position: 50% 50%;
+}
+
+.film-scene-photo {
+  transform-origin: center center;
+}
+
+/* Rodapé: Dados de Contato Informados pelo Cliente */
+.footer-contact-block {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+  color: #a8a29e;
+  line-height: 1.6;
+}
+.footer-contact-item {
+  margin-bottom: 0.45rem;
+}
+.footer-contact-item strong {
+  color: #f0ece4;
+}
+.footer-link {
+  color: #d4a373;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.footer-link:hover {
+  color: #ffffff;
+}
+

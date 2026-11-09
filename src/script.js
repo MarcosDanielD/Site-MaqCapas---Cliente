@@ -411,8 +411,24 @@ function initPhotoToggles() {
       targetImg.style.opacity = '0.3';
 
       setTimeout(() => {
-        targetImg.src = nextSrc;
         const isNowReal = nextSrc === origSrc || nextSrc.includes('real') || nextSrc.includes('sapatos') || nextSrc.includes('sacola');
+
+        const picture = targetImg.closest('picture');
+        if (picture) {
+          const sources = picture.querySelectorAll('source');
+          sources.forEach(s => {
+            const type = s.getAttribute('type') || '';
+            const baseNext = nextSrc.replace(/\.[a-zA-Z0-9]+$/, '');
+            if (type.includes('avif')) {
+              s.srcset = `${baseNext}.avif`;
+            } else if (type.includes('webp')) {
+              s.srcset = `${baseNext}.webp`;
+            } else {
+              s.srcset = nextSrc;
+            }
+          });
+        }
+        targetImg.src = nextSrc;
 
         const card = btn.closest('.showcase-card') || btn.closest('.product-item');
         if (card) {
@@ -614,7 +630,7 @@ Observacoes / Modelo: ${obs}
 
 Poderiam informar o valor estimado e prazo de confeccao?`;
 
-      const link = `https://wa.me/5541999343814?text=${encodeURIComponent(texto)}`;
+      const link = `https://wa.me/554199343814?text=${encodeURIComponent(texto)}`;
       window.open(link, '_blank');
     });
   }

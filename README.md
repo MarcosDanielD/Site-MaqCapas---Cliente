@@ -72,3 +72,4 @@ O arquivo `public/_headers` implementa:
 - **X-Frame-Options**: `DENY`.
 - **Referrer-Policy**: `strict-origin-when-cross-origin`.
 - **Isolamento de arquivos internos**: `/package.json`, `/wrangler.jsonc`, `/.env`, `/src/*` retornam HTTP 404.
+

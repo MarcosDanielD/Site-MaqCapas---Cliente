@@ -1,7 +1,8 @@
 /**
  * scripts/build.js
  * Compilação e geração dos arquivos estáticos em ./public
- * Implementa todos os 13 requisitos de pré-lançamento para MaqCapas.
+ * Implementa srcset responsivo (480, 800, 1200, 1600 px), AVIF, WebP, JPG,
+ * preload de hero, enquadramento inteligente e dados oficiais do cliente.
  */
 
 const fs = require('fs');
@@ -18,8 +19,8 @@ const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
 
 console.log('--- Iniciando build do MaqCapas ---');
 console.log(`Domínio configurado: ${config.domain}`);
+console.log(`Telefone: ${config.company.telefoneDisplay} | E-mail: ${config.company.email}`);
 
-// Garante existência de diretórios
 if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
 
 // 1. Copia style.css
@@ -32,7 +33,7 @@ const jsSrc = fs.readFileSync(path.join(srcDir, 'script.js'), 'utf-8');
 fs.writeFileSync(path.join(publicDir, 'script.js'), jsSrc, 'utf-8');
 console.log('✓ script.js atualizado em public/');
 
-// 3. Gera 404.html
+// 3. 404.html
 const html404 = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -96,18 +97,16 @@ const html404 = `<!DOCTYPE html>
 </html>`;
 
 fs.writeFileSync(path.join(publicDir, '404.html'), html404, 'utf-8');
-console.log('✓ 404.html gerado');
 
-// 4. Gera robots.txt
+// 4. robots.txt
 const robotsTxt = `User-agent: *
 Allow: /
 
 Sitemap: ${config.domain}/sitemap.xml
 `;
 fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf-8');
-console.log('✓ robots.txt gerado');
 
-// 5. Gera sitemap.xml
+// 5. sitemap.xml
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -119,9 +118,8 @@ const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 </urlset>
 `;
 fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf-8');
-console.log('✓ sitemap.xml gerado');
 
-// 6. Gera _headers
+// 6. _headers (CSP estrita sem unsafe-inline)
 const headersTxt = `/*
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me;
   Strict-Transport-Security: max-age=31536000; includeSubDomains
@@ -148,14 +146,9 @@ const headersTxt = `/*
   Cache-Control: public, max-age=31536000, immutable
 `;
 fs.writeFileSync(path.join(publicDir, '_headers'), headersTxt, 'utf-8');
-console.log('✓ _headers gerado');
 
-// 7. Gera _redirects
-const redirectsTxt = `# Redirecionamentos estáticos MaqCapas
-/index.html / 301
-`;
-fs.writeFileSync(path.join(publicDir, '_redirects'), redirectsTxt, 'utf-8');
-console.log('✓ _redirects gerado');
+// 7. _redirects
+fs.writeFileSync(path.join(publicDir, '_redirects'), `/index.html / 301\n`, 'utf-8');
 
 // 8. JSON-LD Schemas
 const jsonLdLocalBusiness = {
@@ -165,6 +158,7 @@ const jsonLdLocalBusiness = {
   "alternateName": "MAQCAPAS - Comércio de Capas Sob Medida",
   "image": `${config.domain}/assets/images/og-image.jpg`,
   "telephone": config.company.telefoneRaw,
+  "email": config.company.email,
   "url": `${config.domain}/`,
   "foundingDate": "1987",
   "priceRange": "$$",
@@ -213,11 +207,46 @@ const jsonLdFAQ = {
   }))
 };
 
-// 9. Gera index.html completo
+/**
+ * Helper para renderizar tag <picture> rica com AVIF, WebP, JPG, srcset e sizes
+ */
+function renderPictureTag({
+  imgKey,
+  alt,
+  id = '',
+  className = '',
+  loading = 'lazy',
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
+  decoding = 'async',
+  fetchpriority = ''
+}) {
+  const data = manifest[imgKey];
+  const baseName = path.parse(imgKey).name;
+  const idAttr = id ? ` id="${id}"` : '';
+  const fpAttr = fetchpriority ? ` fetchpriority="${fetchpriority}"` : '';
+
+  if (!data || !data.sizes) {
+    return `<picture><source srcset="assets/images/${baseName}.webp" type="image/webp"><img src="assets/images/${baseName}.jpg" alt="${alt}" class="${className}"${idAttr} width="800" height="600" loading="${loading}" decoding="${decoding}"${fpAttr}></picture>`;
+  }
+
+  const widths = Object.keys(data.sizes).map(Number).sort((a, b) => a - b);
+  const avifSrcset = widths.map(w => `assets/images/${baseName}-${w}.avif ${w}w`).join(', ');
+  const webpSrcset = widths.map(w => `assets/images/${baseName}-${w}.webp ${w}w`).join(', ');
+  const jpgSrcset = widths.map(w => `assets/images/${baseName}-${w}.jpg ${w}w`).join(', ');
+  const defaultSrc = `assets/images/${baseName}-${widths[widths.length - 1]}.jpg`;
+
+  return `<picture>
+    <source type="image/avif" srcset="${avifSrcset}" sizes="${sizes}">
+    <source type="image/webp" srcset="${webpSrcset}" sizes="${sizes}">
+    <img src="${defaultSrc}" srcset="${jpgSrcset}" sizes="${sizes}" alt="${alt}" class="${className}"${idAttr} width="${data.width}" height="${data.height}" loading="${loading}" decoding="${decoding}"${fpAttr}>
+  </picture>`;
+}
+
 const currentYear = new Date().getFullYear();
 const yearsCalculated = currentYear - config.company.foundingYear;
 const yearsText = yearsCalculated > 35 ? `${yearsCalculated} Anos` : 'Mais de 35 anos';
 
+// 9. Gera index.html completo
 const indexHtml = `<!DOCTYPE html>
 <html lang="${config.meta.lang}">
 <head>
@@ -227,6 +256,9 @@ const indexHtml = `<!DOCTYPE html>
   <meta name="description" content="${config.company.description}">
   <meta name="theme-color" content="${config.meta.themeColor}">
   <link rel="canonical" href="${config.domain}/">
+
+  <!-- Preload da maior imagem acima da dobra (Hero / Film Scene 0) -->
+  <link rel="preload" as="image" href="assets/images/porta_terno_real-960.webp" type="image/webp" fetchpriority="high">
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
@@ -285,7 +317,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
   <header class="header" id="header">
     <div class="header-container">
       
-      <!-- Brand Logo (Eliminada duplicidade de leitura com aria-hidden na parte SVG) -->
+      <!-- Brand Logo -->
       <a href="#hero" class="brand" aria-label="MaqCapas - Página Inicial">
         <div class="brand-crest" aria-hidden="true">
           <svg viewBox="0 0 160 70" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg" focusable="false">
@@ -336,7 +368,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
         <a href="#simulador" class="mobile-nav-item">Simulador de Medidas</a>
         <a href="#sobre" class="mobile-nav-item">Quem Somos</a>
         <a href="#faq" class="mobile-nav-item">Dúvidas Frequentes</a>
-        <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_whatsapp">Falar no WhatsApp (41) 99934-3814</a>
+        <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_whatsapp">Falar no WhatsApp ${config.company.telefoneDisplay}</a>
       </nav>
     </div>
   </header>
@@ -397,7 +429,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               <span class="film-scene-tag film-scene-tag--real">Noivas &amp; Alta Costura &bull; Foto Real de Fabricação</span>
               <h2 class="film-scene-title">Cada ponto de renda,<br>guardado para sempre.</h2>
               <p class="film-scene-desc">Capas longas para vestidos de noiva com visor em PVC cristal e fechamento por zíper — preservando a textura e o brilho sem amarelar tecidos finos.</p>
-              <button type="button" class="btn-film-toggle is-original" data-scene="scene2" data-alt-bg="assets/images/capa_noiva_terno.webp" data-orig-bg="assets/images/capa_noiva_clean_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
+              <button type="button" class="btn-film-toggle is-original" data-scene="scene2" data-alt-bg="assets/images/capa_noiva_terno.webp" data-orig-bg="assets/images/capa_noiva_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 <span>Ver Imagem ilustrativa (IA)</span>
               </button>
@@ -420,7 +452,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               </button>
             </div>
           </div>
-          <!-- CTA final apontando estritamente para #produtos -->
+          <!-- CTA final apontando para #produtos -->
           <div class="film-final-cta">
             <a href="#produtos" class="film-cta-btn">Ver todos os produtos &nbsp;→</a>
           </div>
@@ -433,7 +465,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           </button>
           <button type="button" class="film-ctrl-btn" id="filmPauseBtn" aria-label="Pausar apresentação automática" aria-pressed="false">
             <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-            <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none;" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </button>
           <button type="button" class="film-ctrl-btn" id="filmNextBtn" aria-label="Próxima cena">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
@@ -476,16 +508,20 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <a href="#produtos" class="btn btn-outline btn-lg">Ver Produtos</a>
         </div>
 
-        <!-- Showcase: FOTOS REAIS COMO PADRÃO EM TODOS OS CARDS -->
+        <!-- Showcase: FOTOS REAIS COM PICTURE RESPONSIVO -->
         <div class="hero-showcase">
           
-          <!-- Card 1: Informática (PADRÃO: FOTO REAL) -->
+          <!-- Card 1: Informática (FOTO REAL ESCOLHIDA) -->
           <div class="showcase-card">
             <div class="showcase-media">
-              <picture>
-                <source srcset="assets/images/capa_computador_real.webp" type="image/webp">
-                <img src="assets/images/capa_computador_real.jpg" alt="Conjunto de capas para informática fabricadas sob medida na oficina MaqCapas" class="showcase-img" id="showcasePhoto0" width="2592" height="1944" loading="eager" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_computador_real.jpg',
+                alt: 'Conjunto de capas para informática fabricadas sob medida na oficina MaqCapas',
+                id: 'showcasePhoto0',
+                className: 'showcase-img',
+                loading: 'eager',
+                sizes: '(max-width: 768px) 100vw, 380px'
+              })}
               <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
               <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto0" data-alt-src="assets/images/capa_computador.webp" data-orig-src="assets/images/capa_computador_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -499,15 +535,19 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </div>
 
-          <!-- Card 2: Vestuário & Noivas (PADRÃO: FOTO REAL) -->
+          <!-- Card 2: Vestuário & Noivas (FOTO REAL ESCOLHIDA) -->
           <div class="showcase-card">
             <div class="showcase-media">
-              <picture>
-                <source srcset="assets/images/capa_noiva_clean_real.webp" type="image/webp">
-                <img src="assets/images/capa_noiva_clean_real.png" alt="Capa protetora para vestido de noiva confeccionada em TNT respirável" class="showcase-img" id="showcasePhoto1" width="454" height="700" loading="eager" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_noiva_real.jpg',
+                alt: 'Capa protetora para vestido de noiva confeccionada em TNT respirável na oficina',
+                id: 'showcasePhoto1',
+                className: 'showcase-img',
+                loading: 'eager',
+                sizes: '(max-width: 768px) 100vw, 380px'
+              })}
               <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto1" data-alt-src="assets/images/capa_noiva_terno.webp" data-orig-src="assets/images/capa_noiva_clean_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
+              <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto1" data-alt-src="assets/images/capa_noiva_terno.webp" data-orig-src="assets/images/capa_noiva_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 <span>Ver Imagem ilustrativa (IA)</span>
               </button>
@@ -519,13 +559,17 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </div>
 
-          <!-- Card 3: Indústria (PADRÃO: FOTO REAL) -->
+          <!-- Card 3: Indústria (FOTO REAL ESCOLHIDA) -->
           <div class="showcase-card">
             <div class="showcase-media">
-              <picture>
-                <source srcset="assets/images/capa_industrial_real.webp" type="image/webp">
-                <img src="assets/images/capa_industrial_real.jpg" alt="Capa técnica industrial fabricada sob medida para maquinário" class="showcase-img" id="showcasePhoto2" width="720" height="529" loading="eager" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_industrial_real.jpg',
+                alt: 'Capa técnica industrial fabricada sob medida para maquinário pesado',
+                id: 'showcasePhoto2',
+                className: 'showcase-img',
+                loading: 'eager',
+                sizes: '(max-width: 768px) 100vw, 380px'
+              })}
               <span class="showcase-badge showcase-badge--real">Produção Real</span>
               <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto2" data-alt-src="assets/images/capa_industrial.webp" data-orig-src="assets/images/capa_industrial_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -541,7 +585,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
 
         </div>
 
-        <!-- Trust Strip com anos calculados dinamicamente -->
+        <!-- Trust Strip -->
         <div class="trust-strip">
           <div class="trust-item">
             <strong class="calculated-years" data-base-year="${config.company.foundingYear}">${yearsText}</strong>
@@ -630,16 +674,20 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <button class="filter-button" data-filter="industrial">Indústria &amp; Acessórios</button>
         </div>
 
-        <!-- Products Grid: FOTOS REAIS COMO PADRÃO EM TODOS OS CARDS -->
+        <!-- Products Grid: FOTOS REAIS COMO PADRÃO COM SRCSET COMPLETO -->
         <div class="products-grid">
           
           <!-- Produto 1: Informática -->
           <article class="product-item" data-category="tech">
             <div class="product-frame">
-              <picture>
-                <source srcset="assets/images/capa_computador_real.webp" type="image/webp">
-                <img src="assets/images/capa_computador_real.jpg" alt="Capas para gabinetes e monitores sob medida" class="product-photo" id="photoTech" width="2592" height="1944" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_computador_real.jpg',
+                alt: 'Capas para gabinetes e monitores sob medida',
+                id: 'photoTech',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
               <span class="product-pill">Informática &bull; Foto Real</span>
               <button type="button" class="btn-photo-toggle is-original" data-target="photoTech" data-alt-src="assets/images/capa_computador.webp" data-orig-src="assets/images/capa_computador_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -668,12 +716,16 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <!-- Produto 2: Noivas -->
           <article class="product-item" data-category="couture">
             <div class="product-frame">
-              <picture>
-                <source srcset="assets/images/capa_noiva_clean_real.webp" type="image/webp">
-                <img src="assets/images/capa_noiva_clean_real.png" alt="Capas longas para vestidos de noiva confeccionadas em TNT respirável" class="product-photo" id="photoBridal" width="454" height="700" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_noiva_real.jpg',
+                alt: 'Capas longas para vestidos de noiva confeccionadas em TNT respirável',
+                id: 'photoBridal',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
               <span class="product-pill">Ateliê &amp; Noivas &bull; Foto Real</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="photoBridal" data-alt-src="assets/images/capa_noiva_terno.webp" data-orig-src="assets/images/capa_noiva_clean_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
+              <button type="button" class="btn-photo-toggle is-original" data-target="photoBridal" data-alt-src="assets/images/capa_noiva_terno.webp" data-orig-src="assets/images/capa_noiva_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 <span>Ver Imagem ilustrativa (IA)</span>
               </button>
@@ -700,10 +752,14 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <!-- Produto 3: Porta-Ternos -->
           <article class="product-item" data-category="couture">
             <div class="product-frame">
-              <picture>
-                <source srcset="assets/images/porta_terno_real.webp" type="image/webp">
-                <img src="assets/images/porta_terno_real.jpg" alt="Porta-ternos executivos com visor transparente" class="product-photo" id="photoSuit" width="960" height="1280" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'porta_terno_real.jpg',
+                alt: 'Porta-ternos executivos com visor transparente',
+                id: 'photoSuit',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
               <span class="product-pill">Alfaiataria &bull; Foto Real</span>
               <button type="button" class="btn-photo-toggle is-original" data-target="photoSuit" data-alt-src="assets/images/porta_terno.webp" data-orig-src="assets/images/porta_terno_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -729,13 +785,17 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </article>
 
-          <!-- Produto 4: Industrial (Afirmações absolutas revisadas) -->
+          <!-- Produto 4: Industrial -->
           <article class="product-item" data-category="industrial">
             <div class="product-frame">
-              <picture>
-                <source srcset="assets/images/capa_industrial_real.webp" type="image/webp">
-                <img src="assets/images/capa_industrial_real.jpg" alt="Capas para máquinas industriais sob medida" class="product-photo" id="photoInd" width="720" height="529" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_industrial_real.jpg',
+                alt: 'Capas para máquinas industriais sob medida',
+                id: 'photoInd',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
               <span class="product-pill">Indústria &bull; Foto Real</span>
               <button type="button" class="btn-photo-toggle is-original" data-target="photoInd" data-alt-src="assets/images/capa_industrial.webp" data-orig-src="assets/images/capa_industrial_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -761,13 +821,17 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </article>
 
-          <!-- Produto 5: Embalagens para Calçados (Foto Real) -->
+          <!-- Produto 5: Embalagens para Calçados -->
           <article class="product-item" data-category="industrial couture">
             <div class="product-frame">
-              <picture>
-                <source srcset="assets/images/embalagem_sapatos.webp" type="image/webp">
-                <img src="assets/images/embalagem_sapatos.png" alt="Embalagens protetoras para calçados e artigos finos com visor transparente" class="product-photo" width="473" height="324" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'embalagem_sapatos.png',
+                alt: 'Embalagens protetoras para calçados e artigos finos com visor transparente',
+                id: 'photoShoes',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
               <span class="product-pill">Acessórios &bull; Foto Real</span>
             </div>
             <div class="product-details">
@@ -789,13 +853,17 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </article>
 
-          <!-- Produto 6: Sacolas TNT (Foto Real) -->
+          <!-- Produto 6: Sacolas TNT -->
           <article class="product-item" data-category="industrial">
             <div class="product-frame">
-              <picture>
-                <source srcset="assets/images/sacola_tnt.webp" type="image/webp">
-                <img src="assets/images/sacola_tnt.jpg" alt="Sacolas promocionais e ecobags em TNT sob encomenda" class="product-photo" width="500" height="375" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'sacola_tnt.jpg',
+                alt: 'Sacolas promocionais e ecobags em TNT sob encomenda',
+                id: 'photoBags',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
               <span class="product-pill">Institucional &bull; Foto Real</span>
             </div>
             <div class="product-details">
@@ -822,7 +890,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
       </div>
     </section>
 
-    <!-- Section: Simulador de Medidas (Renomeado para Orçamento rápido) -->
+    <!-- Section: Simulador de Medidas -->
     <section class="section section-alt" id="simulador">
       <div class="container">
         
@@ -835,7 +903,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
         </div>
 
         <div class="simulator-card">
-          <!-- Form sem inline onsubmit (compatível com CSP script-src 'self') -->
           <form id="simulatorForm" class="simulator-form">
             
             <div class="form-grid">
@@ -898,16 +965,14 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               </div>
             </div>
 
-            <!-- Resumo ao vivo (sem texto estático de carregamento) -->
             <div class="summary-card">
               <div class="summary-title">Resumo das Especificações:</div>
               <div id="liveSummaryText" class="summary-content" aria-live="polite"></div>
             </div>
 
-            <!-- Submit Button -->
             <button type="button" id="btnSendQuote" class="btn btn-dark btn-submit w-full" data-tracking-placement="simulator_submit">
               <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.199.534 1.286.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.044.072.044.419-.1.824z"/></svg>
-              <span>Enviar Especificações para o WhatsApp (41) 99934-3814</span>
+              <span>Enviar Especificações para o WhatsApp ${config.company.telefoneDisplay}</span>
             </button>
 
             <p class="form-note">
@@ -920,7 +985,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
       </div>
     </section>
 
-    <!-- Section: Materiais (Afirmações técnicas revisadas sem exageros) -->
+    <!-- Section: Materiais -->
     <section class="section" id="materiais">
       <div class="container">
         
@@ -988,30 +1053,33 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <div class="about-media">
             <div class="about-photo-card">
               <div class="about-photo-badge">Registro Original de Fabricação</div>
-              <picture>
-                <source srcset="assets/images/capa_computador_real.webp" type="image/webp">
-                <img src="assets/images/capa_computador_real.jpg" alt="Foto original de capas para informática fabricadas sob medida pela MaqCapas" class="about-photo" id="aboutPhotoMain" width="2592" height="1944" loading="lazy" decoding="async">
-              </picture>
+              ${renderPictureTag({
+                imgKey: 'capa_computador_real.jpg',
+                alt: 'Foto original de capas para informática fabricadas sob medida pela MaqCapas',
+                id: 'aboutPhotoMain',
+                className: 'about-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 768px) 100vw, 540px'
+              })}
               <div class="about-caption" id="aboutPhotoCaption">
                 <strong id="aboutCaptionTitle">Oficina MaqCapas &bull; Curitiba / PR</strong>
                 <span id="aboutCaptionDesc">Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)</span>
               </div>
-              <!-- Miniaturas com fotos reais da oficina (incluindo as fotos novas enviadas pelo cliente) -->
               <div class="about-thumbs" aria-label="Galeria de fotos originais de confecção">
                 <button type="button" class="about-thumb active" data-src="assets/images/capa_computador_real.webp" data-alt="Conjunto de informática na oficina" data-title="Oficina MaqCapas &bull; Curitiba / PR" data-desc="Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)">
-                  <img src="assets/images/capa_computador_real.webp" alt="Informática" width="2592" height="1944" loading="lazy">
+                  <img src="assets/images/capa_computador_real-480.webp" alt="Informática" width="480" height="360" loading="lazy">
                   <span>Informática</span>
                 </button>
                 <button type="button" class="about-thumb" data-src="assets/images/capa_noiva_real.webp" data-alt="Capa para vestido de noiva confeccionada na oficina" data-title="Vestidos de Noiva &bull; MaqCapas" data-desc="Capa sob medida para vestido de noiva com fole expansivo e visor em PVC cristal">
-                  <img src="assets/images/capa_noiva_real.webp" alt="Noiva Real" width="717" height="1180" loading="lazy">
+                  <img src="assets/images/capa_noiva_real-480.webp" alt="Noiva Real" width="480" height="790" loading="lazy">
                   <span>Noiva</span>
                 </button>
                 <button type="button" class="about-thumb" data-src="assets/images/porta_terno_detalhe_real.webp" data-alt="Detalhe de confecção de porta-ternos executivos" data-title="Alfaiataria &bull; Detalhe de Acabamento" data-desc="Acabamento refinado de porta-ternos em TNT estruturado e visor em cristal">
-                  <img src="assets/images/porta_terno_detalhe_real.webp" alt="Porta-Terno Detalhe" width="960" height="1280" loading="lazy">
+                  <img src="assets/images/porta_terno_detalhe_real-480.webp" alt="Porta-Terno Detalhe" width="480" height="640" loading="lazy">
                   <span>Porta-Terno</span>
                 </button>
                 <button type="button" class="about-thumb" data-src="assets/images/embalagem_sapatos.webp" data-alt="Embalagens para calçados com visor" data-title="Acessórios &bull; Embalagens TNT" data-desc="Sacos protetores para calçados com visor transparente em PVC cristal">
-                  <img src="assets/images/embalagem_sapatos.webp" alt="Embalagens" width="473" height="324" loading="lazy">
+                  <img src="assets/images/embalagem_sapatos-473.webp" alt="Embalagens" width="473" height="324" loading="lazy">
                   <span>Embalagens</span>
                 </button>
               </div>
@@ -1023,7 +1091,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
       </div>
     </section>
 
-    <!-- Section: FAQ (Idêntico ao JSON-LD FAQPage) -->
+    <!-- Section: FAQ -->
     <section class="section" id="faq">
       <div class="container">
 
@@ -1084,7 +1152,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
 
   </main>
 
-  <!-- Clean Footer com Dados Cadastrais via Config (com marcadores caso não fornecido) -->
+  <!-- Clean Footer com Apenas os 2 Dados Oficiais Solicitados: Telefone e E-mail -->
   <footer class="footer">
     <div class="container footer-grid">
       
@@ -1096,18 +1164,12 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
         <p class="footer-copy">
           Fabricação sob medida de capas de proteção técnica e têxtil. Preservando maquinários, informática e alfaiataria fina desde 1987.
         </p>
-        <div class="footer-contact">
-          <p>Telefone / WhatsApp: <strong>${config.company.telefoneDisplay}</strong></p>
-          <p>${config.company.cidade} &mdash; ${config.company.estado} &mdash; ${config.company.pais}</p>
-        </div>
-
-        <!-- Dados Cadastrais & Legais (Configuráveis) -->
-        <div class="footer-legal-block">
-          <p class="footer-legal-item"><strong>Razão Social:</strong> <span>${config.company.razaoSocial}</span></p>
-          <p class="footer-legal-item"><strong>CNPJ:</strong> <span>${config.company.cnpj}</span></p>
-          <p class="footer-legal-item"><strong>Endereço:</strong> <span>${config.company.endereco} &mdash; ${config.company.cidade}/${config.company.estado} &mdash; CEP: ${config.company.cep}</span></p>
-          <p class="footer-legal-item"><strong>E-mail:</strong> <span>${config.company.email}</span></p>
-          <p class="footer-legal-item"><strong>Horário de Atendimento:</strong> <span>${config.company.horario}</span></p>
+        
+        <!-- Bloco Oficial: Apenas Telefone e E-mail -->
+        <div class="footer-contact-block">
+          <p class="footer-contact-item"><strong>Telefone / WhatsApp:</strong> <a href="tel:${config.company.telefoneRaw}" class="footer-link">${config.company.telefoneDisplay}</a></p>
+          <p class="footer-contact-item"><strong>E-mail:</strong> <a href="mailto:${config.company.email}" class="footer-link">${config.company.email}</a></p>
+          <p class="footer-contact-item">${config.company.cidade} &mdash; ${config.company.estado} &mdash; ${config.company.pais}</p>
         </div>
       </div>
 
@@ -1167,8 +1229,8 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
     </div>
   </a>
 
-  <!-- Toast (Sem texto estático) -->
-  <div class="toast-card" id="toastCard" role="status" aria-live="polite" style="display:none;">
+  <!-- Toast -->
+  <div class="toast-card" id="toastCard" role="status" aria-live="polite">
     <span id="toastMessage"></span>
   </div>
 
@@ -1177,5 +1239,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
 </html>`;
 
 fs.writeFileSync(path.join(publicDir, 'index.html'), indexHtml, 'utf-8');
-console.log('✓ index.html gerado com sucesso em public/');
+fs.writeFileSync(path.join(srcDir, 'index.html'), indexHtml, 'utf-8');
+console.log('✓ index.html gerado com sucesso em public/ e src/');
 console.log('--- Build concluído com sucesso ---');

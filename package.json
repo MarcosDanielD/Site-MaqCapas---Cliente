@@ -7,6 +7,7 @@
     "build": "node scripts/build.js",
     "audit": "node audit.js",
     "audit:prod": "node audit.js --prod",
+    "test:browser": "node scripts/verify-browser.js",
     "smoke": "node scripts/smoke.js"
   },
   "devDependencies": {

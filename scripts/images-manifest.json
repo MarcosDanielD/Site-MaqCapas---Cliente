@@ -4,273 +4,1253 @@
     "orig": "arara_vestuarios.jpg",
     "width": 1320,
     "height": 680,
-    "aspectRatio": "1.941"
-  },
-  "arara_vestuarios.webp": {
-    "base": "arara_vestuarios.webp",
-    "orig": "arara_vestuarios.jpg",
-    "width": 1320,
-    "height": 680,
-    "aspectRatio": "1.941"
+    "aspectRatio": "1.941",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 247,
+        "avif": {
+          "file": "arara_vestuarios-480.avif",
+          "bytes": 6233,
+          "kb": "6.1 KB"
+        },
+        "webp": {
+          "file": "arara_vestuarios-480.webp",
+          "bytes": 9932,
+          "kb": "9.7 KB"
+        },
+        "jpg": {
+          "file": "arara_vestuarios-480.jpg",
+          "bytes": 14636,
+          "kb": "14.3 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 412,
+        "avif": {
+          "file": "arara_vestuarios-800.avif",
+          "bytes": 11310,
+          "kb": "11.0 KB"
+        },
+        "webp": {
+          "file": "arara_vestuarios-800.webp",
+          "bytes": 19120,
+          "kb": "18.7 KB"
+        },
+        "jpg": {
+          "file": "arara_vestuarios-800.jpg",
+          "bytes": 29804,
+          "kb": "29.1 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 618,
+        "avif": {
+          "file": "arara_vestuarios-1200.avif",
+          "bytes": 18654,
+          "kb": "18.2 KB"
+        },
+        "webp": {
+          "file": "arara_vestuarios-1200.webp",
+          "bytes": 32354,
+          "kb": "31.6 KB"
+        },
+        "jpg": {
+          "file": "arara_vestuarios-1200.jpg",
+          "bytes": 53660,
+          "kb": "52.4 KB"
+        }
+      },
+      "1320": {
+        "width": 1320,
+        "height": 680,
+        "avif": {
+          "file": "arara_vestuarios-1320.avif",
+          "bytes": 21839,
+          "kb": "21.3 KB"
+        },
+        "webp": {
+          "file": "arara_vestuarios-1320.webp",
+          "bytes": 39294,
+          "kb": "38.4 KB"
+        },
+        "jpg": {
+          "file": "arara_vestuarios-1320.jpg",
+          "bytes": 66037,
+          "kb": "64.5 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200,
+      1320
+    ]
   },
   "capa_computador.jpg": {
     "base": "capa_computador.webp",
     "orig": "capa_computador.jpg",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "capa_computador.webp": {
-    "base": "capa_computador.webp",
-    "orig": "capa_computador.jpg",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "capa_computador-480.avif",
+          "bytes": 13361,
+          "kb": "13.0 KB"
+        },
+        "webp": {
+          "file": "capa_computador-480.webp",
+          "bytes": 26360,
+          "kb": "25.7 KB"
+        },
+        "jpg": {
+          "file": "capa_computador-480.jpg",
+          "bytes": 29965,
+          "kb": "29.3 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "capa_computador-800.avif",
+          "bytes": 34918,
+          "kb": "34.1 KB"
+        },
+        "webp": {
+          "file": "capa_computador-800.webp",
+          "bytes": 69298,
+          "kb": "67.7 KB"
+        },
+        "jpg": {
+          "file": "capa_computador-800.jpg",
+          "bytes": 76170,
+          "kb": "74.4 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "capa_computador-1200.avif",
+          "bytes": 81193,
+          "kb": "79.3 KB"
+        },
+        "webp": {
+          "file": "capa_computador-1200.webp",
+          "bytes": 156778,
+          "kb": "153.1 KB"
+        },
+        "jpg": {
+          "file": "capa_computador-1200.jpg",
+          "bytes": 170919,
+          "kb": "166.9 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "capa_computador_real.jpg": {
     "base": "capa_computador_real.webp",
     "orig": "capa_computador_real.jpg",
     "width": 2592,
     "height": 1944,
-    "aspectRatio": "1.333"
-  },
-  "capa_computador_real.webp": {
-    "base": "capa_computador_real.webp",
-    "orig": "capa_computador_real.jpg",
-    "width": 2592,
-    "height": 1944,
-    "aspectRatio": "1.333"
+    "aspectRatio": "1.333",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 360,
+        "avif": {
+          "file": "capa_computador_real-480.avif",
+          "bytes": 5311,
+          "kb": "5.2 KB"
+        },
+        "webp": {
+          "file": "capa_computador_real-480.webp",
+          "bytes": 8076,
+          "kb": "7.9 KB"
+        },
+        "jpg": {
+          "file": "capa_computador_real-480.jpg",
+          "bytes": 15691,
+          "kb": "15.3 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 600,
+        "avif": {
+          "file": "capa_computador_real-800.avif",
+          "bytes": 10531,
+          "kb": "10.3 KB"
+        },
+        "webp": {
+          "file": "capa_computador_real-800.webp",
+          "bytes": 17226,
+          "kb": "16.8 KB"
+        },
+        "jpg": {
+          "file": "capa_computador_real-800.jpg",
+          "bytes": 34718,
+          "kb": "33.9 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 900,
+        "avif": {
+          "file": "capa_computador_real-1200.avif",
+          "bytes": 21849,
+          "kb": "21.3 KB"
+        },
+        "webp": {
+          "file": "capa_computador_real-1200.webp",
+          "bytes": 44754,
+          "kb": "43.7 KB"
+        },
+        "jpg": {
+          "file": "capa_computador_real-1200.jpg",
+          "bytes": 78772,
+          "kb": "76.9 KB"
+        }
+      },
+      "1600": {
+        "width": 1600,
+        "height": 1200,
+        "avif": {
+          "file": "capa_computador_real-1600.avif",
+          "bytes": 37136,
+          "kb": "36.3 KB"
+        },
+        "webp": {
+          "file": "capa_computador_real-1600.webp",
+          "bytes": 71580,
+          "kb": "69.9 KB"
+        },
+        "jpg": {
+          "file": "capa_computador_real-1600.jpg",
+          "bytes": 147982,
+          "kb": "144.5 KB"
+        }
+      },
+      "2592": {
+        "width": 2592,
+        "height": 1944,
+        "avif": {
+          "file": "capa_computador_real-2592.avif",
+          "bytes": 114793,
+          "kb": "112.1 KB"
+        },
+        "webp": {
+          "file": "capa_computador_real-2592.webp",
+          "bytes": 190820,
+          "kb": "186.3 KB"
+        },
+        "jpg": {
+          "file": "capa_computador_real-2592.jpg",
+          "bytes": 451472,
+          "kb": "440.9 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200,
+      1600,
+      2592
+    ]
   },
   "capa_industrial.jpg": {
     "base": "capa_industrial.webp",
     "orig": "capa_industrial.jpg",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "capa_industrial.webp": {
-    "base": "capa_industrial.webp",
-    "orig": "capa_industrial.jpg",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "capa_industrial-480.avif",
+          "bytes": 15481,
+          "kb": "15.1 KB"
+        },
+        "webp": {
+          "file": "capa_industrial-480.webp",
+          "bytes": 26134,
+          "kb": "25.5 KB"
+        },
+        "jpg": {
+          "file": "capa_industrial-480.jpg",
+          "bytes": 34020,
+          "kb": "33.2 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "capa_industrial-800.avif",
+          "bytes": 30415,
+          "kb": "29.7 KB"
+        },
+        "webp": {
+          "file": "capa_industrial-800.webp",
+          "bytes": 52660,
+          "kb": "51.4 KB"
+        },
+        "jpg": {
+          "file": "capa_industrial-800.jpg",
+          "bytes": 74770,
+          "kb": "73.0 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "capa_industrial-1200.avif",
+          "bytes": 50716,
+          "kb": "49.5 KB"
+        },
+        "webp": {
+          "file": "capa_industrial-1200.webp",
+          "bytes": 93506,
+          "kb": "91.3 KB"
+        },
+        "jpg": {
+          "file": "capa_industrial-1200.jpg",
+          "bytes": 139869,
+          "kb": "136.6 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "capa_industrial_real.jpg": {
     "base": "capa_industrial_real.webp",
     "orig": "capa_industrial_real.jpg",
     "width": 720,
     "height": 529,
-    "aspectRatio": "1.361"
-  },
-  "capa_industrial_real.webp": {
-    "base": "capa_industrial_real.webp",
-    "orig": "capa_industrial_real.jpg",
-    "width": 720,
-    "height": 529,
-    "aspectRatio": "1.361"
+    "aspectRatio": "1.361",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 353,
+        "avif": {
+          "file": "capa_industrial_real-480.avif",
+          "bytes": 20854,
+          "kb": "20.4 KB"
+        },
+        "webp": {
+          "file": "capa_industrial_real-480.webp",
+          "bytes": 35114,
+          "kb": "34.3 KB"
+        },
+        "jpg": {
+          "file": "capa_industrial_real-480.jpg",
+          "bytes": 39396,
+          "kb": "38.5 KB"
+        }
+      },
+      "720": {
+        "width": 720,
+        "height": 529,
+        "avif": {
+          "file": "capa_industrial_real-720.avif",
+          "bytes": 39808,
+          "kb": "38.9 KB"
+        },
+        "webp": {
+          "file": "capa_industrial_real-720.webp",
+          "bytes": 63130,
+          "kb": "61.7 KB"
+        },
+        "jpg": {
+          "file": "capa_industrial_real-720.jpg",
+          "bytes": 74247,
+          "kb": "72.5 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      720
+    ]
   },
   "capa_noiva_clean_real.png": {
     "base": "capa_noiva_clean_real.webp",
     "orig": "capa_noiva_clean_real.png",
     "width": 454,
     "height": 700,
-    "aspectRatio": "0.649"
-  },
-  "capa_noiva_clean_real.webp": {
-    "base": "capa_noiva_clean_real.webp",
-    "orig": "capa_noiva_clean_real.png",
-    "width": 454,
-    "height": 700,
-    "aspectRatio": "0.649"
+    "aspectRatio": "0.649",
+    "focus": "50% 45%",
+    "sizes": {
+      "454": {
+        "width": 454,
+        "height": 700,
+        "avif": {
+          "file": "capa_noiva_clean_real-454.avif",
+          "bytes": 5795,
+          "kb": "5.7 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_clean_real-454.webp",
+          "bytes": 6882,
+          "kb": "6.7 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_clean_real-454.jpg",
+          "bytes": 19086,
+          "kb": "18.6 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      454
+    ]
   },
   "capa_noiva_real.jpg": {
     "base": "capa_noiva_real.webp",
     "orig": "capa_noiva_real.jpg",
     "width": 717,
     "height": 1180,
-    "aspectRatio": "0.608"
-  },
-  "capa_noiva_real.webp": {
-    "base": "capa_noiva_real.webp",
-    "orig": "capa_noiva_real.jpg",
-    "width": 717,
-    "height": 1180,
-    "aspectRatio": "0.608"
+    "aspectRatio": "0.608",
+    "focus": "50% 38%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 790,
+        "avif": {
+          "file": "capa_noiva_real-480.avif",
+          "bytes": 13807,
+          "kb": "13.5 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_real-480.webp",
+          "bytes": 19166,
+          "kb": "18.7 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_real-480.jpg",
+          "bytes": 37182,
+          "kb": "36.3 KB"
+        }
+      },
+      "717": {
+        "width": 717,
+        "height": 1180,
+        "avif": {
+          "file": "capa_noiva_real-717.avif",
+          "bytes": 24184,
+          "kb": "23.6 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_real-717.webp",
+          "bytes": 31390,
+          "kb": "30.7 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_real-717.jpg",
+          "bytes": 55712,
+          "kb": "54.4 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      717
+    ]
   },
   "capa_noiva_terno.png": {
     "base": "capa_noiva_terno.webp",
     "orig": "capa_noiva_terno.png",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "capa_noiva_terno.webp": {
-    "base": "capa_noiva_terno.webp",
-    "orig": "capa_noiva_terno.png",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 45%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "capa_noiva_terno-480.avif",
+          "bytes": 13356,
+          "kb": "13.0 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_terno-480.webp",
+          "bytes": 22542,
+          "kb": "22.0 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_terno-480.jpg",
+          "bytes": 30221,
+          "kb": "29.5 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "capa_noiva_terno-800.avif",
+          "bytes": 26088,
+          "kb": "25.5 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_terno-800.webp",
+          "bytes": 45506,
+          "kb": "44.4 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_terno-800.jpg",
+          "bytes": 66515,
+          "kb": "65.0 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "capa_noiva_terno-1200.avif",
+          "bytes": 42879,
+          "kb": "41.9 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_terno-1200.webp",
+          "bytes": 79506,
+          "kb": "77.6 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_terno-1200.jpg",
+          "bytes": 122644,
+          "kb": "119.8 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "couture.jpg": {
     "base": "couture.webp",
     "orig": "couture.jpg",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "couture.webp": {
-    "base": "couture.webp",
-    "orig": "couture.jpg",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "couture-480.avif",
+          "bytes": 18014,
+          "kb": "17.6 KB"
+        },
+        "webp": {
+          "file": "couture-480.webp",
+          "bytes": 32808,
+          "kb": "32.0 KB"
+        },
+        "jpg": {
+          "file": "couture-480.jpg",
+          "bytes": 37510,
+          "kb": "36.6 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "couture-800.avif",
+          "bytes": 39926,
+          "kb": "39.0 KB"
+        },
+        "webp": {
+          "file": "couture-800.webp",
+          "bytes": 72150,
+          "kb": "70.5 KB"
+        },
+        "jpg": {
+          "file": "couture-800.jpg",
+          "bytes": 88917,
+          "kb": "86.8 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "couture-1200.avif",
+          "bytes": 71961,
+          "kb": "70.3 KB"
+        },
+        "webp": {
+          "file": "couture-1200.webp",
+          "bytes": 133114,
+          "kb": "130.0 KB"
+        },
+        "jpg": {
+          "file": "couture-1200.jpg",
+          "bytes": 172233,
+          "kb": "168.2 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "embalagem_sapatos.png": {
     "base": "embalagem_sapatos.webp",
     "orig": "embalagem_sapatos.png",
     "width": 473,
     "height": 324,
-    "aspectRatio": "1.460"
-  },
-  "embalagem_sapatos.webp": {
-    "base": "embalagem_sapatos.webp",
-    "orig": "embalagem_sapatos.png",
-    "width": 473,
-    "height": 324,
-    "aspectRatio": "1.460"
+    "aspectRatio": "1.460",
+    "focus": "50% 50%",
+    "sizes": {
+      "473": {
+        "width": 473,
+        "height": 324,
+        "avif": {
+          "file": "embalagem_sapatos-473.avif",
+          "bytes": 8796,
+          "kb": "8.6 KB"
+        },
+        "webp": {
+          "file": "embalagem_sapatos-473.webp",
+          "bytes": 12406,
+          "kb": "12.1 KB"
+        },
+        "jpg": {
+          "file": "embalagem_sapatos-473.jpg",
+          "bytes": 19473,
+          "kb": "19.0 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      473
+    ]
   },
   "hero.jpg": {
     "base": "hero.webp",
     "orig": "hero.jpg",
     "width": 1376,
     "height": 768,
-    "aspectRatio": "1.792"
-  },
-  "hero.webp": {
-    "base": "hero.webp",
-    "orig": "hero.jpg",
-    "width": 1376,
-    "height": 768,
-    "aspectRatio": "1.792"
+    "aspectRatio": "1.792",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 268,
+        "avif": {
+          "file": "hero-480.avif",
+          "bytes": 8813,
+          "kb": "8.6 KB"
+        },
+        "webp": {
+          "file": "hero-480.webp",
+          "bytes": 14220,
+          "kb": "13.9 KB"
+        },
+        "jpg": {
+          "file": "hero-480.jpg",
+          "bytes": 19868,
+          "kb": "19.4 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 447,
+        "avif": {
+          "file": "hero-800.avif",
+          "bytes": 18628,
+          "kb": "18.2 KB"
+        },
+        "webp": {
+          "file": "hero-800.webp",
+          "bytes": 29006,
+          "kb": "28.3 KB"
+        },
+        "jpg": {
+          "file": "hero-800.jpg",
+          "bytes": 44718,
+          "kb": "43.7 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 670,
+        "avif": {
+          "file": "hero-1200.avif",
+          "bytes": 32181,
+          "kb": "31.4 KB"
+        },
+        "webp": {
+          "file": "hero-1200.webp",
+          "bytes": 52132,
+          "kb": "50.9 KB"
+        },
+        "jpg": {
+          "file": "hero-1200.jpg",
+          "bytes": 85596,
+          "kb": "83.6 KB"
+        }
+      },
+      "1376": {
+        "width": 1376,
+        "height": 768,
+        "avif": {
+          "file": "hero-1376.avif",
+          "bytes": 38192,
+          "kb": "37.3 KB"
+        },
+        "webp": {
+          "file": "hero-1376.webp",
+          "bytes": 66288,
+          "kb": "64.7 KB"
+        },
+        "jpg": {
+          "file": "hero-1376.jpg",
+          "bytes": 106857,
+          "kb": "104.4 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200,
+      1376
+    ]
   },
   "industrial.jpg": {
     "base": "industrial.webp",
     "orig": "industrial.jpg",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "industrial.webp": {
-    "base": "industrial.webp",
-    "orig": "industrial.jpg",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "industrial-480.avif",
+          "bytes": 30946,
+          "kb": "30.2 KB"
+        },
+        "webp": {
+          "file": "industrial-480.webp",
+          "bytes": 55910,
+          "kb": "54.6 KB"
+        },
+        "jpg": {
+          "file": "industrial-480.jpg",
+          "bytes": 58183,
+          "kb": "56.8 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "industrial-800.avif",
+          "bytes": 67597,
+          "kb": "66.0 KB"
+        },
+        "webp": {
+          "file": "industrial-800.webp",
+          "bytes": 128902,
+          "kb": "125.9 KB"
+        },
+        "jpg": {
+          "file": "industrial-800.jpg",
+          "bytes": 139710,
+          "kb": "136.4 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "industrial-1200.avif",
+          "bytes": 123579,
+          "kb": "120.7 KB"
+        },
+        "webp": {
+          "file": "industrial-1200.webp",
+          "bytes": 247832,
+          "kb": "242.0 KB"
+        },
+        "jpg": {
+          "file": "industrial-1200.jpg",
+          "bytes": 276506,
+          "kb": "270.0 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "logo_original.png": {
     "base": "logo_original.webp",
     "orig": "logo_original.png",
     "width": 489,
     "height": 217,
-    "aspectRatio": "2.253"
-  },
-  "logo_original.webp": {
-    "base": "logo_original.webp",
-    "orig": "logo_original.png",
-    "width": 489,
-    "height": 217,
-    "aspectRatio": "2.253"
+    "aspectRatio": "2.253",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 213,
+        "avif": {
+          "file": "logo_original-480.avif",
+          "bytes": 9694,
+          "kb": "9.5 KB"
+        },
+        "webp": {
+          "file": "logo_original-480.webp",
+          "bytes": 23614,
+          "kb": "23.1 KB"
+        },
+        "jpg": {
+          "file": "logo_original-480.jpg",
+          "bytes": 13205,
+          "kb": "12.9 KB"
+        }
+      },
+      "489": {
+        "width": 489,
+        "height": 217,
+        "avif": {
+          "file": "logo_original-489.avif",
+          "bytes": 9472,
+          "kb": "9.3 KB"
+        },
+        "webp": {
+          "file": "logo_original-489.webp",
+          "bytes": 18524,
+          "kb": "18.1 KB"
+        },
+        "jpg": {
+          "file": "logo_original-489.jpg",
+          "bytes": 14226,
+          "kb": "13.9 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      489
+    ]
   },
   "marq-lab.png": {
     "base": "marq-lab.webp",
     "orig": "marq-lab.png",
     "width": 128,
     "height": 72,
-    "aspectRatio": "1.778"
-  },
-  "marq-lab.webp": {
-    "base": "marq-lab.webp",
-    "orig": "marq-lab.png",
-    "width": 128,
-    "height": 72,
-    "aspectRatio": "1.778"
+    "aspectRatio": "1.778",
+    "focus": "50% 50%",
+    "sizes": {
+      "128": {
+        "width": 128,
+        "height": 72,
+        "avif": {
+          "file": "marq-lab-128.avif",
+          "bytes": 1568,
+          "kb": "1.5 KB"
+        },
+        "webp": {
+          "file": "marq-lab-128.webp",
+          "bytes": 1744,
+          "kb": "1.7 KB"
+        },
+        "jpg": {
+          "file": "marq-lab-128.jpg",
+          "bytes": 1332,
+          "kb": "1.3 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      128
+    ]
   },
   "porta_terno.jpg": {
     "base": "porta_terno.webp",
     "orig": "porta_terno.jpg",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "porta_terno.webp": {
-    "base": "porta_terno.webp",
-    "orig": "porta_terno.jpg",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 35%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "porta_terno-480.avif",
+          "bytes": 5113,
+          "kb": "5.0 KB"
+        },
+        "webp": {
+          "file": "porta_terno-480.webp",
+          "bytes": 7362,
+          "kb": "7.2 KB"
+        },
+        "jpg": {
+          "file": "porta_terno-480.jpg",
+          "bytes": 13451,
+          "kb": "13.1 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "porta_terno-800.avif",
+          "bytes": 10483,
+          "kb": "10.2 KB"
+        },
+        "webp": {
+          "file": "porta_terno-800.webp",
+          "bytes": 17312,
+          "kb": "16.9 KB"
+        },
+        "jpg": {
+          "file": "porta_terno-800.jpg",
+          "bytes": 31393,
+          "kb": "30.7 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "porta_terno-1200.avif",
+          "bytes": 19125,
+          "kb": "18.7 KB"
+        },
+        "webp": {
+          "file": "porta_terno-1200.webp",
+          "bytes": 40436,
+          "kb": "39.5 KB"
+        },
+        "jpg": {
+          "file": "porta_terno-1200.jpg",
+          "bytes": 68661,
+          "kb": "67.1 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "porta_terno_detalhe_real.jpg": {
     "base": "porta_terno_detalhe_real.webp",
     "orig": "porta_terno_detalhe_real.jpg",
     "width": 960,
     "height": 1280,
-    "aspectRatio": "0.750"
-  },
-  "porta_terno_detalhe_real.webp": {
-    "base": "porta_terno_detalhe_real.webp",
-    "orig": "porta_terno_detalhe_real.jpg",
-    "width": 960,
-    "height": 1280,
-    "aspectRatio": "0.750"
+    "aspectRatio": "0.750",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 640,
+        "avif": {
+          "file": "porta_terno_detalhe_real-480.avif",
+          "bytes": 26469,
+          "kb": "25.8 KB"
+        },
+        "webp": {
+          "file": "porta_terno_detalhe_real-480.webp",
+          "bytes": 49336,
+          "kb": "48.2 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_detalhe_real-480.jpg",
+          "bytes": 48450,
+          "kb": "47.3 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 1067,
+        "avif": {
+          "file": "porta_terno_detalhe_real-800.avif",
+          "bytes": 73442,
+          "kb": "71.7 KB"
+        },
+        "webp": {
+          "file": "porta_terno_detalhe_real-800.webp",
+          "bytes": 141586,
+          "kb": "138.3 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_detalhe_real-800.jpg",
+          "bytes": 146699,
+          "kb": "143.3 KB"
+        }
+      },
+      "960": {
+        "width": 960,
+        "height": 1280,
+        "avif": {
+          "file": "porta_terno_detalhe_real-960.avif",
+          "bytes": 104111,
+          "kb": "101.7 KB"
+        },
+        "webp": {
+          "file": "porta_terno_detalhe_real-960.webp",
+          "bytes": 186414,
+          "kb": "182.0 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_detalhe_real-960.jpg",
+          "bytes": 169660,
+          "kb": "165.7 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      960
+    ]
   },
   "porta_terno_real.jpg": {
     "base": "porta_terno_real.webp",
     "orig": "porta_terno_real.jpg",
     "width": 960,
     "height": 1280,
-    "aspectRatio": "0.750"
-  },
-  "porta_terno_real.webp": {
-    "base": "porta_terno_real.webp",
-    "orig": "porta_terno_real.jpg",
-    "width": 960,
-    "height": 1280,
-    "aspectRatio": "0.750"
+    "aspectRatio": "0.750",
+    "focus": "50% 32%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 640,
+        "avif": {
+          "file": "porta_terno_real-480.avif",
+          "bytes": 10418,
+          "kb": "10.2 KB"
+        },
+        "webp": {
+          "file": "porta_terno_real-480.webp",
+          "bytes": 15790,
+          "kb": "15.4 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_real-480.jpg",
+          "bytes": 28471,
+          "kb": "27.8 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 1067,
+        "avif": {
+          "file": "porta_terno_real-800.avif",
+          "bytes": 23503,
+          "kb": "23.0 KB"
+        },
+        "webp": {
+          "file": "porta_terno_real-800.webp",
+          "bytes": 35638,
+          "kb": "34.8 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_real-800.jpg",
+          "bytes": 71062,
+          "kb": "69.4 KB"
+        }
+      },
+      "960": {
+        "width": 960,
+        "height": 1280,
+        "avif": {
+          "file": "porta_terno_real-960.avif",
+          "bytes": 38276,
+          "kb": "37.4 KB"
+        },
+        "webp": {
+          "file": "porta_terno_real-960.webp",
+          "bytes": 50814,
+          "kb": "49.6 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_real-960.jpg",
+          "bytes": 87441,
+          "kb": "85.4 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      960
+    ]
   },
   "sacola_tnt.jpg": {
     "base": "sacola_tnt.webp",
     "orig": "sacola_tnt.jpg",
     "width": 500,
     "height": 375,
-    "aspectRatio": "1.333"
-  },
-  "sacola_tnt.webp": {
-    "base": "sacola_tnt.webp",
-    "orig": "sacola_tnt.jpg",
-    "width": 500,
-    "height": 375,
-    "aspectRatio": "1.333"
+    "aspectRatio": "1.333",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 360,
+        "avif": {
+          "file": "sacola_tnt-480.avif",
+          "bytes": 4364,
+          "kb": "4.3 KB"
+        },
+        "webp": {
+          "file": "sacola_tnt-480.webp",
+          "bytes": 5716,
+          "kb": "5.6 KB"
+        },
+        "jpg": {
+          "file": "sacola_tnt-480.jpg",
+          "bytes": 9970,
+          "kb": "9.7 KB"
+        }
+      },
+      "500": {
+        "width": 500,
+        "height": 375,
+        "avif": {
+          "file": "sacola_tnt-500.avif",
+          "bytes": 4851,
+          "kb": "4.7 KB"
+        },
+        "webp": {
+          "file": "sacola_tnt-500.webp",
+          "bytes": 6354,
+          "kb": "6.2 KB"
+        },
+        "jpg": {
+          "file": "sacola_tnt-500.jpg",
+          "bytes": 10785,
+          "kb": "10.5 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      500
+    ]
   },
   "tech.jpg": {
     "base": "tech.webp",
     "orig": "tech.jpg",
     "width": 1200,
     "height": 896,
-    "aspectRatio": "1.339"
-  },
-  "tech.webp": {
-    "base": "tech.webp",
-    "orig": "tech.jpg",
-    "width": 1200,
-    "height": 896,
-    "aspectRatio": "1.339"
+    "aspectRatio": "1.339",
+    "focus": "50% 50%",
+    "sizes": {
+      "480": {
+        "width": 480,
+        "height": 358,
+        "avif": {
+          "file": "tech-480.avif",
+          "bytes": 14492,
+          "kb": "14.2 KB"
+        },
+        "webp": {
+          "file": "tech-480.webp",
+          "bytes": 28354,
+          "kb": "27.7 KB"
+        },
+        "jpg": {
+          "file": "tech-480.jpg",
+          "bytes": 33374,
+          "kb": "32.6 KB"
+        }
+      },
+      "800": {
+        "width": 800,
+        "height": 597,
+        "avif": {
+          "file": "tech-800.avif",
+          "bytes": 31293,
+          "kb": "30.6 KB"
+        },
+        "webp": {
+          "file": "tech-800.webp",
+          "bytes": 57566,
+          "kb": "56.2 KB"
+        },
+        "jpg": {
+          "file": "tech-800.jpg",
+          "bytes": 75357,
+          "kb": "73.6 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 896,
+        "avif": {
+          "file": "tech-1200.avif",
+          "bytes": 54471,
+          "kb": "53.2 KB"
+        },
+        "webp": {
+          "file": "tech-1200.webp",
+          "bytes": 103204,
+          "kb": "100.8 KB"
+        },
+        "jpg": {
+          "file": "tech-1200.jpg",
+          "bytes": 142987,
+          "kb": "139.6 KB"
+        }
+      }
+    },
+    "availableWidths": [
+      480,
+      800,
+      1200
+    ]
   },
   "og-image.jpg": {
     "width": 1200,
-    "height": 630
-  },
-  "og-image.webp": {
-    "width": 1200,
-    "height": 630
+    "height": 630,
+    "bytes": 59302,
+    "focus": "50% 50%"
   }
 }

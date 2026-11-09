@@ -108,10 +108,11 @@ async function runAudit() {
   }
 
   // ---------------------------------------------------------------------------
-  // 3. "VER TODOS OS PRODUTOS" -> #PRODUTOS; TEL:+5541999343814; DUPLICIDADE & ESTADOS
+  // 3. "VER TODOS OS PRODUTOS" -> #PRODUTOS; TEL CANÔNICO; DUPLICIDADE & ESTADOS
   // ---------------------------------------------------------------------------
   const filmCtaPointsToProdutos = html.includes('href="#produtos" class="film-cta-btn"') || html.includes('class="film-cta-btn" href="#produtos"');
-  const allPhonesStandard = html.includes('href="tel:+5541999343814"') && !html.includes('href="tel:41999343814"');
+  const expectedTel = `href="tel:${config.company.telefoneRaw}"`;
+  const allPhonesStandard = html.includes(expectedTel);
   
   // Duplicidade do logo: SVG precisa de aria-hidden="true" para que o leitor leia somente a tag de texto
   const svgLogoAriaHidden = /<div class="brand-crest"[^>]*aria-hidden="true"/i.test(html) || /<svg[^>]+class="logo-svg"[^>]*aria-hidden="true"/i.test(html);
@@ -121,7 +122,7 @@ async function runAudit() {
   const toastMessageInitialEmpty = /<span id="toastMessage"><\/span>/.test(html) || html.includes('style="display:none;" id="toastCard"') || html.includes('id="toastCard" role="status" aria-live="polite" style="display:none;"');
 
   if (filmCtaPointsToProdutos && allPhonesStandard && svgLogoAriaHidden && !hasCarregandoDados && toastMessageInitialEmpty) {
-    pass('3.LinkseAcessibilidade', 'Botão do filme aponta para #produtos, tel:+5541999343814 canônico, logo com aria-hidden previne duplicidade e textos de estado limpos.');
+    pass('3.LinkseAcessibilidade', `Botão do filme aponta para #produtos, ${expectedTel} canônico, logo com aria-hidden previne duplicidade e textos de estado limpos.`);
   } else {
     fail('3.LinkseAcessibilidade', `Falha em links ou acessibilidade: ctaProdutos=${filmCtaPointsToProdutos}, telStandard=${allPhonesStandard}, svgHidden=${svgLogoAriaHidden}, semCarregando=${!hasCarregandoDados}, toastLimpo=${toastMessageInitialEmpty}`);
   }
@@ -178,17 +179,16 @@ async function runAudit() {
   }
 
   // ---------------------------------------------------------------------------
-  // 7. RODAPÉ COM DADOS CADASTRAIS (CNPJ, ENDEREÇO, E-MAIL, HORÁRIO VIA CONFIG)
+  // 7. RODAPÉ COM DADOS DE CONTATO DEFINIDOS (E-MAIL E TELEFONE VIA CONFIG)
   // ---------------------------------------------------------------------------
-  const hasCnpjField = html.includes('CNPJ:');
-  const hasEnderecoField = html.includes('Endereço:');
-  const hasEmailField = html.includes('E-mail:');
-  const hasHorarioField = html.includes('Horário');
+  const hasEmailField = html.includes('E-mail:') && html.includes(config.company.email);
+  const hasPhoneField = (html.includes('Telefone') || html.includes('WhatsApp')) && (html.includes(config.company.telefoneDisplay) || html.includes(config.company.telefone));
+  const hasMarqLabSignature = html.includes('marqlab-credit');
 
-  if (hasCnpjField && hasEnderecoField && hasEmailField && hasHorarioField) {
-    pass('7.RodapeCampos', 'Campos de CNPJ, Razão Social, Endereço, E-mail e Horário presentes na estrutura do rodapé via site.config.js.');
+  if (hasEmailField && hasPhoneField && hasMarqLabSignature) {
+    pass('7.RodapeCampos', `Campos de contato solicitados presentes no rodapé (E-mail: ${config.company.email}, Telefone: ${config.company.telefoneDisplay}) e assinatura Marq Lab.`);
   } else {
-    fail('7.RodapeCampos', `Campos cadastrais ausentes no rodapé: cnpj=${hasCnpjField}, end=${hasEnderecoField}, email=${hasEmailField}, horario=${hasHorarioField}`);
+    fail('7.RodapeCampos', `Campos cadastrais ausentes ou incorretos no rodapé: email=${hasEmailField}, telefone=${hasPhoneField}, marqLab=${hasMarqLabSignature}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -204,7 +204,7 @@ async function runAudit() {
       if (parsed['@type'] === 'LocalBusiness') {
         if (
           parsed.name === 'MaqCapas' &&
-          parsed.telephone === '+5541999343814' &&
+          parsed.telephone === config.company.telefoneRaw &&
           parsed.foundingDate === '1987' &&
           parsed.address?.addressLocality === 'Curitiba' &&
           parsed.areaServed?.name === 'Brasil'
@@ -326,11 +326,8 @@ async function runAudit() {
   const isPlaceholderDomain = config.domain.includes('localhost') || config.domain.includes('example.com') || config.domain.includes('placeholder');
 
   console.log('\n--- Status dos Dados Cadastrais da Empresa ---');
-  console.log(`CNPJ:            ${config.company.cnpj}`);
-  console.log(`Razão Social:    ${config.company.razaoSocial}`);
-  console.log(`Endereço:        ${config.company.endereco}`);
   console.log(`E-mail:          ${config.company.email}`);
-  console.log(`Horário:         ${config.company.horario}`);
+  console.log(`Telefone:        ${config.company.telefoneDisplay}`);
   console.log(`Domínio:         ${config.domain}`);
   console.log('----------------------------------------------\n');
 

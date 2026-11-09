@@ -16,6 +16,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
+const ASSET_VER = '20261109v3';
 
 console.log('--- Iniciando build do MaqCapas ---');
 console.log(`Domínio configurado: ${config.domain}`);
@@ -43,7 +44,7 @@ const html404 = `<!DOCTYPE html>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=${ASSET_VER}">
 </head>
 <body class="error-page">
   <div class="top-bar">
@@ -137,13 +138,13 @@ const headersTxt = `/*
   Cache-Control: public, max-age=0, must-revalidate
 
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /*.css
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /*.js
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 `;
 fs.writeFileSync(path.join(publicDir, '_headers'), headersTxt, 'utf-8');
 
@@ -208,29 +209,33 @@ const jsonLdFAQ = {
 };
 
 /**
- * Helper para obter srcsets de uma imagem no manifesto
+ * Helper para obter srcsets de uma imagem no manifesto (com cache-busting)
  */
 function getImageSources(imgKey) {
   const data = manifest[imgKey];
   const baseName = path.parse(imgKey).name;
   if (!data || !data.sizes) {
     return {
-      avifSrcset: `assets/images/${baseName}.avif`,
-      webpSrcset: `assets/images/${baseName}.webp`,
-      jpgSrcset: `assets/images/${baseName}.jpg`,
-      defaultSrc: `assets/images/${baseName}.jpg`,
-      thumbSrc: `assets/images/${baseName}.webp`,
+      avifSrcset: `assets/images/${baseName}.avif?v=${ASSET_VER}`,
+      webpSrcset: `assets/images/${baseName}.webp?v=${ASSET_VER}`,
+      jpgSrcset: `assets/images/${baseName}.jpg?v=${ASSET_VER}`,
+      defaultSrc: `assets/images/${baseName}.jpg?v=${ASSET_VER}`,
+      webpMainSrc: `assets/images/${baseName}.webp?v=${ASSET_VER}`,
+      thumbSrc: `assets/images/${baseName}.webp?v=${ASSET_VER}`,
       width: 800,
       height: 600
     };
   }
   const widths = Object.keys(data.sizes).map(Number).sort((a, b) => a - b);
+  const largestW = widths[widths.length - 1];
+  const galleryW = widths.includes(800) ? 800 : largestW;
   return {
-    avifSrcset: widths.map(w => `assets/images/${baseName}-${w}.avif ${w}w`).join(', '),
-    webpSrcset: widths.map(w => `assets/images/${baseName}-${w}.webp ${w}w`).join(', '),
-    jpgSrcset: widths.map(w => `assets/images/${baseName}-${w}.jpg ${w}w`).join(', '),
-    defaultSrc: `assets/images/${baseName}-${widths[widths.length - 1]}.jpg`,
-    thumbSrc: `assets/images/${baseName}-${widths[0]}.webp`,
+    avifSrcset: widths.map(w => `assets/images/${baseName}-${w}.avif?v=${ASSET_VER} ${w}w`).join(', '),
+    webpSrcset: widths.map(w => `assets/images/${baseName}-${w}.webp?v=${ASSET_VER} ${w}w`).join(', '),
+    jpgSrcset: widths.map(w => `assets/images/${baseName}-${w}.jpg?v=${ASSET_VER} ${w}w`).join(', '),
+    defaultSrc: `assets/images/${baseName}-${largestW}.jpg?v=${ASSET_VER}`,
+    webpMainSrc: `assets/images/${baseName}-${galleryW}.webp?v=${ASSET_VER}`,
+    thumbSrc: `assets/images/${baseName}-${widths[0]}.webp?v=${ASSET_VER}`,
     thumbWidth: data.sizes[widths[0]].width,
     thumbHeight: data.sizes[widths[0]].height,
     width: data.width,
@@ -263,13 +268,13 @@ function renderPictureTag({
 }
 
 /**
- * Helper para renderizar botão de miniatura da galeria #sobre com todos os srcsets para troca instantânea
+ * Helper para renderizar botão de miniatura da galeria #sobre com troca direta em <img>
  */
 function renderAboutThumb({ imgKey, label, alt, title, desc, active = false }) {
   const srcInfo = getImageSources(imgKey);
   const activeClass = active ? ' active' : '';
   const ariaPressed = active ? 'true' : 'false';
-  return `<button type="button" class="about-thumb${activeClass}" aria-pressed="${ariaPressed}" data-src="${srcInfo.defaultSrc}" data-avif-srcset="${srcInfo.avifSrcset}" data-webp-srcset="${srcInfo.webpSrcset}" data-jpg-srcset="${srcInfo.jpgSrcset}" data-width="${srcInfo.width}" data-height="${srcInfo.height}" data-alt="${alt}" data-title="${title}" data-desc="${desc}">
+  return `<button type="button" class="about-thumb${activeClass}" aria-pressed="${ariaPressed}" data-src="${srcInfo.webpMainSrc}" data-width="${srcInfo.width}" data-height="${srcInfo.height}" data-alt="${alt}" data-title="${title}" data-desc="${desc}">
                   <img src="${srcInfo.thumbSrc}" alt="" width="${srcInfo.thumbWidth || 480}" height="${srcInfo.thumbHeight || 360}" loading="lazy">
                   <span>${label}</span>
                 </button>`;
@@ -291,7 +296,7 @@ const indexHtml = `<!DOCTYPE html>
   <link rel="canonical" href="${config.domain}/">
 
   <!-- Preload da maior imagem acima da dobra (Hero / Film Scene 0) -->
-  <link rel="preload" as="image" href="assets/images/porta_terno_real-960.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/porta_terno_real-960.webp?v=${ASSET_VER}" type="image/webp" fetchpriority="high">
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
@@ -320,7 +325,7 @@ const indexHtml = `<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=${ASSET_VER}">
 
   <!-- JSON-LD Structured Data: LocalBusiness -->
   <script type="application/ld+json">
@@ -1043,14 +1048,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             <div class="about-photo-card">
               <div class="about-photo-stage">
                 <div class="about-photo-badge">Registro Original de Fabricação</div>
-                ${renderPictureTag({
-                  imgKey: 'capa_computador_real.jpg',
-                  alt: 'Foto original de capas para informática fabricadas sob medida pela MaqCapas',
-                  id: 'aboutPhotoMain',
-                  className: 'about-photo',
-                  loading: 'lazy',
-                  sizes: '(max-width: 768px) 100vw, 540px'
-                })}
+                <img src="assets/images/capa_computador_real-800.webp?v=${ASSET_VER}" alt="Foto original de capas para informática fabricadas sob medida pela MaqCapas" id="aboutPhotoMain" class="about-photo" width="1600" height="1200" loading="lazy" decoding="async">
               </div>
               <div class="about-caption" id="aboutPhotoCaption">
                 <strong id="aboutCaptionTitle">Oficina MaqCapas &bull; Curitiba / PR</strong>
@@ -1241,7 +1239,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
     <span id="toastMessage"></span>
   </div>
 
-  <script src="script.js" defer></script>
+  <script src="script.js?v=${ASSET_VER}" defer></script>
 </body>
 </html>`;
 

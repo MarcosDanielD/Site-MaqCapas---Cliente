@@ -387,8 +387,6 @@ function initAboutGallery() {
 
   thumbs.forEach(thumb => {
     thumb.addEventListener('click', () => {
-      if (thumb.classList.contains('active')) return;
-
       thumbs.forEach(t => {
         t.classList.remove('active');
         t.setAttribute('aria-pressed', 'false');
@@ -397,26 +395,19 @@ function initAboutGallery() {
       thumb.setAttribute('aria-pressed', 'true');
 
       const newSrc = thumb.getAttribute('data-src');
-      const newAvifSrcset = thumb.getAttribute('data-avif-srcset');
-      const newWebpSrcset = thumb.getAttribute('data-webp-srcset');
-      const newJpgSrcset = thumb.getAttribute('data-jpg-srcset');
       const newWidth = thumb.getAttribute('data-width');
       const newHeight = thumb.getAttribute('data-height');
       const newAlt = thumb.getAttribute('data-alt');
       const newTitle = thumb.getAttribute('data-title');
       const newDesc = thumb.getAttribute('data-desc');
 
-      // Atualiza todos os <source> dentro de <picture> para que o navegador troque a imagem imediatamente
       const picture = mainPhoto.closest('picture');
       if (picture) {
-        const avifSource = picture.querySelector('source[type="image/avif"]');
-        const webpSource = picture.querySelector('source[type="image/webp"]');
-        if (avifSource && newAvifSrcset) avifSource.setAttribute('srcset', newAvifSrcset);
-        if (webpSource && newWebpSrcset) webpSource.setAttribute('srcset', newWebpSrcset);
+        picture.querySelectorAll('source').forEach(s => s.remove());
       }
+      mainPhoto.removeAttribute('srcset');
 
-      if (newJpgSrcset) mainPhoto.setAttribute('srcset', newJpgSrcset);
-      if (newSrc) mainPhoto.setAttribute('src', newSrc);
+      if (newSrc) mainPhoto.src = newSrc;
       if (newWidth) mainPhoto.setAttribute('width', newWidth);
       if (newHeight) mainPhoto.setAttribute('height', newHeight);
       if (newAlt) mainPhoto.setAttribute('alt', newAlt);
@@ -430,7 +421,7 @@ function initAboutGallery() {
             { opacity: 0.35, transform: 'scale(0.985)' },
             { opacity: 1, transform: 'scale(1)' }
           ],
-          { duration: 240, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+          { duration: 220, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
         );
       }
     });

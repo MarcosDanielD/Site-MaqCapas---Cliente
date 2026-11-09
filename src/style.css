@@ -2056,16 +2056,16 @@ select {
 
 /* Backgrounds padrão (fotos reais) para o Scroll Film sem inline style */
 .film-photo-scene0 {
-  background-image: url('assets/images/porta_terno_real.webp');
+  background-image: url('assets/images/porta_terno_real.webp?v=20261109v3');
 }
 .film-photo-scene1 {
-  background-image: url('assets/images/capa_computador_real.webp');
+  background-image: url('assets/images/capa_computador_real.webp?v=20261109v3');
 }
 .film-photo-scene2 {
-  background-image: url('assets/images/capa_noiva_real.webp');
+  background-image: url('assets/images/capa_noiva_real.webp?v=20261109v3');
 }
 .film-photo-scene3 {
-  background-image: url('assets/images/capa_industrial_real.webp');
+  background-image: url('assets/images/capa_industrial_real.webp?v=20261109v3');
 }
 
 /* Barra de Controles e Pausa do Scroll Film */

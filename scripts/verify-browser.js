@@ -389,12 +389,19 @@ async function run() {
     fs.writeFileSync(prodPathArtifact, Buffer.from(prodScreenshot.data, 'base64'));
     console.log(`  📸 Screenshot Produtos salvo: public/assets/screenshots/${prodFilename}`);
 
-    // Rola para o card da galeria na seção Sobre (#sobre) e captura screenshot
+    // Rola para o card da galeria na seção Sobre (#sobre), clica na aba "Industrial" e captura screenshot provando a troca visual da foto
     await cdp.send('Runtime.evaluate', {
-      expression: `(() => {
+      expression: `(async () => {
         const card = document.querySelector('.about-photo-card') || document.getElementById('sobre');
         if (card) card.scrollIntoView({ behavior: 'instant', block: 'center' });
-      })()`
+        const thumbs = document.querySelectorAll('.about-thumb');
+        if (thumbs[3]) {
+          thumbs[3].click();
+          const mainPhoto = document.getElementById('aboutPhotoMain');
+          if (mainPhoto) await mainPhoto.decode().catch(() => {});
+        }
+      })()`,
+      awaitPromise: true
     });
     await new Promise(r => setTimeout(r, 500));
 

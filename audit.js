@@ -128,23 +128,24 @@ async function runAudit() {
   }
 
   // ---------------------------------------------------------------------------
-  // 4. "ORÇAMENTO RÁPIDO", "IMAGEM ILUSTRATIVA (IA)" E FOTO REAL COMO PADRÃO
+  // 4. "ORÇAMENTO RÁPIDO" E SOMENTE FOTOS REAIS (SEM ALTERNADOR IA E SEM SAPATOS)
   // ---------------------------------------------------------------------------
   const hasOrcamentoRapido = html.includes('Orçamento rápido');
   const hasOrcamentoInstantaneo = html.includes('Orçamento Instantâneo');
   const hasEstudioIa = html.includes('Estúdio IA') || html.includes('Modelo Estúdio IA');
-  const hasImagemIlustrativaIa = html.includes('Imagem ilustrativa (IA)') || scriptContent.includes('Imagem ilustrativa (IA)');
+  const hasAiToggleButtons = html.includes('btn-photo-toggle') || html.includes('btn-film-toggle');
+  const hasRemovedShoePhoto = html.includes('embalagem_sapatos');
 
-  // Verifica se fotos reais são padrão nos cards de produto
+  // Verifica se fotos reais estão em todos os cards de produto
   const card1Real = html.includes('id="photoTech"') && html.includes('capa_computador_real');
-  const card2Real = html.includes('id="photoBridal"') && (html.includes('capa_noiva_clean_real') || html.includes('capa_noiva_real'));
+  const card2Real = html.includes('id="photoBridal"') && html.includes('capa_noiva_real');
   const card3Real = html.includes('id="photoSuit"') && html.includes('porta_terno_real');
   const card4Real = html.includes('id="photoInd"') && html.includes('capa_industrial_real');
 
-  if (hasOrcamentoRapido && !hasOrcamentoInstantaneo && !hasEstudioIa && hasImagemIlustrativaIa && card1Real && card2Real && card3Real && card4Real) {
-    pass('4.NomenclaturaEFotosReais', 'Termo "Orçamento rápido" adotado, "Estúdio IA" substituído por "Imagem ilustrativa (IA)" e fotos reais ativas por padrão em todos os cards.');
+  if (hasOrcamentoRapido && !hasOrcamentoInstantaneo && !hasEstudioIa && !hasAiToggleButtons && !hasRemovedShoePhoto && card1Real && card2Real && card3Real && card4Real) {
+    pass('4.NomenclaturaEFotosReais', 'Termo "Orçamento rápido" adotado, somente fotos reais ativas em todo o site (sem alternador de IA e sem embalagem_sapatos).');
   } else {
-    fail('4.NomenclaturaEFotosReais', `Inconsistência nos cards/nomenclatura: orcRapido=${hasOrcamentoRapido}, semInstantaneo=${!hasOrcamentoInstantaneo}, semEstudioIa=${!hasEstudioIa}, ilustrativaIa=${hasImagemIlustrativaIa}, cardsReais=${card1Real && card2Real && card3Real && card4Real}`);
+    fail('4.NomenclaturaEFotosReais', `Inconsistência nos cards/nomenclatura: orcRapido=${hasOrcamentoRapido}, semInstantaneo=${!hasOrcamentoInstantaneo}, semToggleIa=${!hasAiToggleButtons}, semSapatos=${!hasRemovedShoePhoto}, cardsReais=${card1Real && card2Real && card3Real && card4Real}`);
   }
 
   // ---------------------------------------------------------------------------

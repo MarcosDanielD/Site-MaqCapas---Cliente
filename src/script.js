@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initScrollReveal();
   initCatalogFilter();
-  initPhotoToggles();
   initAboutGallery();
   initSimulator();
   initFAQ();
@@ -109,7 +108,7 @@ function initScrollFilm() {
 
       let opacity = 0;
       if (p >= start && p <= end) {
-        if (p < fadeInEnd) {
+        if (i > 0 && p < fadeInEnd) {
           opacity = easeInOut((p - start) / CROSSFADE);
         } else if (p > fadeOutStart && i < TOTAL - 1) {
           opacity = easeInOut(1 - (p - fadeOutStart) / CROSSFADE);
@@ -130,13 +129,6 @@ function initScrollFilm() {
       } else if (!isActive && scene.classList.contains('is-active')) {
         scene.classList.remove('is-active');
       }
-
-      const photo = scene.querySelector('.film-scene-photo');
-      if (photo && opacity > 0) {
-        const localP = clamp((p - start) / SCENE_SPAN, 0, 1);
-        const py = (localP * -25).toFixed(1);
-        photo.style.backgroundPositionY = `calc(50% + ${py}px)`;
-      }
     });
   }
 
@@ -153,7 +145,6 @@ function initScrollFilm() {
   // Controles de Pausa / Reprodução Automática
   function togglePause() {
     if (isAutoAdvancing) {
-      // Pausar
       isAutoAdvancing = false;
       if (autoAdvanceTimer) clearInterval(autoAdvanceTimer);
       if (pauseBtn) {
@@ -163,7 +154,6 @@ function initScrollFilm() {
       }
       mostrarToast('Apresentação pausada');
     } else {
-      // Reproduzir
       isAutoAdvancing = true;
       if (pauseBtn) {
         pauseBtn.classList.remove('is-paused');
@@ -175,7 +165,6 @@ function initScrollFilm() {
         const { filmTop, filmScroll } = getScrollMetrics();
         const scrollY = window.scrollY;
         if (scrollY < filmTop - 100 || scrollY > filmTop + filmScroll + 100) {
-          // Usuário saiu da seção do filme
           return;
         }
         const nextScene = (currentActive + 1) % TOTAL;
@@ -206,7 +195,6 @@ function initScrollFilm() {
     const scrollY = window.scrollY;
     const isWithinFilm = scrollY >= filmTop - 50 && scrollY <= filmTop + filmScroll + 50;
 
-    // Não intercepta se o foco estiver dentro de um campo de formulário
     const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
     if (['input', 'textarea', 'select'].includes(activeTag)) return;
 
@@ -387,130 +375,7 @@ function initCatalogFilter() {
 }
 
 /* ============================================================
-   5. ALTERNADOR: FOTO REAL (PADRÃO) vs IMAGEM ILUSTRATIVA (IA)
-   ============================================================ */
-function initPhotoToggles() {
-  // Toggle nos cards do Showcase e Catálogo
-  const toggleBtns = document.querySelectorAll('.btn-photo-toggle');
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const targetId = btn.getAttribute('data-target');
-      const targetImg = document.getElementById(targetId);
-      const altSrc = btn.getAttribute('data-alt-src');    // Imagem IA
-      const origSrc = btn.getAttribute('data-orig-src');  // Foto Real (Padrão)
-      const labelSpan = btn.querySelector('span');
-
-      if (!targetImg) return;
-
-      const currentSrc = targetImg.getAttribute('src');
-      const isCurrentlyOrig = currentSrc.includes(origSrc) || (!currentSrc.includes(altSrc));
-      const nextSrc = isCurrentlyOrig ? altSrc : origSrc;
-
-      targetImg.style.transition = 'opacity 0.2s ease';
-      targetImg.style.opacity = '0.3';
-
-      setTimeout(() => {
-        const isNowReal = nextSrc === origSrc || nextSrc.includes('real') || nextSrc.includes('sapatos') || nextSrc.includes('sacola');
-
-        const picture = targetImg.closest('picture');
-        if (picture) {
-          const sources = picture.querySelectorAll('source');
-          sources.forEach(s => {
-            const type = s.getAttribute('type') || '';
-            const baseNext = nextSrc.replace(/\.[a-zA-Z0-9]+$/, '');
-            if (type.includes('avif')) {
-              s.srcset = `${baseNext}.avif`;
-            } else if (type.includes('webp')) {
-              s.srcset = `${baseNext}.webp`;
-            } else {
-              s.srcset = nextSrc;
-            }
-          });
-        }
-        targetImg.src = nextSrc;
-
-        const card = btn.closest('.showcase-card') || btn.closest('.product-item');
-        if (card) {
-          const badge = card.querySelector('.showcase-badge') || card.querySelector('.product-pill');
-          if (badge) {
-            if (isNowReal) {
-              badge.textContent = 'Foto Real da Oficina';
-              badge.classList.add('showcase-badge--real');
-            } else {
-              badge.textContent = 'Imagem ilustrativa (IA)';
-              badge.classList.remove('showcase-badge--real');
-            }
-          }
-        }
-
-        if (isNowReal) {
-          btn.classList.add('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Imagem ilustrativa (IA)';
-          mostrarToast('Exibindo foto real de confecção');
-        } else {
-          btn.classList.remove('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Foto Real';
-          mostrarToast('Exibindo imagem ilustrativa (IA)');
-        }
-        targetImg.style.opacity = '1';
-      }, 150);
-    });
-  });
-
-  // Toggle nas Cenas do Scroll Film
-  const filmToggleBtns = document.querySelectorAll('.btn-film-toggle');
-  filmToggleBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const sceneId = btn.getAttribute('data-scene');
-      const sceneEl = document.getElementById(sceneId);
-      if (!sceneEl) return;
-      const photoEl = sceneEl.querySelector('.film-scene-photo');
-      const tagEl = sceneEl.querySelector('.film-scene-tag');
-      const labelSpan = btn.querySelector('span');
-
-      const altBg = btn.getAttribute('data-alt-bg');    // IA
-      const origBg = btn.getAttribute('data-orig-bg');  // Real
-
-      const bgStyle = photoEl.style.backgroundImage || '';
-      const isAlt = bgStyle.includes(altBg);
-      const nextBg = isAlt ? origBg : altBg;
-
-      photoEl.style.transition = 'opacity 0.25s ease';
-      photoEl.style.opacity = '0.35';
-
-      setTimeout(() => {
-        photoEl.style.backgroundImage = `url('${nextBg}')`;
-        const isNowReal = !isAlt;
-
-        if (isNowReal) {
-          btn.classList.add('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Imagem ilustrativa (IA)';
-          if (tagEl) {
-            tagEl.classList.add('film-scene-tag--real');
-            const segName = tagEl.textContent.split('•')[0].trim();
-            tagEl.innerHTML = `${segName} &bull; Foto Real de Fabricação`;
-          }
-          mostrarToast('Exibindo foto real de fabricação');
-        } else {
-          btn.classList.remove('is-original');
-          if (labelSpan) labelSpan.textContent = 'Ver Foto Real';
-          if (tagEl) {
-            tagEl.classList.remove('film-scene-tag--real');
-            const segName = tagEl.textContent.split('•')[0].trim();
-            tagEl.innerHTML = `${segName} &bull; Imagem ilustrativa (IA)`;
-          }
-          mostrarToast('Exibindo imagem ilustrativa (IA)');
-        }
-        photoEl.style.opacity = '1';
-      }, 160);
-    });
-  });
-}
-
-/* ============================================================
-   6. GALERIA INTERATIVA DA HISTÓRIA (FOTOS REAIS)
+   5. GALERIA INTERATIVA DA HISTÓRIA (FOTOS REAIS COM PICTURE/SRCSET)
    ============================================================ */
 function initAboutGallery() {
   const mainPhoto = document.getElementById('aboutPhotoMain');
@@ -524,30 +389,56 @@ function initAboutGallery() {
     thumb.addEventListener('click', () => {
       if (thumb.classList.contains('active')) return;
 
-      thumbs.forEach(t => t.classList.remove('active'));
+      thumbs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-pressed', 'false');
+      });
       thumb.classList.add('active');
+      thumb.setAttribute('aria-pressed', 'true');
 
       const newSrc = thumb.getAttribute('data-src');
+      const newAvifSrcset = thumb.getAttribute('data-avif-srcset');
+      const newWebpSrcset = thumb.getAttribute('data-webp-srcset');
+      const newJpgSrcset = thumb.getAttribute('data-jpg-srcset');
+      const newWidth = thumb.getAttribute('data-width');
+      const newHeight = thumb.getAttribute('data-height');
       const newAlt = thumb.getAttribute('data-alt');
       const newTitle = thumb.getAttribute('data-title');
       const newDesc = thumb.getAttribute('data-desc');
 
-      mainPhoto.style.transition = 'opacity 0.22s ease';
-      mainPhoto.style.opacity = '0.25';
+      // Atualiza todos os <source> dentro de <picture> para que o navegador troque a imagem imediatamente
+      const picture = mainPhoto.closest('picture');
+      if (picture) {
+        const avifSource = picture.querySelector('source[type="image/avif"]');
+        const webpSource = picture.querySelector('source[type="image/webp"]');
+        if (avifSource && newAvifSrcset) avifSource.setAttribute('srcset', newAvifSrcset);
+        if (webpSource && newWebpSrcset) webpSource.setAttribute('srcset', newWebpSrcset);
+      }
 
-      setTimeout(() => {
-        mainPhoto.src = newSrc;
-        if (newAlt) mainPhoto.alt = newAlt;
-        if (captionTitle && newTitle) captionTitle.innerHTML = newTitle;
-        if (captionDesc && newDesc) captionDesc.innerHTML = newDesc;
-        mainPhoto.style.opacity = '1';
-      }, 180);
+      if (newJpgSrcset) mainPhoto.setAttribute('srcset', newJpgSrcset);
+      if (newSrc) mainPhoto.setAttribute('src', newSrc);
+      if (newWidth) mainPhoto.setAttribute('width', newWidth);
+      if (newHeight) mainPhoto.setAttribute('height', newHeight);
+      if (newAlt) mainPhoto.setAttribute('alt', newAlt);
+
+      if (captionTitle && newTitle) captionTitle.textContent = newTitle;
+      if (captionDesc && newDesc) captionDesc.textContent = newDesc;
+
+      if (typeof mainPhoto.animate === 'function') {
+        mainPhoto.animate(
+          [
+            { opacity: 0.35, transform: 'scale(0.985)' },
+            { opacity: 1, transform: 'scale(1)' }
+          ],
+          { duration: 240, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+        );
+      }
     });
   });
 }
 
 /* ============================================================
-   7. SIMULADOR DE MEDIDAS & ORÇAMENTO RÁPIDO
+   6. SIMULADOR DE MEDIDAS & ORÇAMENTO RÁPIDO
    ============================================================ */
 function initSimulator() {
   const form = document.getElementById('simulatorForm');
@@ -576,7 +467,6 @@ function initSimulator() {
       if (radio.checked) material = radio.value;
     });
 
-    const hasDimensions = (widthInput && widthInput.value) || (heightInput && heightInput.value);
     const l = (widthInput && widthInput.value) ? `${widthInput.value} cm` : 'A definir';
     const a = (heightInput && heightInput.value) ? `${heightInput.value} cm` : 'A definir';
     const p = (depthInput && depthInput.value) ? `${depthInput.value} cm` : 'Padrão';
@@ -652,12 +542,12 @@ function carregarItemNoSimulador(nomeItem, materialCode) {
     const n = nomeItem.toLowerCase();
     if (n.includes('computador') || n.includes('monitor') || n.includes('teclado')) {
       segmentSelect.value = 'Informática (Monitor / Gabinete / Teclado)';
-    } else if (n.includes('noiva') || n.includes('terno') || n.includes('festa')) {
+    } else if (n.includes('noiva') || n.includes('terno') || n.includes('festa') || n.includes('acervo') || n.includes('ateli')) {
       segmentSelect.value = 'Vestuário (Vestido de Noiva / Festa / Terno)';
     } else if (n.includes('industrial') || n.includes('máquina')) {
       segmentSelect.value = 'Máquinas Industriais / Fábrica';
-    } else if (n.includes('sapato') || n.includes('calçado') || n.includes('embalag') || n.includes('sacola') || n.includes('bolsa')) {
-      segmentSelect.value = 'Embalagens & Acessórios (Sapatos / Bolsas / Sacolas)';
+    } else if (n.includes('sacola') || n.includes('embalag')) {
+      segmentSelect.value = 'Sacolas & Embalagens Promocionais em TNT';
     } else {
       segmentSelect.value = 'Outros Sob Medida (Móveis / Eletros)';
     }
@@ -684,7 +574,7 @@ function carregarItemNoSimulador(nomeItem, materialCode) {
 }
 
 /* ============================================================
-   8. ACCORDIONS DE FAQ
+   7. ACCORDIONS DE FAQ
    ============================================================ */
 function initFAQ() {
   const rows = document.querySelectorAll('.faq-row');
@@ -716,7 +606,7 @@ function initFAQ() {
 }
 
 /* ============================================================
-   9. RASTREAMENTO SEGURO DE CLIQUES NO WHATSAPP (SEM PII)
+   8. RASTREAMENTO SEGURO DE CLIQUES NO WHATSAPP (SEM PII)
    ============================================================ */
 function initWhatsAppTracking() {
   const links = document.querySelectorAll('a[href*="wa.me"]');
@@ -761,7 +651,7 @@ function initWhatsAppTracking() {
 }
 
 /* ============================================================
-   10. TOAST DISCRETO & ACESSÍVEL
+   9. TOAST DISCRETO & ACESSÍVEL
    ============================================================ */
 function mostrarToast(mensagem) {
   const toast = document.getElementById('toastCard');

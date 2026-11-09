@@ -58,11 +58,16 @@ const candidates = {
       label: 'Capa Industrial para Máquina Pesada'
     }
   ],
-  embalagens: [
+  acabamento_visor: [
     {
-      name: 'embalagem_sapatos.png',
-      path: path.join(assetsImages, 'embalagem_sapatos.png'),
-      label: 'Saco Protetor para Calçados em TNT e Cristal'
+      name: 'porta_terno_detalhe_real.jpg',
+      path: path.join(assetsImages, 'porta_terno_detalhe_real.jpg'),
+      label: 'Detalhe de Acabamento com Visor Cristal e Zíper'
+    },
+    {
+      name: 'arara_vestuarios.jpg',
+      path: path.join(assetsImages, 'arara_vestuarios.jpg'),
+      label: 'Conjunto de Capas em Arara'
     }
   ],
   sacolas: [
@@ -174,7 +179,7 @@ async function run() {
     noiva: results.noiva.find(r => r.name === 'capa_noiva_real.jpg') || results.noiva[0],
     porta_terno: results.porta_terno.find(r => r.name === 'porta_terno_real.jpg') || results.porta_terno[0],
     industrial: results.industrial[0],
-    embalagens: results.embalagens[0],
+    acabamento_visor: results.acabamento_visor[0],
     sacolas: results.sacolas[0]
   };
 
@@ -202,7 +207,7 @@ async function generateContactSheet(chosen) {
     { prod: 'Vestido de Noiva', item: chosen.noiva, focus: '50% 40%' },
     { prod: 'Porta-Ternos', item: chosen.porta_terno, focus: '50% 35%' },
     { prod: 'Indústria & Máquinas', item: chosen.industrial, focus: '50% 50%' },
-    { prod: 'Embalagens / Calçados', item: chosen.embalagens, focus: '50% 50%' },
+    { prod: 'Acabamento & Visor', item: chosen.acabamento_visor, focus: '50% 50%' },
     { prod: 'Sacolas em TNT', item: chosen.sacolas, focus: '50% 50%' }
   ];
 

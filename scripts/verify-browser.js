@@ -304,12 +304,31 @@ async function run() {
         const innerWidth = window.innerWidth;
         const hasHorizontalScroll = scrollWidth > innerWidth;
 
+        // Testa a troca de fotos nas abas da seção #sobre (Oficina MaqCapas)
+        const thumbs = Array.from(document.querySelectorAll('.about-thumb'));
+        const mainPhoto = document.getElementById('aboutPhotoMain');
+        const gallerySources = [];
+        for (const t of thumbs) {
+          t.click();
+          await new Promise(r => setTimeout(r, 80));
+          await mainPhoto.decode().catch(() => {});
+          gallerySources.push(mainPhoto.currentSrc || mainPhoto.src);
+        }
+        // Volta para a primeira aba após testar todas
+        if (thumbs[0]) {
+          thumbs[0].click();
+          await new Promise(r => setTimeout(r, 80));
+        }
+        const uniqueGallerySources = new Set(gallerySources).size;
+
         return {
           totalImages: imgs.length,
           brokenImages: brokenImgs,
           scrollWidth,
           innerWidth,
-          hasHorizontalScroll
+          hasHorizontalScroll,
+          galleryTabsCount: thumbs.length,
+          uniqueGallerySources
         };
       })()`,
       awaitPromise: true,
@@ -321,6 +340,7 @@ async function run() {
     const brokenCount = pageData.brokenImages.length;
     const horizontalScroll = pageData.hasHorizontalScroll;
     const currentCspViolations = allCspViolations.length;
+    const galleryWorks = pageData.uniqueGallerySources === pageData.galleryTabsCount && pageData.galleryTabsCount === 4;
 
     console.log(`  • Imagens carregadas com sucesso: ${pageData.totalImages - brokenCount} de ${pageData.totalImages}`);
     if (brokenCount > 0) {
@@ -328,6 +348,13 @@ async function run() {
       allTestsPassed = false;
     } else {
       console.log(`  ✔ Zero imagens quebradas.`);
+    }
+
+    if (!galleryWorks) {
+      console.error(`  ✖ FALHA NA GALERIA #sobre: ${pageData.uniqueGallerySources}/${pageData.galleryTabsCount} fotos distintas ao clicar nas abas.`);
+      allTestsPassed = false;
+    } else {
+      console.log(`  ✔ Galeria #sobre funcionando: ${pageData.uniqueGallerySources}/${pageData.galleryTabsCount} abas trocando foto instantaneamente.`);
     }
 
     console.log(`  • Largura do documento: ${pageData.scrollWidth}px | Largura da viewport: ${pageData.innerWidth}px`);
@@ -361,6 +388,23 @@ async function run() {
     fs.writeFileSync(prodPathPublic, Buffer.from(prodScreenshot.data, 'base64'));
     fs.writeFileSync(prodPathArtifact, Buffer.from(prodScreenshot.data, 'base64'));
     console.log(`  📸 Screenshot Produtos salvo: public/assets/screenshots/${prodFilename}`);
+
+    // Rola para o card da galeria na seção Sobre (#sobre) e captura screenshot
+    await cdp.send('Runtime.evaluate', {
+      expression: `(() => {
+        const card = document.querySelector('.about-photo-card') || document.getElementById('sobre');
+        if (card) card.scrollIntoView({ behavior: 'instant', block: 'center' });
+      })()`
+    });
+    await new Promise(r => setTimeout(r, 500));
+
+    const sobreScreenshot = await cdp.send('Page.captureScreenshot', { format: 'png' });
+    const sobreFilename = `screenshot-${vp.width}px-sobre.png`;
+    const sobrePathPublic = path.join(SCREENSHOTS_DIR, sobreFilename);
+    const sobrePathArtifact = path.join(ARTIFACT_SCREENSHOTS_DIR, sobreFilename);
+    fs.writeFileSync(sobrePathPublic, Buffer.from(sobreScreenshot.data, 'base64'));
+    fs.writeFileSync(sobrePathArtifact, Buffer.from(sobreScreenshot.data, 'base64'));
+    console.log(`  📸 Screenshot Sobre salvo: public/assets/screenshots/${sobreFilename}`);
 
     results.push({
       viewport: vp.name,

@@ -2,7 +2,7 @@
  * scripts/build.js
  * Compilação e geração dos arquivos estáticos em ./public
  * Implementa srcset responsivo (480, 800, 1200, 1600 px), AVIF, WebP, JPG,
- * preload de hero, enquadramento inteligente e dados oficiais do cliente.
+ * preload de hero, enquadramento 4:3 centralizado (somente fotos reais) e dados oficiais do cliente.
  */
 
 const fs = require('fs');
@@ -208,6 +208,37 @@ const jsonLdFAQ = {
 };
 
 /**
+ * Helper para obter srcsets de uma imagem no manifesto
+ */
+function getImageSources(imgKey) {
+  const data = manifest[imgKey];
+  const baseName = path.parse(imgKey).name;
+  if (!data || !data.sizes) {
+    return {
+      avifSrcset: `assets/images/${baseName}.avif`,
+      webpSrcset: `assets/images/${baseName}.webp`,
+      jpgSrcset: `assets/images/${baseName}.jpg`,
+      defaultSrc: `assets/images/${baseName}.jpg`,
+      thumbSrc: `assets/images/${baseName}.webp`,
+      width: 800,
+      height: 600
+    };
+  }
+  const widths = Object.keys(data.sizes).map(Number).sort((a, b) => a - b);
+  return {
+    avifSrcset: widths.map(w => `assets/images/${baseName}-${w}.avif ${w}w`).join(', '),
+    webpSrcset: widths.map(w => `assets/images/${baseName}-${w}.webp ${w}w`).join(', '),
+    jpgSrcset: widths.map(w => `assets/images/${baseName}-${w}.jpg ${w}w`).join(', '),
+    defaultSrc: `assets/images/${baseName}-${widths[widths.length - 1]}.jpg`,
+    thumbSrc: `assets/images/${baseName}-${widths[0]}.webp`,
+    thumbWidth: data.sizes[widths[0]].width,
+    thumbHeight: data.sizes[widths[0]].height,
+    width: data.width,
+    height: data.height
+  };
+}
+
+/**
  * Helper para renderizar tag <picture> rica com AVIF, WebP, JPG, srcset e sizes
  */
 function renderPictureTag({
@@ -220,26 +251,28 @@ function renderPictureTag({
   decoding = 'async',
   fetchpriority = ''
 }) {
-  const data = manifest[imgKey];
-  const baseName = path.parse(imgKey).name;
   const idAttr = id ? ` id="${id}"` : '';
   const fpAttr = fetchpriority ? ` fetchpriority="${fetchpriority}"` : '';
-
-  if (!data || !data.sizes) {
-    return `<picture><source srcset="assets/images/${baseName}.webp" type="image/webp"><img src="assets/images/${baseName}.jpg" alt="${alt}" class="${className}"${idAttr} width="800" height="600" loading="${loading}" decoding="${decoding}"${fpAttr}></picture>`;
-  }
-
-  const widths = Object.keys(data.sizes).map(Number).sort((a, b) => a - b);
-  const avifSrcset = widths.map(w => `assets/images/${baseName}-${w}.avif ${w}w`).join(', ');
-  const webpSrcset = widths.map(w => `assets/images/${baseName}-${w}.webp ${w}w`).join(', ');
-  const jpgSrcset = widths.map(w => `assets/images/${baseName}-${w}.jpg ${w}w`).join(', ');
-  const defaultSrc = `assets/images/${baseName}-${widths[widths.length - 1]}.jpg`;
+  const srcInfo = getImageSources(imgKey);
 
   return `<picture>
-    <source type="image/avif" srcset="${avifSrcset}" sizes="${sizes}">
-    <source type="image/webp" srcset="${webpSrcset}" sizes="${sizes}">
-    <img src="${defaultSrc}" srcset="${jpgSrcset}" sizes="${sizes}" alt="${alt}" class="${className}"${idAttr} width="${data.width}" height="${data.height}" loading="${loading}" decoding="${decoding}"${fpAttr}>
+    <source type="image/avif" srcset="${srcInfo.avifSrcset}" sizes="${sizes}">
+    <source type="image/webp" srcset="${srcInfo.webpSrcset}" sizes="${sizes}">
+    <img src="${srcInfo.defaultSrc}" srcset="${srcInfo.jpgSrcset}" sizes="${sizes}" alt="${alt}" class="${className}"${idAttr} width="${srcInfo.width}" height="${srcInfo.height}" loading="${loading}" decoding="${decoding}"${fpAttr}>
   </picture>`;
+}
+
+/**
+ * Helper para renderizar botão de miniatura da galeria #sobre com todos os srcsets para troca instantânea
+ */
+function renderAboutThumb({ imgKey, label, alt, title, desc, active = false }) {
+  const srcInfo = getImageSources(imgKey);
+  const activeClass = active ? ' active' : '';
+  const ariaPressed = active ? 'true' : 'false';
+  return `<button type="button" class="about-thumb${activeClass}" aria-pressed="${ariaPressed}" data-src="${srcInfo.defaultSrc}" data-avif-srcset="${srcInfo.avifSrcset}" data-webp-srcset="${srcInfo.webpSrcset}" data-jpg-srcset="${srcInfo.jpgSrcset}" data-width="${srcInfo.width}" data-height="${srcInfo.height}" data-alt="${alt}" data-title="${title}" data-desc="${desc}">
+                  <img src="${srcInfo.thumbSrc}" alt="" width="${srcInfo.thumbWidth || 480}" height="${srcInfo.thumbHeight || 360}" loading="lazy">
+                  <span>${label}</span>
+                </button>`;
 }
 
 const currentYear = new Date().getFullYear();
@@ -380,14 +413,14 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
     <h1 class="sr-only">MaqCapas &mdash; Fabricação Sob Medida de Capas de Proteção Desde 1987</h1>
 
     <!-- ════════════════════════════════════════════
-         SCROLL FILM / CARROSSEL COM CONTROLES E TECLADO
+         SCROLL FILM / CARROSSEL COM FOTOS REAIS
          ════════════════════════════════════════════ -->
     <div class="scroll-film" id="scrollFilm" role="region" aria-roledescription="carousel" aria-label="Apresentação de produtos em destaque">
 
       <div class="film-sticky" id="filmSticky">
 
-        <!-- ── Cena 1: Porta-Ternos (PADRÃO: FOTO REAL) ── -->
-        <div class="film-scene" id="scene0" role="group" aria-roledescription="slide" aria-label="Cena 1 de 4: Porta-Ternos Executivos">
+        <!-- ── Cena 1: Porta-Ternos (FOTO REAL) ── -->
+        <div class="film-scene is-active" id="scene0" role="group" aria-roledescription="slide" aria-label="Cena 1 de 4: Porta-Ternos Executivos">
           <div class="film-scene-photo film-photo-scene0" aria-label="Porta-ternos em TNT com visor transparente de produção real"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
@@ -395,15 +428,11 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               <span class="film-scene-tag film-scene-tag--real">Vestuário &bull; Foto Real de Fabricação</span>
               <h2 class="film-scene-title">O seu terno merece mais<br>do que uma arara.</h2>
               <p class="film-scene-desc">Porta-ternos executivos em TNT respirável com visor em PVC cristal — confeccionados sob medida para proteger o caimento, a gola e a estrutura do tecido.</p>
-              <button type="button" class="btn-film-toggle is-original" data-scene="scene0" data-alt-bg="assets/images/porta_terno.webp" data-orig-bg="assets/images/porta_terno_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 2: Informática (PADRÃO: FOTO REAL) ── -->
+        <!-- ── Cena 2: Informática (FOTO REAL) ── -->
         <div class="film-scene" id="scene1" role="group" aria-roledescription="slide" aria-label="Cena 2 de 4: Informática e TI">
           <div class="film-scene-photo film-photo-scene1" aria-label="Conjunto de capas para monitores, gabinete e teclado de fabricação real"></div>
           <div class="film-scene-panel">
@@ -412,15 +441,11 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               <span class="film-scene-tag film-scene-tag--real">Informática &bull; Foto Real de Fabricação</span>
               <h2 class="film-scene-title">Poeira e umidade não<br>têm acesso aqui.</h2>
               <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT técnico ou cristal — corte e acabamento artesanal confeccionados em nossa oficina desde 1987.</p>
-              <button type="button" class="btn-film-toggle is-original" data-scene="scene1" data-alt-bg="assets/images/capa_computador.webp" data-orig-bg="assets/images/capa_computador_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 3: Vestido de Noiva (PADRÃO: FOTO REAL) ── -->
+        <!-- ── Cena 3: Vestido de Noiva (FOTO REAL) ── -->
         <div class="film-scene" id="scene2" role="group" aria-roledescription="slide" aria-label="Cena 3 de 4: Vestidos de Noiva e Ateliês">
           <div class="film-scene-photo film-photo-scene2" aria-label="Capa protetora para vestido de noiva confeccionada em TNT respirável"></div>
           <div class="film-scene-panel">
@@ -429,15 +454,11 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               <span class="film-scene-tag film-scene-tag--real">Noivas &amp; Alta Costura &bull; Foto Real de Fabricação</span>
               <h2 class="film-scene-title">Cada ponto de renda,<br>guardado para sempre.</h2>
               <p class="film-scene-desc">Capas longas para vestidos de noiva com visor em PVC cristal e fechamento por zíper — preservando a textura e o brilho sem amarelar tecidos finos.</p>
-              <button type="button" class="btn-film-toggle is-original" data-scene="scene2" data-alt-bg="assets/images/capa_noiva_terno.webp" data-orig-bg="assets/images/capa_noiva_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 4: Industrial (PADRÃO: FOTO REAL) ── -->
+        <!-- ── Cena 4: Industrial (FOTO REAL) ── -->
         <div class="film-scene" id="scene3" role="group" aria-roledescription="slide" aria-label="Cena 4 de 4: Maquinário Industrial">
           <div class="film-scene-photo film-photo-scene3" aria-label="Capa industrial resistente sob medida para maquinário pesado"></div>
           <div class="film-scene-panel">
@@ -446,10 +467,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               <span class="film-scene-tag film-scene-tag--real">Maquinário Industrial &bull; Produção Real</span>
               <h2 class="film-scene-title">Do torno mecânico ao<br>painel de comando.</h2>
               <p class="film-scene-desc">Capas industriais sob medida em lona reforçada — confeccionadas para proteger equipamentos contra poeira abrasiva, cavacos e respingos de operação.</p>
-              <button type="button" class="btn-film-toggle is-original" data-scene="scene3" data-alt-bg="assets/images/capa_industrial.webp" data-orig-bg="assets/images/capa_industrial_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
           </div>
           <!-- CTA final apontando para #produtos -->
@@ -511,7 +528,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
         <!-- Showcase: FOTOS REAIS COM PICTURE RESPONSIVO -->
         <div class="hero-showcase">
           
-          <!-- Card 1: Informática (FOTO REAL ESCOLHIDA) -->
+          <!-- Card 1: Informática -->
           <div class="showcase-card">
             <div class="showcase-media">
               ${renderPictureTag({
@@ -523,10 +540,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                 sizes: '(max-width: 768px) 100vw, 380px'
               })}
               <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto0" data-alt-src="assets/images/capa_computador.webp" data-orig-src="assets/images/capa_computador_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Informática &amp; TI</span>
@@ -535,7 +548,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </div>
 
-          <!-- Card 2: Vestuário & Noivas (FOTO REAL ESCOLHIDA) -->
+          <!-- Card 2: Vestuário & Noivas -->
           <div class="showcase-card">
             <div class="showcase-media">
               ${renderPictureTag({
@@ -547,10 +560,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                 sizes: '(max-width: 768px) 100vw, 380px'
               })}
               <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto1" data-alt-src="assets/images/capa_noiva_terno.webp" data-orig-src="assets/images/capa_noiva_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Alta Costura &amp; Ateliês</span>
@@ -559,7 +568,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </div>
 
-          <!-- Card 3: Indústria (FOTO REAL ESCOLHIDA) -->
+          <!-- Card 3: Indústria -->
           <div class="showcase-card">
             <div class="showcase-media">
               ${renderPictureTag({
@@ -571,10 +580,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                 sizes: '(max-width: 768px) 100vw, 380px'
               })}
               <span class="showcase-badge showcase-badge--real">Produção Real</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="showcasePhoto2" data-alt-src="assets/images/capa_industrial.webp" data-orig-src="assets/images/capa_industrial_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Indústria &amp; Oficinas</span>
@@ -671,10 +676,10 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <button class="filter-button active" data-filter="all">Todos os Modelos</button>
           <button class="filter-button" data-filter="tech">Informática &amp; TI</button>
           <button class="filter-button" data-filter="couture">Vestuário &amp; Noivas</button>
-          <button class="filter-button" data-filter="industrial">Indústria &amp; Acessórios</button>
+          <button class="filter-button" data-filter="industrial">Indústria &amp; Institucional</button>
         </div>
 
-        <!-- Products Grid: FOTOS REAIS COMO PADRÃO COM SRCSET COMPLETO -->
+        <!-- Products Grid: 6 FOTOS REAIS CENTRALIZADAS EM 4:3 -->
         <div class="products-grid">
           
           <!-- Produto 1: Informática -->
@@ -682,17 +687,13 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             <div class="product-frame">
               ${renderPictureTag({
                 imgKey: 'capa_computador_real.jpg',
-                alt: 'Capas para gabinetes e monitores sob medida',
+                alt: 'Capas para gabinetes, monitores e teclados sob medida',
                 id: 'photoTech',
                 className: 'product-photo',
                 loading: 'lazy',
                 sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
               })}
               <span class="product-pill">Informática &bull; Foto Real</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="photoTech" data-alt-src="assets/images/capa_computador.webp" data-orig-src="assets/images/capa_computador_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="product-details">
               <h3 class="product-name">Capas para Monitores, Gabinetes e Teclados</h3>
@@ -725,10 +726,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                 sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
               })}
               <span class="product-pill">Ateliê &amp; Noivas &bull; Foto Real</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="photoBridal" data-alt-src="assets/images/capa_noiva_terno.webp" data-orig-src="assets/images/capa_noiva_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="product-details">
               <h3 class="product-name">Capas Longas para Vestidos de Noiva e Festa</h3>
@@ -761,10 +758,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                 sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
               })}
               <span class="product-pill">Alfaiataria &bull; Foto Real</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="photoSuit" data-alt-src="assets/images/porta_terno.webp" data-orig-src="assets/images/porta_terno_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="product-details">
               <h3 class="product-name">Porta-Ternos Executivos com Visor</h3>
@@ -785,7 +778,39 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
           </article>
 
-          <!-- Produto 4: Industrial -->
+          <!-- Produto 4: Acabamento com Visor Cristal e Zíper -->
+          <article class="product-item" data-category="couture">
+            <div class="product-frame">
+              ${renderPictureTag({
+                imgKey: 'porta_terno_detalhe_real.jpg',
+                alt: 'Detalhe de acabamento de capa em TNT com visor em PVC cristal e zíper reforçado',
+                id: 'photoSuitDetail',
+                className: 'product-photo',
+                loading: 'lazy',
+                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
+              })}
+              <span class="product-pill">Acabamento &bull; Foto Real</span>
+            </div>
+            <div class="product-details">
+              <h3 class="product-name">Capas para Acervos, Ateliês e Coleções</h3>
+              <p class="product-description">
+                Confecção sob medida para lojas, figurinos e guarda-roupas planejados, com visor de identificação em PVC cristal e cursor metálico de alta durabilidade.
+              </p>
+              <ul class="product-points">
+                <li>Visor frontal em cristal para identificação imediata da peça</li>
+                <li>Viés lateral pespontado com acabamento reforçado</li>
+                <li>Disponível em diversas cores e gramaturas de TNT</li>
+              </ul>
+              <div class="product-action">
+                <button type="button" class="btn btn-card-action" data-item="Capas para Acervos e Ateliês com Visor" data-material="tnt">
+                  <span>Cotar Este Modelo</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Produto 5: Industrial -->
           <article class="product-item" data-category="industrial">
             <div class="product-frame">
               ${renderPictureTag({
@@ -797,10 +822,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                 sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
               })}
               <span class="product-pill">Indústria &bull; Foto Real</span>
-              <button type="button" class="btn-photo-toggle is-original" data-target="photoInd" data-alt-src="assets/images/capa_industrial.webp" data-orig-src="assets/images/capa_industrial_real.webp" title="Alternar entre foto real e imagem ilustrativa (IA)" aria-label="Alternar para imagem ilustrativa IA">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span>Ver Imagem ilustrativa (IA)</span>
-              </button>
             </div>
             <div class="product-details">
               <h3 class="product-name">Capas para Máquinas Industriais e Equipamentos</h3>
@@ -814,38 +835,6 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               </ul>
               <div class="product-action">
                 <button type="button" class="btn btn-card-action" data-item="Capas para Máquinas Industriais" data-material="bagum">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Produto 5: Embalagens para Calçados -->
-          <article class="product-item" data-category="industrial couture">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'embalagem_sapatos.png',
-                alt: 'Embalagens protetoras para calçados e artigos finos com visor transparente',
-                id: 'photoShoes',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Acessórios &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Embalagens Protetoras para Calçados e Artigos Finos</h3>
-              <p class="product-description">
-                Sacos organizadores sob medida em TNT respirável com visor em PVC cristal e cordão duplo ajustável. Proteção contra atrito, poeira e arranhões para calçados, bolsas e itens finos.
-              </p>
-              <ul class="product-points">
-                <li>Visor frontal em cristal para identificação sem abrir o saco</li>
-                <li>Cordão duplo ajustável com fechamento suave e seguro</li>
-                <li>Material respirável que auxilia na conservação de couros e tecidos</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Embalagens para Calçados e Artigos Finos" data-material="tnt">
                   <span>Cotar Este Modelo</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </button>
@@ -912,7 +901,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
                   <option value="Informática (Monitor / Gabinete / Teclado)">Informática (Monitor, CPU, Teclado)</option>
                   <option value="Vestuário (Vestido de Noiva / Festa / Terno)">Vestuário (Vestido de Noiva, Festa, Terno)</option>
                   <option value="Máquinas Industriais / Fábrica">Máquinas Industriais e Equipamentos</option>
-                  <option value="Embalagens &amp; Acessórios (Sapatos / Bolsas / Sacolas)">Embalagens e Acessórios em TNT</option>
+                  <option value="Sacolas &amp; Embalagens Promocionais em TNT">Sacolas e Embalagens em TNT</option>
                   <option value="Outros Sob Medida (Móveis / Eletros)">Outros Modelos Sob Medida</option>
                 </select>
               </div>
@@ -1052,36 +1041,54 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
 
           <div class="about-media">
             <div class="about-photo-card">
-              <div class="about-photo-badge">Registro Original de Fabricação</div>
-              ${renderPictureTag({
-                imgKey: 'capa_computador_real.jpg',
-                alt: 'Foto original de capas para informática fabricadas sob medida pela MaqCapas',
-                id: 'aboutPhotoMain',
-                className: 'about-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 768px) 100vw, 540px'
-              })}
+              <div class="about-photo-stage">
+                <div class="about-photo-badge">Registro Original de Fabricação</div>
+                ${renderPictureTag({
+                  imgKey: 'capa_computador_real.jpg',
+                  alt: 'Foto original de capas para informática fabricadas sob medida pela MaqCapas',
+                  id: 'aboutPhotoMain',
+                  className: 'about-photo',
+                  loading: 'lazy',
+                  sizes: '(max-width: 768px) 100vw, 540px'
+                })}
+              </div>
               <div class="about-caption" id="aboutPhotoCaption">
                 <strong id="aboutCaptionTitle">Oficina MaqCapas &bull; Curitiba / PR</strong>
                 <span id="aboutCaptionDesc">Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)</span>
               </div>
-              <div class="about-thumbs" aria-label="Galeria de fotos originais de confecção">
-                <button type="button" class="about-thumb active" data-src="assets/images/capa_computador_real.webp" data-alt="Conjunto de informática na oficina" data-title="Oficina MaqCapas &bull; Curitiba / PR" data-desc="Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)">
-                  <img src="assets/images/capa_computador_real-480.webp" alt="Informática" width="480" height="360" loading="lazy">
-                  <span>Informática</span>
-                </button>
-                <button type="button" class="about-thumb" data-src="assets/images/capa_noiva_real.webp" data-alt="Capa para vestido de noiva confeccionada na oficina" data-title="Vestidos de Noiva &bull; MaqCapas" data-desc="Capa sob medida para vestido de noiva com fole expansivo e visor em PVC cristal">
-                  <img src="assets/images/capa_noiva_real-480.webp" alt="Noiva Real" width="480" height="790" loading="lazy">
-                  <span>Noiva</span>
-                </button>
-                <button type="button" class="about-thumb" data-src="assets/images/porta_terno_detalhe_real.webp" data-alt="Detalhe de confecção de porta-ternos executivos" data-title="Alfaiataria &bull; Detalhe de Acabamento" data-desc="Acabamento refinado de porta-ternos em TNT estruturado e visor em cristal">
-                  <img src="assets/images/porta_terno_detalhe_real-480.webp" alt="Porta-Terno Detalhe" width="480" height="640" loading="lazy">
-                  <span>Porta-Terno</span>
-                </button>
-                <button type="button" class="about-thumb" data-src="assets/images/embalagem_sapatos.webp" data-alt="Embalagens para calçados com visor" data-title="Acessórios &bull; Embalagens TNT" data-desc="Sacos protetores para calçados com visor transparente em PVC cristal">
-                  <img src="assets/images/embalagem_sapatos-473.webp" alt="Embalagens" width="473" height="324" loading="lazy">
-                  <span>Embalagens</span>
-                </button>
+              <div class="about-thumbs" role="tablist" aria-label="Galeria de fotos originais de confecção">
+                ${renderAboutThumb({
+                  imgKey: 'capa_computador_real.jpg',
+                  label: 'Informática',
+                  alt: 'Foto original de capas para informática fabricadas sob medida pela MaqCapas',
+                  title: 'Oficina MaqCapas • Curitiba / PR',
+                  desc: 'Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)',
+                  active: true
+                })}
+                ${renderAboutThumb({
+                  imgKey: 'capa_noiva_real.jpg',
+                  label: 'Noiva',
+                  alt: 'Capa protetora para vestido de noiva confeccionada na oficina MaqCapas',
+                  title: 'Alta Costura & Noivas • MaqCapas',
+                  desc: 'Capa sob medida em TNT respirável com visor em PVC cristal e fechamento por zíper',
+                  active: false
+                })}
+                ${renderAboutThumb({
+                  imgKey: 'porta_terno_detalhe_real.jpg',
+                  label: 'Porta-Terno',
+                  alt: 'Detalhe de acabamento de porta-terno executivo com visor cristal',
+                  title: 'Alfaiataria • Detalhe de Acabamento',
+                  desc: 'Acabamento refinado de porta-ternos em TNT estruturado com visor transparente e zíper reforçado',
+                  active: false
+                })}
+                ${renderAboutThumb({
+                  imgKey: 'capa_industrial_real.jpg',
+                  label: 'Industrial',
+                  alt: 'Capa técnica industrial confeccionada sob medida para maquinário',
+                  title: 'Linha Industrial • Produção Própria',
+                  desc: 'Capas técnicas sob medida de alta resistência para proteção de máquinas e painéis operacionais',
+                  active: false
+                })}
               </div>
             </div>
           </div>

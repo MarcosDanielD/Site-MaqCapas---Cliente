@@ -16,7 +16,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v3';
+const ASSET_VER = '20261116v4';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida.')}`;
@@ -337,7 +337,6 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
         <a href="#hero" class="nav-link">Início</a>
         <a href="#por-que-proteger" class="nav-link">Por Que Proteger?</a>
         <a href="#materiais" class="nav-link">Materiais</a>
-        <a href="#sobre" class="nav-link">Oficina</a>
         <a href="#saiba-mais" class="nav-link">Saiba Mais</a>
       </nav>
 
@@ -363,7 +362,6 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
         <a href="#hero" class="mobile-nav-item">Início</a>
         <a href="#por-que-proteger" class="mobile-nav-item">Por Que Proteger?</a>
         <a href="#materiais" class="mobile-nav-item">Materiais</a>
-        <a href="#sobre" class="mobile-nav-item">Oficina MaqCapas</a>
         <a href="#saiba-mais" class="mobile-nav-item">Saiba Mais</a>
         <a href="${mailtoQuoteUrl}" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_email">Orçamento por E-mail (${config.company.email})</a>
       </nav>
@@ -647,13 +645,9 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       </div>
     </section>
 
-    <!-- Section: Oficina MaqCapas (Somente o bloco de fotos reais da oficina) -->
+    <!-- Section: Fotos Reais (Somente o bloco de fotos que já existia na direita) -->
     <section class="section section-alt" id="sobre">
       <div class="container">
-        <div class="section-header text-center">
-          <span class="section-tag">Oficina MaqCapas</span>
-          <h2 class="section-title">Registros Reais de Fabricação</h2>
-        </div>
         <div class="about-single-wrapper">
           <div class="about-media">
             <div class="about-photo-card">
@@ -764,7 +758,6 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
           <li><a href="#hero">Início</a></li>
           <li><a href="#por-que-proteger">Por Que Proteger?</a></li>
           <li><a href="#materiais">Materiais</a></li>
-          <li><a href="#sobre">Oficina MaqCapas</a></li>
           <li><a href="#saiba-mais">Saiba Mais</a></li>
         </ul>
       </div>

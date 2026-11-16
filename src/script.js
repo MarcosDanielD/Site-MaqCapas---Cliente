@@ -273,6 +273,7 @@ function initScrollReveal() {
     '.simulator-card',
     '.about-content',
     '.about-media',
+    '.saiba-mais-card',
     '.footer-grid',
     '.footer-bottom'
   ];
@@ -281,8 +282,7 @@ function initScrollReveal() {
     document.querySelectorAll(sel).forEach(el => {
       el.classList.add('reveal-item');
       if (sel === '.about-content') el.classList.add('reveal-left');
-      if (sel === '.about-media') el.classList.add('reveal-right');
-      if (sel === '.simulator-card') el.classList.add('reveal-scale');
+      if (sel === '.about-media' || sel === '.simulator-card' || sel === '.saiba-mais-card') el.classList.add('reveal-scale');
     });
   });
 

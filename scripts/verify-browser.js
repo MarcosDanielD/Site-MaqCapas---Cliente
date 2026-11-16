@@ -151,7 +151,7 @@ class CDPClient {
 
   close() {
     if (this.ws) {
-      try { this.ws.close(); } catch (_) {}
+      try { this.ws.close(); } catch (_) { }
     }
   }
 }
@@ -162,7 +162,7 @@ async function waitForHttp(url, timeoutMs = 10000) {
     try {
       const res = await fetch(url);
       if (res.ok) return await res.json();
-    } catch (_) {}
+    } catch (_) { }
     await new Promise((r) => setTimeout(r, 100));
   }
   throw new Error(`Timeout aguardando por ${url}`);
@@ -372,11 +372,11 @@ async function run() {
       console.log(`  ✔ Zero violações de CSP.`);
     }
 
-    // Rola para a seção de Produtos (#produtos) e captura screenshot
+    // Rola para a seção Hero / Showcase (#hero) e captura screenshot dos cards de produtos
     await cdp.send('Runtime.evaluate', {
       expression: `(() => {
-        const prod = document.getElementById('produtos');
-        if (prod) prod.scrollIntoView({ behavior: 'instant', block: 'start' });
+        const hero = document.getElementById('hero');
+        if (hero) hero.scrollIntoView({ behavior: 'instant', block: 'start' });
       })()`
     });
     await new Promise(r => setTimeout(r, 600));
@@ -432,9 +432,9 @@ async function run() {
   chromeProcess.kill();
   if (typeof server.closeAllConnections === 'function') server.closeAllConnections();
   server.close();
-  
+
   await new Promise(r => setTimeout(r, 600));
-  try { fs.rmSync(tempUserDataDir, { recursive: true, force: true }); } catch (_) {}
+  try { fs.rmSync(tempUserDataDir, { recursive: true, force: true }); } catch (_) { }
 
   console.log('\n================================================================================');
   console.log('  RESUMO DO TESTE DE NAVEGADOR');

@@ -16,11 +16,14 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261109v3';
+const ASSET_VER = '20261116v1';
+
+const currentYear = new Date().getFullYear();
+const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida.')}`;
 
 console.log('--- Iniciando build do MaqCapas ---');
 console.log(`Domínio configurado: ${config.domain}`);
-console.log(`Telefone: ${config.company.telefoneDisplay} | E-mail: ${config.company.email}`);
+console.log(`Telefone: ${config.company.telefoneDisplay} | E-mail de Orçamento: ${config.company.email}`);
 
 if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
 
@@ -69,12 +72,12 @@ const html404 = `<!DOCTYPE html>
         </div>
         <div class="brand-text">
           <span class="brand-name">MAQCAPAS</span>
-          <span class="brand-sub">COMÉRCIO DE CAPAS &bull; DESDE 1987</span>
+          <span class="brand-sub">COMÉRCIO DE CAPAS SOB MEDIDA</span>
         </div>
       </a>
       <div class="header-action">
-        <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="btn btn-header-cta">
-          <span>Atendimento WhatsApp</span>
+        <a href="${mailtoQuoteUrl}" class="btn btn-header-cta">
+          <span>Solicitar Orçamento</span>
         </a>
       </div>
     </div>
@@ -84,14 +87,14 @@ const html404 = `<!DOCTYPE html>
     <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1rem;">404</h1>
     <h2 class="section-title" style="margin-bottom: 1.5rem;">Página Não Encontrada</h2>
     <p class="hero-description" style="max-width: 520px; margin: 0 auto 2rem;">
-      O endereço solicitado não existe ou foi transferido. Retorne à página inicial para conhecer nosso catálogo de capas de proteção sob medida.
+      O endereço solicitado não existe ou foi transferido. Retorne à página inicial para conhecer nossas capas de proteção sob medida.
     </p>
     <a href="/" class="btn btn-dark btn-lg">Voltar à Página Inicial</a>
   </main>
 
   <footer class="footer">
     <div class="container footer-bottom-inner" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem;">
-      <p>&copy; 1987 &mdash; ${new Date().getFullYear()} MaqCapas &bull; Curitiba &bull; Brasil</p>
+      <p>&copy; ${currentYear} MaqCapas &bull; Curitiba &bull; Brasil</p>
     </div>
   </footer>
 </body>
@@ -122,7 +125,7 @@ fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf-8');
 
 // 6. _headers (CSP estrita sem unsafe-inline)
 const headersTxt = `/*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me;
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:;
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -151,7 +154,7 @@ fs.writeFileSync(path.join(publicDir, '_headers'), headersTxt, 'utf-8');
 // 7. _redirects
 fs.writeFileSync(path.join(publicDir, '_redirects'), `/index.html / 301\n`, 'utf-8');
 
-// 8. JSON-LD Schemas
+// 8. JSON-LD Schema: LocalBusiness
 const jsonLdLocalBusiness = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -161,7 +164,6 @@ const jsonLdLocalBusiness = {
   "telephone": config.company.telefoneRaw,
   "email": config.company.email,
   "url": `${config.domain}/`,
-  "foundingDate": "1987",
   "priceRange": "$$",
   "address": {
     "@type": "PostalAddress",
@@ -174,38 +176,6 @@ const jsonLdLocalBusiness = {
     "name": config.company.pais
   },
   "description": config.company.description
-};
-
-const faqItems = [
-  {
-    q: "Vocês confeccionam capas para medidas não padronizadas?",
-    a: "Sim. Essa é a essência do nosso trabalho desde 1987. Produzimos capas com as dimensões exatas de qualquer monitor, impressora, painel de comando ou vestido de noiva longo. Basta informar largura, altura e profundidade."
-  },
-  {
-    q: "Existe quantidade mínima para fazer o pedido?",
-    a: "Não. Atendemos clientes particulares a partir de 1 peça única sob medida para uso pessoal, assim como confecções e empresas com pedidos em grandes lotes no atacado."
-  },
-  {
-    q: "Como é realizado o envio para outras regiões do país?",
-    a: "Despachamos para todo o território nacional através dos Correios (SEDEX e PAC) ou transportadoras com rastreamento. Para Curitiba e Região Metropolitana, também é possível combinar retirada."
-  },
-  {
-    q: "É possível personalizar as capas com a marca da minha empresa?",
-    a: "Sim. Executamos aplicação em serigrafia de alta resolução do logotipo da sua marca nas capas e porta-ternos em TNT para pedidos comerciais."
-  }
-];
-
-const jsonLdFAQ = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": faqItems.map(item => ({
-    "@type": "Question",
-    "name": item.q,
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": item.a
-    }
-  }))
 };
 
 /**
@@ -280,17 +250,13 @@ function renderAboutThumb({ imgKey, label, alt, title, desc, active = false }) {
                 </button>`;
 }
 
-const currentYear = new Date().getFullYear();
-const yearsCalculated = currentYear - config.company.foundingYear;
-const yearsText = yearsCalculated > 35 ? `${yearsCalculated} Anos` : 'Mais de 35 anos';
-
 // 9. Gera index.html completo
 const indexHtml = `<!DOCTYPE html>
 <html lang="${config.meta.lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MaqCapas | Capas de Proteção Sob Medida Desde 1987</title>
+  <title>MaqCapas | Capas de Proteção Sob Medida</title>
   <meta name="description" content="${config.company.description}">
   <meta name="theme-color" content="${config.meta.themeColor}">
   <link rel="canonical" href="${config.domain}/">
@@ -307,7 +273,7 @@ const indexHtml = `<!DOCTYPE html>
   <meta property="og:type" content="website">
   <meta property="og:locale" content="${config.meta.locale}">
   <meta property="og:site_name" content="${config.company.name}">
-  <meta property="og:title" content="MaqCapas | Capas de Proteção Sob Medida Desde 1987">
+  <meta property="og:title" content="MaqCapas | Capas de Proteção Sob Medida">
   <meta property="og:description" content="${config.company.description}">
   <meta property="og:url" content="${config.domain}/">
   <meta property="og:image" content="${config.domain}/assets/images/og-image.jpg">
@@ -316,7 +282,7 @@ const indexHtml = `<!DOCTYPE html>
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="${config.meta.twitterCard}">
-  <meta name="twitter:title" content="MaqCapas | Capas de Proteção Sob Medida Desde 1987">
+  <meta name="twitter:title" content="MaqCapas | Capas de Proteção Sob Medida">
   <meta name="twitter:description" content="${config.company.description}">
   <meta name="twitter:image" content="${config.domain}/assets/images/og-image.jpg">
 
@@ -331,11 +297,6 @@ const indexHtml = `<!DOCTYPE html>
   <script type="application/ld+json">
 ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
   </script>
-
-  <!-- JSON-LD Structured Data: FAQPage -->
-  <script type="application/ld+json">
-${JSON.stringify(jsonLdFAQ, null, 2)}
-  </script>
 </head>
 <body>
 
@@ -346,7 +307,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
       <div class="top-bar-links">
         <a href="tel:${config.company.telefoneRaw}" class="top-phone" data-tracking-placement="top_bar_phone">${config.company.telefoneDisplay}</a>
         <span class="top-dot">&bull;</span>
-        <span class="top-tradition">Desde ${config.company.foundingYear}</span>
+        <a href="${mailtoQuoteUrl}" class="top-phone" data-tracking-placement="top_bar_email">${config.company.email}</a>
       </div>
     </div>
   </div>
@@ -367,24 +328,23 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
         </div>
         <div class="brand-text">
           <span class="brand-name">MAQCAPAS</span>
-          <span class="brand-sub">COMÉRCIO DE CAPAS &bull; DESDE 1987</span>
+          <span class="brand-sub">COMÉRCIO DE CAPAS SOB MEDIDA</span>
         </div>
       </a>
 
       <!-- Desktop Nav -->
       <nav class="nav-menu" aria-label="Menu principal">
-        <a href="#produtos" class="nav-link">Produtos</a>
+        <a href="#hero" class="nav-link">Início</a>
         <a href="#por-que-proteger" class="nav-link">Por Que Proteger?</a>
         <a href="#materiais" class="nav-link">Materiais</a>
-        <a href="#simulador" class="nav-link">Simulador</a>
-        <a href="#sobre" class="nav-link">História</a>
-        <a href="#faq" class="nav-link">Dúvidas</a>
+        <a href="#sobre" class="nav-link">Oficina</a>
+        <a href="#saiba-mais" class="nav-link">Saiba Mais</a>
       </nav>
 
-      <!-- Botão do WhatsApp no Header -->
+      <!-- Botão de Orçamento no Header (Direciona para o E-mail) -->
       <div class="header-action">
-        <a href="https://wa.me/${config.company.whatsappNumber}?text=Olá!%20Gostaria%20de%20solicitar%20um%20orçamento%20de%20capa%20sob%20medida." target="_blank" rel="noopener" class="btn btn-header-cta" id="headerCtaBtn" data-tracking-placement="header_cta">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.199.534 1.286.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.044.072.044.419-.1.824z"/></svg>
+        <a href="${mailtoQuoteUrl}" class="btn btn-header-cta" id="headerCtaBtn" data-tracking-placement="header_cta">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
           <span>Fazer Orçamento</span>
         </a>
 
@@ -400,13 +360,12 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
     <!-- Mobile Drawer -->
     <div class="mobile-drawer" id="mobileDrawer">
       <nav class="mobile-nav" aria-label="Menu móvel">
-        <a href="#produtos" class="mobile-nav-item">Produtos</a>
+        <a href="#hero" class="mobile-nav-item">Início</a>
         <a href="#por-que-proteger" class="mobile-nav-item">Por Que Proteger?</a>
         <a href="#materiais" class="mobile-nav-item">Materiais</a>
-        <a href="#simulador" class="mobile-nav-item">Simulador de Medidas</a>
-        <a href="#sobre" class="mobile-nav-item">Quem Somos</a>
-        <a href="#faq" class="mobile-nav-item">Dúvidas Frequentes</a>
-        <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_whatsapp">Falar no WhatsApp ${config.company.telefoneDisplay}</a>
+        <a href="#sobre" class="mobile-nav-item">Oficina MaqCapas</a>
+        <a href="#saiba-mais" class="mobile-nav-item">Saiba Mais</a>
+        <a href="${mailtoQuoteUrl}" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_email">Orçamento por E-mail (${config.company.email})</a>
       </nav>
     </div>
   </header>
@@ -415,7 +374,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
   <main id="main-content">
 
     <!-- PRIMEIRO TÍTULO DA PÁGINA (H1 estrito para acessibilidade e semântica SEO) -->
-    <h1 class="sr-only">MaqCapas &mdash; Fabricação Sob Medida de Capas de Proteção Desde 1987</h1>
+    <h1 class="sr-only">MaqCapas &mdash; Fabricação de Capas para Proteção Sob Medida</h1>
 
     <!-- ════════════════════════════════════════════
          SCROLL FILM / CARROSSEL COM FOTOS REAIS
@@ -445,7 +404,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               <span class="film-scene-num">02</span>
               <span class="film-scene-tag film-scene-tag--real">Informática &bull; Foto Real de Fabricação</span>
               <h2 class="film-scene-title">Poeira e umidade não<br>têm acesso aqui.</h2>
-              <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT técnico ou cristal — corte e acabamento artesanal confeccionados em nossa oficina desde 1987.</p>
+              <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT técnico ou cristal — corte e acabamento artesanal confeccionados em nossa oficina.</p>
             </div>
           </div>
         </div>
@@ -463,20 +422,33 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           </div>
         </div>
 
-        <!-- ── Cena 4: Industrial (FOTO REAL) ── -->
-        <div class="film-scene" id="scene3" role="group" aria-roledescription="slide" aria-label="Cena 4 de 4: Maquinário Industrial">
-          <div class="film-scene-photo film-photo-scene3" aria-label="Capa industrial resistente sob medida para maquinário pesado"></div>
+        <!-- ── Cena 4: Contato (E-mail, Telefone e WhatsApp) ── -->
+        <div class="film-scene" id="scene3" role="group" aria-roledescription="slide" aria-label="Cena 4 de 4: Contato MaqCapas">
+          <div class="film-scene-photo film-photo-scene3" aria-label="Capa industrial resistente sob medida fabricada pela MaqCapas"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">04</span>
-              <span class="film-scene-tag film-scene-tag--real">Maquinário Industrial &bull; Produção Real</span>
-              <h2 class="film-scene-title">Do torno mecânico ao<br>painel de comando.</h2>
-              <p class="film-scene-desc">Capas industriais sob medida em lona reforçada — confeccionadas para proteger equipamentos contra poeira abrasiva, cavacos e respingos de operação.</p>
+              <span class="film-scene-tag film-scene-tag--real">Atendimento &bull; Contato Direto</span>
+              <h2 class="film-scene-title">Entre em Contato<br>com a MaqCapas.</h2>
+              <div class="film-contact-list">
+                <p class="film-contact-item">
+                  <strong>E-mail (Orçamentos):</strong><br>
+                  <a href="${mailtoQuoteUrl}" class="film-contact-link" data-tracking-placement="film_scene_email">${config.company.email}</a>
+                </p>
+                <p class="film-contact-item">
+                  <strong>Telefone:</strong><br>
+                  <a href="tel:${config.company.telefoneRaw}" class="film-contact-link">${config.company.telefoneDisplay}</a>
+                </p>
+                <p class="film-contact-item">
+                  <strong>WhatsApp:</strong><br>
+                  <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="film-contact-link">${config.company.telefoneDisplay}</a>
+                </p>
+              </div>
             </div>
           </div>
-          <!-- CTA final apontando para #produtos -->
+          <!-- CTA final apontando para #saiba-mais -->
           <div class="film-final-cta">
-            <a href="#produtos" class="film-cta-btn">Ver todos os produtos &nbsp;→</a>
+            <a href="#saiba-mais" class="film-cta-btn">Saiba mais &nbsp;→</a>
           </div>
         </div>
 
@@ -512,23 +484,15 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
     <section class="hero-section" id="hero">
       <div class="container text-center">
         
-        <div class="hero-pill">Confecção Técnica e Têxtil Desde 1987</div>
+        <div class="hero-pill">Confecção Técnica e Têxtil</div>
 
         <h2 class="hero-title">
           Capas de Proteção Sob Medida para Equipamentos, Vestuário e Indústria
         </h2>
 
         <p class="hero-description">
-          Preserve seus bens contra a ação contínua da poeira e da umidade. Desenvolvemos capas sob medida em PVC Cristal transparente e TNT respirável, com confecção própria em Curitiba e envio para todo o território nacional.
+          Preserve seus bens contra a ação contínua da poeira e da umidade. Desenvolvemos capas sob medida em PVC Cristal ou Opaco e TNT respirável, com confecção própria em Curitiba e envio para todo o território nacional.
         </p>
-
-        <div class="hero-actions">
-          <a href="https://wa.me/${config.company.whatsappNumber}?text=Olá!%20Gostaria%20de%20um%20orçamento%20de%20capa%20sob%20medida." target="_blank" rel="noopener" class="btn btn-dark btn-lg" data-tracking-placement="hero_cta">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.199.534 1.286.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.044.072.044.419-.1.824z"/></svg>
-            <span>Solicitar Orçamento</span>
-          </a>
-          <a href="#produtos" class="btn btn-outline btn-lg">Ver Produtos</a>
-        </div>
 
         <!-- Showcase: FOTOS REAIS COM PICTURE RESPONSIVO -->
         <div class="hero-showcase">
@@ -548,8 +512,8 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Informática &amp; TI</span>
-              <h3 class="showcase-heading">Capas para Monitores, Gabinetes e Teclados</h3>
-              <p class="showcase-copy">Corte sob medida em TNT estruturado ou PVC Cristal transparente.</p>
+              <h3 class="showcase-heading">Capas para Informática</h3>
+              <p class="showcase-copy">TNT gramatura 60 e PVC Cristal ou Opaco 010mm</p>
             </div>
           </div>
 
@@ -568,7 +532,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Alta Costura &amp; Ateliês</span>
-              <h3 class="showcase-heading">Capas para Noivas e Porta-Ternos</h3>
+              <h3 class="showcase-heading">Capa para Terno, Daminhas, Noivas e Festas</h3>
               <p class="showcase-copy">TNT respirável que protege rendas, sedas e armações contra mofo e poeira.</p>
             </div>
           </div>
@@ -588,25 +552,15 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Indústria &amp; Oficinas</span>
-              <h3 class="showcase-heading">Capas para Máquinas Industriais</h3>
-              <p class="showcase-copy">Proteção pesada reforçada contra fuligem, pó abrasivo e respingos de óleos.</p>
+              <h3 class="showcase-heading">Capa para equipamentos industriais</h3>
+              <p class="showcase-copy">Confeccionado com material impermeável e resistente</p>
             </div>
           </div>
 
         </div>
 
-        <!-- Trust Strip -->
+        <!-- Trust Strip (Apenas Fabricação Própria e Envio Nacional) -->
         <div class="trust-strip">
-          <div class="trust-item">
-            <strong class="calculated-years" data-base-year="${config.company.foundingYear}">${yearsText}</strong>
-            <span>De tradição ininterrupta</span>
-          </div>
-          <div class="trust-divider"></div>
-          <div class="trust-item">
-            <strong>Sob Medida</strong>
-            <span>Corte para qualquer dimensão</span>
-          </div>
-          <div class="trust-divider"></div>
           <div class="trust-item">
             <strong>Fabricação Própria</strong>
             <span>Sem intermediários</span>
@@ -635,20 +589,14 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
 
         <div class="reasons-grid">
           
-          <div class="reason-card">
+          <div class="reason-card reason-card--title-only">
             <span class="reason-index">01</span>
             <h3 class="reason-title">Acidez Residual de Poeira e Umidade</h3>
-            <p class="reason-text">
-              Partículas em suspensão no ar acumulam umidade ambiente, formando uma camada que acelera a oxidação de contatos metálicos, fiações e conectores desprotegidos.
-            </p>
           </div>
 
-          <div class="reason-card">
+          <div class="reason-card reason-card--title-only">
             <span class="reason-index">02</span>
             <h3 class="reason-title">Atrito e Travamento Mecânico</h3>
-            <p class="reason-text">
-              O depósito de pó abrasivo em eixos de impressoras, engrenagens e teclados eleva o atrito operacional, acelerando o desgaste precoce de componentes móveis.
-            </p>
           </div>
 
           <div class="reason-card">
@@ -664,322 +612,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
       </div>
     </section>
 
-    <!-- Section: Produtos -->
-    <section class="section" id="produtos">
-      <div class="container">
-
-        <div class="section-header text-center">
-          <span class="section-tag">Portfólio de Fabricação</span>
-          <h2 class="section-title">Catálogo de Capas Sob Encomenda</h2>
-          <p class="section-subtitle">
-            Cada produto pode ser solicitado em dimensões padronizadas ou confeccionado de acordo com o seu desenho e necessidade específica.
-          </p>
-        </div>
-
-        <!-- Filter Buttons -->
-        <div class="filter-group">
-          <button class="filter-button active" data-filter="all">Todos os Modelos</button>
-          <button class="filter-button" data-filter="tech">Informática &amp; TI</button>
-          <button class="filter-button" data-filter="couture">Vestuário &amp; Noivas</button>
-          <button class="filter-button" data-filter="industrial">Indústria &amp; Institucional</button>
-        </div>
-
-        <!-- Products Grid: 6 FOTOS REAIS CENTRALIZADAS EM 4:3 -->
-        <div class="products-grid">
-          
-          <!-- Produto 1: Informática -->
-          <article class="product-item" data-category="tech">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'capa_computador_real.jpg',
-                alt: 'Capas para gabinetes, monitores e teclados sob medida',
-                id: 'photoTech',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Informática &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Capas para Monitores, Gabinetes e Teclados</h3>
-              <p class="product-description">
-                Proteção para computadores de mesa, telas ultra-wide e periféricos. Fabricadas em TNT técnico estruturado ou PVC Cristal impermeável.
-              </p>
-              <ul class="product-points">
-                <li>Passagens traseiras livres para cabos conectados</li>
-                <li>Limpeza prática com pano levemente umedecido</li>
-                <li>Ajuste exato para telas de 14 a 65 polegadas</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Capas para Computadores e Monitores" data-material="pvc">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Produto 2: Noivas -->
-          <article class="product-item" data-category="couture">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'capa_noiva_real.jpg',
-                alt: 'Capas longas para vestidos de noiva confeccionadas em TNT respirável',
-                id: 'photoBridal',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Ateliê &amp; Noivas &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Capas Longas para Vestidos de Noiva e Festa</h3>
-              <p class="product-description">
-                Estruturadas com fole lateral expansivo para acomodar tules, armações volumosas e caudas sem comprimir o tecido.
-              </p>
-              <ul class="product-points">
-                <li>TNT respirável que reduz a retenção de umidade</li>
-                <li>Visor frontal transparente para rápida identificação</li>
-                <li>Zíper frontal reforçado com cursores suaves</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Capas para Vestidos de Noiva e Festa" data-material="tnt">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Produto 3: Porta-Ternos -->
-          <article class="product-item" data-category="couture">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'porta_terno_real.jpg',
-                alt: 'Porta-ternos executivos com visor transparente',
-                id: 'photoSuit',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Alfaiataria &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Porta-Ternos Executivos com Visor</h3>
-              <p class="product-description">
-                Cuidado para trajes formais, blazers e smokings. Abertura central por zíper e visor em cristal para conferência rápida.
-              </p>
-              <ul class="product-points">
-                <li>Passador reforçado anti-rasgo para cabide</li>
-                <li>Opção de estampa serigráfica com a marca da sua alfaiataria</li>
-                <li>Alças na base para transporte dobrado em viagens</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Porta-Ternos Executivos com Visor" data-material="tnt">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Produto 4: Acabamento com Visor Cristal e Zíper -->
-          <article class="product-item" data-category="couture">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'porta_terno_detalhe_real.jpg',
-                alt: 'Detalhe de acabamento de capa em TNT com visor em PVC cristal e zíper reforçado',
-                id: 'photoSuitDetail',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Acabamento &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Capas para Acervos, Ateliês e Coleções</h3>
-              <p class="product-description">
-                Confecção sob medida para lojas, figurinos e guarda-roupas planejados, com visor de identificação em PVC cristal e cursor metálico de alta durabilidade.
-              </p>
-              <ul class="product-points">
-                <li>Visor frontal em cristal para identificação imediata da peça</li>
-                <li>Viés lateral pespontado com acabamento reforçado</li>
-                <li>Disponível em diversas cores e gramaturas de TNT</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Capas para Acervos e Ateliês com Visor" data-material="tnt">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Produto 5: Industrial -->
-          <article class="product-item" data-category="industrial">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'capa_industrial_real.jpg',
-                alt: 'Capas para máquinas industriais sob medida',
-                id: 'photoInd',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Indústria &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Capas para Máquinas Industriais e Equipamentos</h3>
-              <p class="product-description">
-                Confeccionadas em materiais de alta densidade como lona bagum reforçada para proteção de centros de usinagem, tornos e painéis elétricos.
-              </p>
-              <ul class="product-points">
-                <li>Barreira de alta resistência contra cavacos, poeira pesada e óleos</li>
-                <li>Costura com linha de nylon de alta tenacidade</li>
-                <li>Opção de ilhoses ou fechos de velcro para amarração firme</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Capas para Máquinas Industriais" data-material="bagum">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Produto 6: Sacolas TNT -->
-          <article class="product-item" data-category="industrial">
-            <div class="product-frame">
-              ${renderPictureTag({
-                imgKey: 'sacola_tnt.jpg',
-                alt: 'Sacolas promocionais e ecobags em TNT sob encomenda',
-                id: 'photoBags',
-                className: 'product-photo',
-                loading: 'lazy',
-                sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px'
-              })}
-              <span class="product-pill">Institucional &bull; Foto Real</span>
-            </div>
-            <div class="product-details">
-              <h3 class="product-name">Sacolas Promocionais e Ecobags em TNT</h3>
-              <p class="product-description">
-                Sacolas ecológicas resistentes para marcas, eventos corporativos, feiras e ateliês. Acabamento reforçado em costura e possibilidade de estampa da sua logomarca.
-              </p>
-              <ul class="product-points">
-                <li>Alças reforçadas com costura em cruz para maior capacidade de carga</li>
-                <li>Opção de estampa serigráfica personalizada</li>
-                <li>Material reutilizável, sustentável e de fácil higienização</li>
-              </ul>
-              <div class="product-action">
-                <button type="button" class="btn btn-card-action" data-item="Sacolas Promocionais em TNT" data-material="tnt">
-                  <span>Cotar Este Modelo</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Section: Simulador de Medidas -->
-    <section class="section section-alt" id="simulador">
-      <div class="container">
-        
-        <div class="section-header text-center">
-          <span class="section-tag">Orçamento rápido</span>
-          <h2 class="section-title">Simulador de Medidas Sob Demanda</h2>
-          <p class="section-subtitle">
-            Informe as dimensões do seu equipamento ou vestuário. O sistema monta a ordem técnica para envio direto ao WhatsApp da fábrica.
-          </p>
-        </div>
-
-        <div class="simulator-card">
-          <form id="simulatorForm" class="simulator-form">
-            
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="calcSegment" class="form-label">Aplicação Principal:</label>
-                <select id="calcSegment" class="form-control">
-                  <option value="Informática (Monitor / Gabinete / Teclado)">Informática (Monitor, CPU, Teclado)</option>
-                  <option value="Vestuário (Vestido de Noiva / Festa / Terno)">Vestuário (Vestido de Noiva, Festa, Terno)</option>
-                  <option value="Máquinas Industriais / Fábrica">Máquinas Industriais e Equipamentos</option>
-                  <option value="Sacolas &amp; Embalagens Promocionais em TNT">Sacolas e Embalagens em TNT</option>
-                  <option value="Outros Sob Medida (Móveis / Eletros)">Outros Modelos Sob Medida</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <span class="form-label">Material Desejado:</span>
-                <div class="radio-selector">
-                  <label class="radio-option">
-                    <input type="radio" name="calcMaterial" value="PVC Cristal Transparente" checked>
-                    <span>PVC Cristal (Impermeável)</span>
-                  </label>
-                  <label class="radio-option">
-                    <input type="radio" name="calcMaterial" value="TNT Respirável Técnico">
-                    <span>TNT Respirável (Anti-Mofo)</span>
-                  </label>
-                  <label class="radio-option">
-                    <input type="radio" name="calcMaterial" value="Lona Bagum Industrial">
-                    <span>Lona Bagum (Uso Pesado)</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <span class="form-label">Dimensões em Centímetros (Aproximadas):</span>
-              <div class="dimensions-grid">
-                <div class="dim-box">
-                  <label for="inputWidth" class="dim-caption">Largura (cm)</label>
-                  <input type="number" id="inputWidth" class="form-control" placeholder="Ex: 60" min="1" max="1000">
-                </div>
-                <div class="dim-box">
-                  <label for="inputHeight" class="dim-caption">Altura (cm)</label>
-                  <input type="number" id="inputHeight" class="form-control" placeholder="Ex: 45" min="1" max="1000">
-                </div>
-                <div class="dim-box">
-                  <label for="inputDepth" class="dim-caption">Profundidade (cm)</label>
-                  <input type="number" id="inputDepth" class="form-control" placeholder="Ex: 20" min="0" max="1000">
-                </div>
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="inputQty" class="form-label">Quantidade de Peças:</label>
-                <input type="number" id="inputQty" class="form-control" value="1" min="1" max="10000">
-              </div>
-              <div class="form-group">
-                <label for="inputNotes" class="form-label">Marca, Modelo ou Observações:</label>
-                <input type="text" id="inputNotes" class="form-control" placeholder="Ex: Monitor Dell 27 pol / Zíper frontal">
-              </div>
-            </div>
-
-            <div class="summary-card">
-              <div class="summary-title">Resumo das Especificações:</div>
-              <div id="liveSummaryText" class="summary-content" aria-live="polite"></div>
-            </div>
-
-            <button type="button" id="btnSendQuote" class="btn btn-dark btn-submit w-full" data-tracking-placement="simulator_submit">
-              <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.199.534 1.286.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.044.072.044.419-.1.824z"/></svg>
-              <span>Enviar Especificações para o WhatsApp ${config.company.telefoneDisplay}</span>
-            </button>
-
-            <p class="form-note">
-              Atendimento direto com os modelistas da MaqCapas. Respondemos com orçamento e prazo de confecção.
-            </p>
-
-          </form>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Section: Materiais -->
+    <!-- Section: Materiais (Apenas PVC Cristal ou Opaco e TNT Técnico Respirável) -->
     <section class="section" id="materiais">
       <div class="container">
         
@@ -991,13 +624,13 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           </p>
         </div>
 
-        <div class="materials-grid">
+        <div class="materials-grid materials-grid--two">
           
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
-            <h3 class="material-name">PVC Cristal Calandrado</h3>
+            <h3 class="material-name">PVC Cristal ou Opaco</h3>
             <p class="material-text">
-              Material flexível de alta transparência com plastificantes que evitam o ressecamento precoce. Proporciona barreira protetora contra respingos, sujidades e poeira ambiente.
+              Material flexível com plastificantes que evitam o ressecamento precoce. Proporciona barreira protetora contra respingos, sujidades e poeira ambiente.
             </p>
           </div>
 
@@ -1009,41 +642,16 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
             </p>
           </div>
 
-          <div class="material-card">
-            <div class="material-marker" aria-hidden="true">&mdash;</div>
-            <h3 class="material-name">Solda Eletrônica de Alta Frequência</h3>
-            <p class="material-text">
-              União molecular contínua entre as lâminas de plástico que reforça as junções das bordas, sem linhas aparentes sujeitas a desfiamento.
-            </p>
-          </div>
-
         </div>
 
       </div>
     </section>
 
-    <!-- Section: Sobre a Empresa -->
+    <!-- Section: Oficina MaqCapas (Somente o bloco de fotos reais da oficina) -->
     <section class="section section-alt" id="sobre">
       <div class="container">
         
-        <div class="about-grid">
-          
-          <div class="about-content">
-            <span class="section-tag">História e Compromisso</span>
-            <h2 class="section-title">Protegendo o Patrimônio de Clientes Desde 1987</h2>
-            <p class="about-text">
-              Fundada em 1987 na cidade de Curitiba, a <strong>MaqCapas</strong> iniciou sua trajetória atendendo os primeiros polos de processamento de dados e oficinas de alta costura que precisavam de soluções personalizadas de proteção.
-            </p>
-            <p class="about-text">
-              Mais de <span class="calculated-years-number" data-base-year="${config.company.foundingYear}">${yearsCalculated}</span> anos depois, mantemos a confecção artesanal própria com cortes precisos, atendendo desde pedidos unitários de clientes domésticos e ateliês de noivas até indústrias automotivas e têxteis em todo o Brasil.
-            </p>
-            <div class="about-action">
-              <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="btn btn-dark" data-tracking-placement="about_whatsapp">
-                <span>Falar Conosco no WhatsApp</span>
-              </a>
-            </div>
-          </div>
-
+        <div class="about-single-wrapper">
           <div class="about-media">
             <div class="about-photo-card">
               <div class="about-photo-stage">
@@ -1090,74 +698,34 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
               </div>
             </div>
           </div>
-
         </div>
 
       </div>
     </section>
 
-    <!-- Section: FAQ -->
-    <section class="section" id="faq">
+    <!-- Section: Saiba Mais -->
+    <section class="section" id="saiba-mais">
       <div class="container">
-
-        <div class="section-header text-center">
-          <span class="section-tag">Dúvidas Frequentes</span>
-          <h2 class="section-title">Perguntas Comuns</h2>
-          <p class="section-subtitle">
-            Esclarecimentos sobre confecção sob medida, prazos e entrega nacional.
+        <div class="saiba-mais-card text-center">
+          <span class="section-tag">Saiba Mais</span>
+          <h2 class="section-title">Orçamentos Sob Medida e Outros Materiais</h2>
+          <p class="saiba-mais-text">
+            Aceitamos orçamentos de capas sob medida para equipamentos e sugestões de outros materiais.
           </p>
+          <div class="saiba-mais-actions">
+            <a href="${mailtoQuoteUrl}" class="btn btn-dark btn-lg" data-tracking-placement="saiba_mais_email">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span>Solicitar Orçamento por E-mail</span>
+            </a>
+            <a href="${mailtoQuoteUrl}" class="saiba-mais-email-link">${config.company.email}</a>
+          </div>
         </div>
-
-        <div class="faq-container">
-          
-          <div class="faq-row">
-            <button class="faq-toggle" aria-expanded="false">
-              <span>Vocês confeccionam capas para medidas não padronizadas?</span>
-              <span class="faq-indicator" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-pane">
-              <p>Sim. Essa é a essência do nosso trabalho desde 1987. Produzimos capas com as dimensões exatas de qualquer monitor, impressora, painel de comando ou vestido de noiva longo. Basta informar largura, altura e profundidade.</p>
-            </div>
-          </div>
-
-          <div class="faq-row">
-            <button class="faq-toggle" aria-expanded="false">
-              <span>Existe quantidade mínima para fazer o pedido?</span>
-              <span class="faq-indicator" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-pane">
-              <p>Não. Atendemos clientes particulares a partir de 1 peça única sob medida para uso pessoal, assim como confecções e empresas com pedidos em grandes lotes no atacado.</p>
-            </div>
-          </div>
-
-          <div class="faq-row">
-            <button class="faq-toggle" aria-expanded="false">
-              <span>Como é realizado o envio para outras regiões do país?</span>
-              <span class="faq-indicator" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-pane">
-              <p>Despachamos para todo o território nacional através dos Correios (SEDEX e PAC) ou transportadoras com rastreamento. Para Curitiba e Região Metropolitana, também é possível combinar retirada.</p>
-            </div>
-          </div>
-
-          <div class="faq-row">
-            <button class="faq-toggle" aria-expanded="false">
-              <span>É possível personalizar as capas com a marca da minha empresa?</span>
-              <span class="faq-indicator" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-pane">
-              <p>Sim. Executamos aplicação em serigrafia de alta resolução do logotipo da sua marca nas capas e porta-ternos em TNT para pedidos comerciais.</p>
-            </div>
-          </div>
-
-        </div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- Clean Footer com Apenas os 2 Dados Oficiais Solicitados: Telefone e E-mail -->
+  <!-- Clean Footer -->
   <footer class="footer">
     <div class="container footer-grid">
       
@@ -1167,13 +735,13 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
           <span class="footer-subtitle">COMÉRCIO DE CAPAS SOB MEDIDA</span>
         </div>
         <p class="footer-copy">
-          Fabricação sob medida de capas de proteção técnica e têxtil. Preservando maquinários, informática e alfaiataria fina desde 1987.
+          Fabricação de capas para proteção sob medida.
         </p>
         
-        <!-- Bloco Oficial: Apenas Telefone e E-mail -->
+        <!-- Bloco Oficial: E-mail e Telefone -->
         <div class="footer-contact-block">
+          <p class="footer-contact-item"><strong>E-mail (Orçamentos):</strong> <a href="${mailtoQuoteUrl}" class="footer-link">${config.company.email}</a></p>
           <p class="footer-contact-item"><strong>Telefone / WhatsApp:</strong> <a href="tel:${config.company.telefoneRaw}" class="footer-link">${config.company.telefoneDisplay}</a></p>
-          <p class="footer-contact-item"><strong>E-mail:</strong> <a href="mailto:${config.company.email}" class="footer-link">${config.company.email}</a></p>
           <p class="footer-contact-item">${config.company.cidade} &mdash; ${config.company.estado} &mdash; ${config.company.pais}</p>
         </div>
       </div>
@@ -1181,10 +749,9 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
       <div class="footer-col">
         <h4 class="footer-heading">Linhas</h4>
         <ul class="footer-menu">
-          <li><a href="#produtos">Informática &amp; Monitores</a></li>
-          <li><a href="#produtos">Vestidos de Noiva</a></li>
-          <li><a href="#produtos">Porta-Ternos Executivos</a></li>
-          <li><a href="#produtos">Capas Industriais</a></li>
+          <li><a href="#hero">Informática</a></li>
+          <li><a href="#hero">Vestidos, noivas e festas</a></li>
+          <li><a href="#hero">Capas Industriais</a></li>
         </ul>
       </div>
 
@@ -1193,10 +760,9 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
         <ul class="footer-menu">
           <li><a href="#hero">Início</a></li>
           <li><a href="#por-que-proteger">Por Que Proteger?</a></li>
-          <li><a href="#produtos">Catálogo</a></li>
-          <li><a href="#simulador">Simulador</a></li>
-          <li><a href="#sobre">História</a></li>
-          <li><a href="#faq">Dúvidas</a></li>
+          <li><a href="#materiais">Materiais</a></li>
+          <li><a href="#sobre">Oficina MaqCapas</a></li>
+          <li><a href="#saiba-mais">Saiba Mais</a></li>
         </ul>
       </div>
 
@@ -1204,7 +770,7 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
 
     <div class="footer-bottom">
       <div class="container footer-bottom-inner">
-        <p>&copy; 1987 &mdash; <span id="currentYear">${currentYear}</span> MaqCapas &bull; Todos os direitos reservados.</p>
+        <p>&copy; <span id="currentYear">${currentYear}</span> MaqCapas &bull; Todos os direitos reservados.</p>
         <p>Curitiba &bull; Brasil</p>
       </div>
       <div class="container">
@@ -1216,8 +782,8 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
              data-tracking-placement="footer_marqlab">
             <span class="marqlab-credit__text">Desenvolvido por</span>
             <picture>
-              <source srcset="assets/images/marq-lab.webp" type="image/webp">
-              <img src="assets/images/marq-lab.png" alt="Logo Marq Lab" class="marqlab-credit__logo" width="28" height="16" loading="lazy">
+              <source srcset="assets/images/marq-lab.webp?v=${ASSET_VER}" type="image/webp">
+              <img src="assets/images/marq-lab.png?v=${ASSET_VER}" alt="Logo Marq Lab" class="marqlab-credit__logo" width="28" height="16" loading="lazy">
             </picture>
             <span class="marqlab-credit__brand">Marq Lab</span>
           </a>
@@ -1226,11 +792,11 @@ ${JSON.stringify(jsonLdFAQ, null, 2)}
     </div>
   </footer>
 
-  <!-- Discreet Floating WhatsApp -->
-  <a href="https://wa.me/${config.company.whatsappNumber}?text=Olá!%20Gostaria%20de%20um%20orçamento%20de%20capa%20sob%20medida." target="_blank" rel="noopener" class="discreet-whatsapp" aria-label="Atendimento no WhatsApp" data-tracking-placement="floating_button">
-    <div class="discreet-tooltip">Orçamento no WhatsApp</div>
+  <!-- Discreet Floating Email Button (Orçamentos vão para luizmarnunes18@gmail.com) -->
+  <a href="${mailtoQuoteUrl}" class="discreet-whatsapp" aria-label="Solicitar Orçamento por E-mail" data-tracking-placement="floating_button">
+    <div class="discreet-tooltip">Orçamento por E-mail</div>
     <div class="discreet-icon">
-      <svg width="27" height="27" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.199.534 1.286.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.044.072.044.419-.1.824z"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
     </div>
   </a>
 

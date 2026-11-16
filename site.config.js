@@ -9,8 +9,8 @@ module.exports = {
   company: {
     name: 'MaqCapas',
     brandName: 'MAQCAPAS',
-    tagline: 'Comércio de Capas Sob Medida &bull; Desde 1987',
-    description: 'Fabricação sob medida de capas protetoras para informática, vestidos de noiva, ternos e máquinas industriais. Confecção própria desde 1987 em Curitiba/PR.',
+    tagline: 'Comércio de Capas Sob Medida',
+    description: 'Fabricação de capas para proteção sob medida para informática, ternos, daminhas, noivas, festas e equipamentos industriais em Curitiba/PR.',
     
     // Dados de contato oficiais informados pelo cliente
     email: 'luizmarnunes18@gmail.com',

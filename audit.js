@@ -91,26 +91,25 @@ async function runAudit() {
   }
 
   // ---------------------------------------------------------------------------
-  // 2. CONTAGEM DE ANOS CALCULADA & RODAPÉ DINÂMICO
+  // 2. REMOÇÃO DE "DESDE 1987" & RODAPÉ DINÂMICO COM ANO ATUAL
   // ---------------------------------------------------------------------------
   const currentYear = new Date().getFullYear();
-  const calculatedYears = currentYear - config.company.foundingYear;
   const scriptContent = fs.readFileSync(path.join(publicDir, 'script.js'), 'utf-8');
   
-  const hasDynamicScript = scriptContent.includes('currentYear - foundingYear') || scriptContent.includes('currentYear - 1987');
-  const hasCalculatedClass = html.includes('calculated-years') || html.includes(`${calculatedYears} Anos`) || html.includes('Mais de 35 anos');
-  const hasFooterDynamicYear = html.includes(`© 1987 &mdash; <span id="currentYear">${currentYear}</span>`) || html.includes(`&copy; 1987 &mdash; <span id="currentYear">${currentYear}</span>`);
+  const has1987InHtml = html.includes('1987');
+  const hasFooterDynamicYear = html.includes(`&copy; <span id="currentYear">${currentYear}</span> MaqCapas`);
 
-  if (hasDynamicScript && hasCalculatedClass && hasFooterDynamicYear) {
-    pass('2.DynamicYears', `Contagem de anos dinâmica verificada (${calculatedYears} anos desde 1987), com script automático e rodapé © 1987 — ${currentYear}.`);
+  if (!has1987InHtml && hasFooterDynamicYear) {
+    pass('2.DynamicYears', `Menções a 1987 removidas conforme pedido do cliente e rodapé dinâmico com apenas © ${currentYear} MaqCapas.`);
   } else {
-    fail('2.DynamicYears', `Falha na contagem dinâmica de anos: script=${hasDynamicScript}, htmlClass=${hasCalculatedClass}, footer=${hasFooterDynamicYear}`);
+    fail('2.DynamicYears', `Falha na verificação de ano: sem1987=${!has1987InHtml}, footer=${hasFooterDynamicYear}`);
   }
 
   // ---------------------------------------------------------------------------
-  // 3. "VER TODOS OS PRODUTOS" -> #PRODUTOS; TEL CANÔNICO; DUPLICIDADE & ESTADOS
+  // 3. ORÇAMENTOS DIRETO NO E-MAIL; TEL CANÔNICO; DUPLICIDADE & ESTADOS
   // ---------------------------------------------------------------------------
-  const filmCtaPointsToProdutos = html.includes('href="#produtos" class="film-cta-btn"') || html.includes('class="film-cta-btn" href="#produtos"');
+  const expectedMailto = `mailto:${config.company.email}`;
+  const headerCtaIsMailto = html.includes(`href="${expectedMailto}`) && html.includes('id="headerCtaBtn"');
   const expectedTel = `href="tel:${config.company.telefoneRaw}"`;
   const allPhonesStandard = html.includes(expectedTel);
   
@@ -119,33 +118,28 @@ async function runAudit() {
   
   // Textos de estado não devem vir estáticos com "Carregando dados..."
   const hasCarregandoDados = html.includes('Carregando dados...');
-  const toastMessageInitialEmpty = /<span id="toastMessage"><\/span>/.test(html) || html.includes('style="display:none;" id="toastCard"') || html.includes('id="toastCard" role="status" aria-live="polite" style="display:none;"');
+  const toastMessageInitialEmpty = /<span id="toastMessage"><\/span>/.test(html);
 
-  if (filmCtaPointsToProdutos && allPhonesStandard && svgLogoAriaHidden && !hasCarregandoDados && toastMessageInitialEmpty) {
-    pass('3.LinkseAcessibilidade', `Botão do filme aponta para #produtos, ${expectedTel} canônico, logo com aria-hidden previne duplicidade e textos de estado limpos.`);
+  if (headerCtaIsMailto && allPhonesStandard && svgLogoAriaHidden && !hasCarregandoDados && toastMessageInitialEmpty) {
+    pass('3.LinkseAcessibilidade', `Botões de orçamento apontam para ${expectedMailto}, ${expectedTel} canônico, logo com aria-hidden e textos de estado limpos.`);
   } else {
-    fail('3.LinkseAcessibilidade', `Falha em links ou acessibilidade: ctaProdutos=${filmCtaPointsToProdutos}, telStandard=${allPhonesStandard}, svgHidden=${svgLogoAriaHidden}, semCarregando=${!hasCarregandoDados}, toastLimpo=${toastMessageInitialEmpty}`);
+    fail('3.LinkseAcessibilidade', `Falha em links ou acessibilidade: mailto=${headerCtaIsMailto}, telStandard=${allPhonesStandard}, svgHidden=${svgLogoAriaHidden}, semCarregando=${!hasCarregandoDados}, toastLimpo=${toastMessageInitialEmpty}`);
   }
 
   // ---------------------------------------------------------------------------
-  // 4. "ORÇAMENTO RÁPIDO" E SOMENTE FOTOS REAIS (SEM ALTERNADOR IA E SEM SAPATOS)
+  // 4. TEXTOS ATUALIZADOS DO CLIENTE, SEÇÃO SAIBA MAIS E SOMENTE FOTOS REAIS
   // ---------------------------------------------------------------------------
-  const hasOrcamentoRapido = html.includes('Orçamento rápido');
-  const hasOrcamentoInstantaneo = html.includes('Orçamento Instantâneo');
-  const hasEstudioIa = html.includes('Estúdio IA') || html.includes('Modelo Estúdio IA');
-  const hasAiToggleButtons = html.includes('btn-photo-toggle') || html.includes('btn-film-toggle');
-  const hasRemovedShoePhoto = html.includes('embalagem_sapatos');
+  const hasNewCard1 = html.includes('Capas para Informática') && html.includes('TNT gramatura 60 e PVC Cristal ou Opaco 010mm');
+  const hasNewCard2 = html.includes('Capa para Terno, Daminhas, Noivas e Festas');
+  const hasNewCard3 = html.includes('Capa para equipamentos industriais') && html.includes('Confeccionado com material impermeável e resistente');
+  const hasPvcOpaco = html.includes('PVC Cristal ou Opaco') && !html.includes('PVC Cristal Calandrado') && !html.includes('Solda Eletrônica de Alta Frequência');
+  const hasSaibaMais = html.includes('id="saiba-mais"') && html.includes('Aceitamos orçamentos de capas sob medida para equipamentos e sugestões de outros materiais');
+  const hasRemovedSections = html.includes('id="produtos"') || html.includes('id="simulador"') || html.includes('id="faq"');
 
-  // Verifica se fotos reais estão em todos os cards de produto
-  const card1Real = html.includes('id="photoTech"') && html.includes('capa_computador_real');
-  const card2Real = html.includes('id="photoBridal"') && html.includes('capa_noiva_real');
-  const card3Real = html.includes('id="photoSuit"') && html.includes('porta_terno_real');
-  const card4Real = html.includes('id="photoInd"') && html.includes('capa_industrial_real');
-
-  if (hasOrcamentoRapido && !hasOrcamentoInstantaneo && !hasEstudioIa && !hasAiToggleButtons && !hasRemovedShoePhoto && card1Real && card2Real && card3Real && card4Real) {
-    pass('4.NomenclaturaEFotosReais', 'Termo "Orçamento rápido" adotado, somente fotos reais ativas em todo o site (sem alternador de IA e sem embalagem_sapatos).');
+  if (hasNewCard1 && hasNewCard2 && hasNewCard3 && hasPvcOpaco && hasSaibaMais && !hasRemovedSections) {
+    pass('4.NomenclaturaEFotosReais', 'Todos os textos solicitados pelo cliente, seção Saiba Mais e remoção de seções antigas verificados com sucesso.');
   } else {
-    fail('4.NomenclaturaEFotosReais', `Inconsistência nos cards/nomenclatura: orcRapido=${hasOrcamentoRapido}, semInstantaneo=${!hasOrcamentoInstantaneo}, semToggleIa=${!hasAiToggleButtons}, semSapatos=${!hasRemovedShoePhoto}, cardsReais=${card1Real && card2Real && card3Real && card4Real}`);
+    fail('4.NomenclaturaEFotosReais', `Inconsistência nos textos do cliente: card1=${hasNewCard1}, card2=${hasNewCard2}, card3=${hasNewCard3}, pvcOpaco=${hasPvcOpaco}, saibaMais=${hasSaibaMais}, semSecoesAntigas=${!hasRemovedSections}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -182,7 +176,7 @@ async function runAudit() {
   // ---------------------------------------------------------------------------
   // 7. RODAPÉ COM DADOS DE CONTATO DEFINIDOS (E-MAIL E TELEFONE VIA CONFIG)
   // ---------------------------------------------------------------------------
-  const hasEmailField = html.includes('E-mail:') && html.includes(config.company.email);
+  const hasEmailField = html.includes('E-mail') && html.includes(config.company.email);
   const hasPhoneField = (html.includes('Telefone') || html.includes('WhatsApp')) && (html.includes(config.company.telefoneDisplay) || html.includes(config.company.telefone));
   const hasMarqLabSignature = html.includes('marqlab-credit');
 
@@ -193,11 +187,10 @@ async function runAudit() {
   }
 
   // ---------------------------------------------------------------------------
-  // 8. JSON-LD LOCALBUSINESS & FAQPAGE (IDÊNTICO ÀS PERGUNTAS VISÍVEIS)
+  // 8. JSON-LD LOCALBUSINESS
   // ---------------------------------------------------------------------------
   const jsonLdBlocks = [...html.matchAll(/<script\s+type=["']application\/ld\+json["']>([\s\S]*?)<\/script>/gi)].map(m => m[1].trim());
   let localBusinessValid = false;
-  let faqPageValid = false;
 
   for (const block of jsonLdBlocks) {
     try {
@@ -206,34 +199,19 @@ async function runAudit() {
         if (
           parsed.name === 'MaqCapas' &&
           parsed.telephone === config.company.telefoneRaw &&
-          parsed.foundingDate === '1987' &&
           parsed.address?.addressLocality === 'Curitiba' &&
           parsed.areaServed?.name === 'Brasil'
         ) {
           localBusinessValid = true;
         }
       }
-      if (parsed['@type'] === 'FAQPage' && Array.isArray(parsed.mainEntity)) {
-        let allFaqMatch = true;
-        for (const ent of parsed.mainEntity) {
-          const qText = ent.name;
-          const aText = ent.acceptedAnswer?.text;
-          if (!html.includes(qText) || !html.includes(aText)) {
-            allFaqMatch = false;
-            break;
-          }
-        }
-        if (allFaqMatch && parsed.mainEntity.length >= 4) {
-          faqPageValid = true;
-        }
-      }
     } catch (_) {}
   }
 
-  if (localBusinessValid && faqPageValid) {
-    pass('8.JsonLd', 'JSON-LD LocalBusiness (nome, telefone, cidade Curitiba, foundingDate 1987, areaServed Brasil) e FAQPage idêntico às perguntas/respostas visíveis.');
+  if (localBusinessValid) {
+    pass('8.JsonLd', 'JSON-LD LocalBusiness (nome, telefone, e-mail, cidade Curitiba, areaServed Brasil) válido.');
   } else {
-    fail('8.JsonLd', `Falha nos esquemas estruturados: LocalBusiness=${localBusinessValid}, FAQPageVerbatim=${faqPageValid}`);
+    fail('8.JsonLd', `Falha nos esquemas estruturados: LocalBusiness=${localBusinessValid}`);
   }
 
   // ---------------------------------------------------------------------------

@@ -27,7 +27,7 @@ for (const dir of [srcImagesDir, pubImagesDir]) {
   if (fs.existsSync(dir)) {
     for (const f of fs.readdirSync(dir)) {
       if (f.startsWith('embalagem_sapatos') || f.startsWith('test_')) {
-        try { fs.unlinkSync(path.join(dir, f)); } catch (_) {}
+        try { fs.unlinkSync(path.join(dir, f)); } catch (_) { }
       }
     }
   }
@@ -310,7 +310,7 @@ async function processAll() {
       <text x="80" y="320" font-family="'Outfit', sans-serif" font-weight="bold" font-size="54" fill="#ffffff">MAQCAPAS</text>
       <text x="80" y="380" font-family="'Inter', sans-serif" font-size="28" fill="#d4a373">Capas de Proteção Sob Medida</text>
       <text x="80" y="430" font-family="'Inter', sans-serif" font-size="20" fill="#a8a29e">Informática • Vestuário de Noivas • Máquinas Industriais</text>
-      <text x="80" y="530" font-family="'Inter', sans-serif" font-weight="bold" font-size="22" fill="#f0ece4">Curitiba / PR • Fabricação Própria Desde 1987</text>
+      <text x="80" y="530" font-family="'Inter', sans-serif" font-weight="bold" font-size="22" fill="#f0ece4">Curitiba / PR • Fabricação Própria Sob Medida</text>
     </svg>
   `);
 

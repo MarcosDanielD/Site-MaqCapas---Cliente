@@ -73,7 +73,6 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
-  overflow-x: hidden;
 }
 
 body {
@@ -81,7 +80,7 @@ body {
   background-color: var(--bg-body);
   color: var(--text-secondary);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip não cria container de rolagem: mantém o position: sticky do carrossel */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -128,7 +127,7 @@ select {
 
 /* --- Seções & Espaçamentos --- */
 .section {
-  padding: 6rem 0;
+  padding: 4.25rem 0;
 }
 
 .section-alt {
@@ -139,7 +138,7 @@ select {
 
 .section-header {
   max-width: 760px;
-  margin: 0 auto 3.75rem auto;
+  margin: 0 auto 2.5rem auto;
 }
 
 .section-tag {
@@ -284,10 +283,11 @@ select {
    SCROLL FILM — 4 Cenas de Produto (Fullbleed)
    ========================================================================== */
 
-/* Container externo — scroll height total (4 cenas × 150vh + 50vh transição) */
+/* Container externo — scroll height total (4 cenas fluidas sem espaço morto) */
 .scroll-film {
   position: relative;
-  height: 650vh;
+  height: 400vh;
+  background-color: #0c0b09;
   z-index: 1;
 }
 
@@ -743,7 +743,7 @@ select {
    HERO SECTION
    ========================================================================== */
 .hero-section {
-  padding: 5rem 0 5.5rem 0;
+  padding: 4rem 0 4.25rem 0;
   background: linear-gradient(180deg, var(--bg-body) 0%, var(--bg-alt) 100%);
   border-bottom: 1px solid var(--border);
 }
@@ -2100,16 +2100,64 @@ select {
   text-decoration: underline;
 }
 
-/* Cards de "Por Que Utilizar" apenas com título (01 e 02) */
-.reason-card--title-only {
+/* Layout Bento Equilibrado para "Por Que Utilizar" (01 e 02 compactos à esquerda, 03 à direita sem espaço em branco) */
+.reasons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.reasons-grid .reason-card:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.reasons-grid .reason-card:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.reasons-grid .reason-card:nth-child(3) {
+  grid-column: 2;
+  grid-row: 1 / span 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
+.reason-card--title-only {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.75rem 2rem;
+}
+
+.reason-card--title-only .reason-index {
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
 .reason-card--title-only .reason-title {
   margin-bottom: 0;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .reasons-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .reasons-grid .reason-card:nth-child(1),
+  .reasons-grid .reason-card:nth-child(2),
+  .reasons-grid .reason-card:nth-child(3) {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }
 
 /* Grid de 2 materiais centralizado */
@@ -2127,7 +2175,7 @@ select {
 
 /* Wrapper único para a galeria Oficina MaqCapas */
 .about-single-wrapper {
-  max-width: 640px;
+  max-width: 740px;
   margin: 0 auto;
   width: 100%;
 }

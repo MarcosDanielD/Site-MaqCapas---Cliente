@@ -55,7 +55,7 @@ function initScrollFilm() {
 
   const TOTAL = scenes.length;       // 4 cenas
   const SCENE_SPAN = 1 / TOTAL;
-  const CROSSFADE = 0.12;
+  const HALF_FADE = 0.055;
 
   let currentActive = 0;
   let isAutoAdvancing = false;
@@ -76,7 +76,8 @@ function initScrollFilm() {
   function scrollToScene(index) {
     const clampedIndex = clamp(index, 0, TOTAL - 1);
     const { filmTop, filmScroll } = getScrollMetrics();
-    const targetY = filmTop + (clampedIndex * SCENE_SPAN * filmScroll) + 10;
+    const targetP = clampedIndex === 0 ? 0 : (clampedIndex + 0.35) * SCENE_SPAN;
+    const targetY = filmTop + (targetP * filmScroll);
     window.scrollTo({ top: targetY, behavior: 'smooth' });
   }
 
@@ -99,30 +100,27 @@ function initScrollFilm() {
       hint.style.opacity = clamp(1 - p / 0.06, 0, 1);
     }
 
-    // Determina qual cena mostrar e opacidade correspondente
+    // Crossfade contínuo sem lacunas pretas/brancas (soma das opacidades = 1 em todo o scroll)
     scenes.forEach((scene, i) => {
       const start = i * SCENE_SPAN;
-      const end = start + SCENE_SPAN;
-      const fadeInEnd = start + CROSSFADE;
-      const fadeOutStart = end - CROSSFADE;
+      const end = (i + 1) * SCENE_SPAN;
+      const holdStart = i === 0 ? 0 : start + HALF_FADE;
+      const holdEnd = i === TOTAL - 1 ? 1 : end - HALF_FADE;
 
       let opacity = 0;
-      if (p >= start && p <= end) {
-        if (i > 0 && p < fadeInEnd) {
-          opacity = easeInOut((p - start) / CROSSFADE);
-        } else if (p > fadeOutStart && i < TOTAL - 1) {
-          opacity = easeInOut(1 - (p - fadeOutStart) / CROSSFADE);
-        } else {
-          opacity = 1;
-        }
-      }
-      if (i === TOTAL - 1 && p >= start) {
-        opacity = easeInOut(clamp((p - start) / CROSSFADE, 0, 1));
+      if (p >= holdStart && p <= holdEnd) {
+        opacity = 1;
+      } else if (i > 0 && p >= start - HALF_FADE && p < holdStart) {
+        const t = (p - (start - HALF_FADE)) / (2 * HALF_FADE);
+        opacity = easeInOut(clamp(t, 0, 1));
+      } else if (i < TOTAL - 1 && p > holdEnd && p <= end + HALF_FADE) {
+        const t = (p - holdEnd) / (2 * HALF_FADE);
+        opacity = 1 - easeInOut(clamp(t, 0, 1));
       }
 
       scene.style.opacity = opacity.toFixed(3);
 
-      const isActive = opacity > 0.45;
+      const isActive = opacity >= 0.5;
       if (isActive && !scene.classList.contains('is-active')) {
         scene.classList.add('is-active');
         currentActive = i;
@@ -314,8 +312,8 @@ function initScrollReveal() {
     });
   }, {
     root: null,
-    rootMargin: '0px 0px -40px 0px',
-    threshold: 0.1
+    rootMargin: '0px 0px 80px 0px',
+    threshold: 0.02
   });
 
   document.querySelectorAll('.reveal-item').forEach(el => {

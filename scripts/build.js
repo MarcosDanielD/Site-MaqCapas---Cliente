@@ -16,7 +16,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v1';
+const ASSET_VER = '20261116v3';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida.')}`;
@@ -650,7 +650,10 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
     <!-- Section: Oficina MaqCapas (Somente o bloco de fotos reais da oficina) -->
     <section class="section section-alt" id="sobre">
       <div class="container">
-        
+        <div class="section-header text-center">
+          <span class="section-tag">Oficina MaqCapas</span>
+          <h2 class="section-title">Registros Reais de Fabricação</h2>
+        </div>
         <div class="about-single-wrapper">
           <div class="about-media">
             <div class="about-photo-card">

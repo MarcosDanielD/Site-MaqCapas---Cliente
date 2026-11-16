@@ -1,11 +1,10 @@
 /**
  * scripts/process-images.js
- * Pipeline de processamento, enquadramento 4:3 nativo e otimização de imagens reais:
- * - Enquadra todas as fotos reais em proporção 4:3 limpa (sem bordas borradas e sem cortar o produto)
- * - Aplica nitidez calibrada (sharpen) e realce suave de contraste/iluminação natural
- * - Gera versões responsivas: 480, 800, 1200 e 1600 px (sem upscaling acima do master)
- * - Formatos: AVIF (qualidade 55), WebP (qualidade 82) e JPG como fallback
- * - Cria og-image 1200x630
+ * Pipeline de processamento e enquadramento completo (cabide + capa inteira) das fotos reais:
+ * - Preserva 100% da altura vertical (do gancho do cabide até a barra inferior) das 3 fotos novas
+ * - Estende suavemente a parede original nas laterais para compor o quadro 4:3 sem cortar o produto
+ * - Aplica nitidez calibrada (sharpen) e realce suave de iluminação/contraste
+ * - Gera versões responsivas: 480, 800, 1200 e 1600 px em AVIF, WebP e JPG
  */
 
 const sharp = require('sharp');
@@ -22,12 +21,17 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 });
 
-// Remove arquivos temporários ou removidos (embalagem_sapatos, test_*)
+// Remove arquivos antigos/excluídos
 for (const dir of [srcImagesDir, pubImagesDir]) {
   if (fs.existsSync(dir)) {
     for (const f of fs.readdirSync(dir)) {
-      if (f.startsWith('embalagem_sapatos') || f.startsWith('test_')) {
-        try { fs.unlinkSync(path.join(dir, f)); } catch (_) { }
+      if (
+        f.startsWith('embalagem_sapatos') ||
+        f.startsWith('capa_noiva_clean_real') ||
+        f.startsWith('sacola_tnt') ||
+        f.startsWith('test_')
+      ) {
+        try { fs.unlinkSync(path.join(dir, f)); } catch (_) {}
       }
     }
   }
@@ -36,40 +40,69 @@ for (const dir of [srcImagesDir, pubImagesDir]) {
 const TARGET_WIDTHS = [480, 800, 1200, 1600];
 
 /**
- * Se a foto original de Vestido de Noiva estiver na pasta pai, prepara o recorte 4:3 limpo
- * removendo os ícones de captura de tela dos cantos superiores.
+ * Compõe uma foto vertical (960x1280) em quadro 4:3 (1600x1200) mantendo 100% da altura
+ * (cabide no topo + capa inteira até a base) e estendendo a parede real nas laterais.
  */
-async function ensureCleanNoivaSource() {
-  const parentOrig = path.resolve(rootDir, '..', 'WhatsApp Image 2026-11-06 at 18.11.54.jpeg');
-  const destNoiva = path.join(srcImagesDir, 'capa_noiva_real.jpg');
-  if (!fs.existsSync(parentOrig)) return;
+async function composeFullHeightVerticalPhoto(srcPath, brightness = 1.05, isNarrow = false) {
+  const meta = await sharp(srcPath).metadata();
+  const origW = meta.width;   // 960
+  const origH = meta.height;  // 1280
 
-  const leftPatch = await sharp(parentOrig)
-    .extract({ left: 0, top: 182, width: 135, height: 108 })
-    .flip()
-    .toBuffer();
-  const rightPatch = await sharp(parentOrig)
-    .extract({ left: 575, top: 182, width: 142, height: 108 })
-    .flip()
+  // Recorta a faixa central contendo 100% do produto + parede uniforme (sem canto de porta ou quina de parede)
+  const trimLeft = isNarrow ? 120 : 60;
+  const trimRight = isNarrow ? 155 : 60;
+  const centerW = origW - trimLeft - trimRight;
+  const canvasH = origH;             // 1280 (100% da altura original: cabide ao fim da capa)
+  const canvasW = Math.round(canvasH * (4 / 3)); // 1707 (proporção 4:3)
+  const sideW = Math.ceil((canvasW - centerW) / 2) + 8;
+
+  // Extrai faixa da parede esquerda e estende suavemente mantendo o gradiente vertical exato da parede
+  const leftWall = await sharp(srcPath)
+    .extract({ left: trimLeft, top: 0, width: 32, height: origH })
+    .resize(sideW, canvasH, { fit: 'fill' })
+    .blur(18)
     .toBuffer();
 
-  const patchedFull = await sharp(parentOrig)
+  // Extrai faixa da parede direita e estende suavemente mantendo o gradiente vertical exato da parede
+  const rightWall = await sharp(srcPath)
+    .extract({ left: origW - trimRight - 32, top: 0, width: 32, height: origH })
+    .resize(sideW, canvasH, { fit: 'fill' })
+    .blur(18)
+    .toBuffer();
+
+  // Extrai o centro completo (100% da altura, cabide inteiro + capa inteira)
+  const centerSubject = await sharp(srcPath)
+    .extract({ left: trimLeft, top: 0, width: centerW, height: origH })
+    .toBuffer();
+
+  const rawComposed = await sharp({
+    create: {
+      width: canvasW,
+      height: canvasH,
+      channels: 3,
+      background: { r: 215, g: 212, b: 205 }
+    }
+  })
     .composite([
-      { input: leftPatch, left: 0, top: 72 },
-      { input: rightPatch, left: 575, top: 72 }
+      { input: leftWall, left: 0, top: 0 },
+      { input: rightWall, left: canvasW - sideW, top: 0 },
+      { input: centerSubject, left: Math.round((canvasW - centerW) / 2), top: 0 }
     ])
+    .jpeg({ quality: 96 })
     .toBuffer();
 
-  // Extrai quadro 4:3 nativo (717x538) pegando cabide, visor em PVC cristal, zíper e corpo superior
-  await sharp(patchedFull)
-    .extract({ left: 0, top: 74, width: 717, height: 538 })
-    .jpeg({ quality: 95 })
-    .toFile(destNoiva);
+  const composed = await sharp(rawComposed)
+    .resize(1600, 1200, { fit: 'fill' })
+    .modulate({ brightness, saturation: 1.03 })
+    .linear(1.06, -4)
+    .sharpen({ sigma: 0.85 })
+    .toBuffer();
+
+  return { buffer: composed, width: 1600, height: 1200, focus: '50% 50%' };
 }
 
 /**
- * Cria um buffer master 4:3 centralizado e aprimorado para cada imagem,
- * garantindo que nenhum produto seja cortado nos cards ou galerias.
+ * Cria um buffer master 4:3 centralizado e aprimorado para cada imagem
  */
 async function buildMasterBuffer(filename, srcPath) {
   const meta = await sharp(srcPath).metadata();
@@ -82,51 +115,19 @@ async function buildMasterBuffer(filename, srcPath) {
     return { buffer: buf, width: origW, height: origH, focus: '50% 50%' };
   }
 
-  // 1. Capa de Noiva Real (já em 4:3 nativo 717x538 após ensureCleanNoivaSource):
-  if (filename === 'capa_noiva_real.jpg') {
-    const buf = await sharp(srcPath)
-      .modulate({ brightness: 1.05, saturation: 1.04 })
-      .linear(1.07, -4)
-      .sharpen({ sigma: 0.85 })
-      .toBuffer();
-    return { buffer: buf, width: origW, height: origH, focus: '50% 50%' };
+  // 1. As 3 fotos novas de vestuário (Porta-Terno, Capa Branca Noiva, Capa Longa Gilka):
+  // Mantém 100% da altura (cabide + capa inteira) em quadro 4:3 com parede contínua
+  if (
+    filename === 'porta_terno_real.jpg' ||
+    filename === 'capa_noiva_real.jpg' ||
+    filename === 'porta_terno_detalhe_real.jpg'
+  ) {
+    const boost = filename === 'capa_noiva_real.jpg' ? 1.08 : 1.05;
+    const isNarrow = filename !== 'porta_terno_real.jpg';
+    return await composeFullHeightVerticalPhoto(srcPath, boost, isNarrow);
   }
 
-  // 2. Porta-Terno Real (960x1280 -> recorte 4:3 nativo 960x720 pegando cabide, ombros, visor e corpo):
-  if (filename === 'porta_terno_real.jpg') {
-    const cropW = origW;
-    const cropH = Math.round(origW * 0.75); // 720
-    const topOffset = Math.min(18, Math.max(0, origH - cropH));
-
-    const buf = await sharp(srcPath)
-      .extract({ left: 0, top: topOffset, width: cropW, height: cropH })
-      .modulate({ brightness: 1.07, saturation: 1.04 })
-      .linear(1.08, -4)
-      .sharpen({ sigma: 0.85 })
-      .toBuffer();
-
-    return { buffer: buf, width: cropW, height: cropH, focus: '50% 50%' };
-  }
-
-  // 3. Detalhe de Porta-Terno (960x1280 -> recorte 4:3 nativo 800x600 focado no cursor do zíper e visor cristal):
-  if (filename === 'porta_terno_detalhe_real.jpg') {
-    const cropW = origW;
-    const cropH = Math.round(origW * 0.75); // 720
-    const topOffset = Math.min(Math.max(0, Math.round(origH * 0.14)), origH - cropH);
-
-    const cropped = await sharp(srcPath)
-      .extract({ left: 0, top: topOffset, width: cropW, height: cropH })
-      .resize(800, 600)
-      .modulate({ brightness: 1.05, saturation: 1.04 })
-      .linear(1.07, -5)
-      .sharpen({ sigma: 0.85 })
-      .toBuffer();
-
-    return { buffer: cropped, width: 800, height: 600, focus: '50% 50%' };
-  }
-
-  // 4. Informática Real (2592x1944 - já é 4:3 nativo):
-  // Redimensiona master para 1600x1200 mantendo 100% da cena original sem bordas artificiais
+  // 2. Informática Real (2592x1944 - já é 4:3 nativo):
   if (filename === 'capa_computador_real.jpg') {
     const masterW = 1600;
     const masterH = 1200;
@@ -141,36 +142,7 @@ async function buildMasterBuffer(filename, srcPath) {
     return { buffer: buf, width: masterW, height: masterH, focus: '50% 50%' };
   }
 
-  // 5. Sacola TNT (500x375 - fundo branco):
-  // Adiciona margem branca limpa de 6% para centralizar a sacola com as alças inteiras
-  if (filename === 'sacola_tnt.jpg') {
-    const canvasW = origW;
-    const canvasH = Math.round(origW * 0.75);
-    const fgW = Math.round(canvasW * 0.92);
-    const fgH = Math.round(canvasH * 0.92);
-
-    const fgBuffer = await sharp(srcPath)
-      .resize(fgW, fgH, { fit: 'inside', background: { r: 255, g: 255, b: 255, alpha: 1 } })
-      .linear(1.05, -3)
-      .sharpen({ sigma: 0.8 })
-      .toBuffer();
-
-    const composed = await sharp({
-      create: {
-        width: canvasW,
-        height: canvasH,
-        channels: 3,
-        background: { r: 255, g: 255, b: 255 }
-      }
-    })
-      .composite([{ input: fgBuffer, gravity: 'center' }])
-      .jpeg({ quality: 95 })
-      .toBuffer();
-
-    return { buffer: composed, width: canvasW, height: canvasH, focus: '50% 50%' };
-  }
-
-  // 6. Capa Industrial Real e Arara de Vestuários (enquadramento 4:3 centralizado com atenção)
+  // 3. Capa Industrial Real e Arara de Vestuários (enquadramento 4:3 centralizado)
   if (filename === 'capa_industrial_real.jpg' || filename === 'arara_vestuarios.jpg') {
     const targetW = origW;
     const targetH = Math.round(origW * 0.75);
@@ -209,8 +181,7 @@ async function buildMasterBuffer(filename, srcPath) {
 }
 
 async function processAll() {
-  console.log('--- INICIANDO PROCESSAMENTO E CENTRALIZAÇÃO DE IMAGENS (4:3 NATIVO) ---');
-  await ensureCleanNoivaSource();
+  console.log('--- INICIANDO PROCESSAMENTO DE IMAGENS (CABIDE + CAPA INTEIRA VISÍVEIS) ---');
 
   const manifest = {};
   const imageFiles = fs.readdirSync(srcImagesDir).filter(f => f.match(/\.(jpg|jpeg|png)$/i));
@@ -224,7 +195,6 @@ async function processAll() {
 
     console.log(`\nProcessando: ${filename} -> Master (${masterW}x${masterH}, focus: ${focus})`);
 
-    // Determina larguras responsivas sem upscaling acima do masterW
     const widthsToGen = TARGET_WIDTHS.filter(w => w < masterW);
     if (!widthsToGen.includes(masterW)) {
       widthsToGen.push(masterW);

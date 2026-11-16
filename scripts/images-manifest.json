@@ -359,43 +359,11 @@
       705
     ]
   },
-  "capa_noiva_clean_real.png": {
-    "base": "capa_noiva_clean_real.webp",
-    "orig": "capa_noiva_clean_real.png",
-    "width": 454,
-    "height": 700,
-    "aspectRatio": "0.649",
-    "focus": "50% 50%",
-    "sizes": {
-      "454": {
-        "width": 454,
-        "height": 700,
-        "avif": {
-          "file": "capa_noiva_clean_real-454.avif",
-          "bytes": 5572,
-          "kb": "5.4 KB"
-        },
-        "webp": {
-          "file": "capa_noiva_clean_real-454.webp",
-          "bytes": 6598,
-          "kb": "6.4 KB"
-        },
-        "jpg": {
-          "file": "capa_noiva_clean_real-454.jpg",
-          "bytes": 18629,
-          "kb": "18.2 KB"
-        }
-      }
-    },
-    "availableWidths": [
-      454
-    ]
-  },
   "capa_noiva_real.jpg": {
     "base": "capa_noiva_real.webp",
     "orig": "capa_noiva_real.jpg",
-    "width": 717,
-    "height": 538,
+    "width": 1600,
+    "height": 1200,
     "aspectRatio": "1.333",
     "focus": "50% 50%",
     "sizes": {
@@ -404,43 +372,83 @@
         "height": 360,
         "avif": {
           "file": "capa_noiva_real-480.avif",
-          "bytes": 6975,
-          "kb": "6.8 KB"
+          "bytes": 3134,
+          "kb": "3.1 KB"
         },
         "webp": {
           "file": "capa_noiva_real-480.webp",
-          "bytes": 9928,
-          "kb": "9.7 KB"
+          "bytes": 3522,
+          "kb": "3.4 KB"
         },
         "jpg": {
           "file": "capa_noiva_real-480.jpg",
-          "bytes": 18779,
-          "kb": "18.3 KB"
+          "bytes": 8734,
+          "kb": "8.5 KB"
         }
       },
-      "717": {
-        "width": 717,
-        "height": 538,
+      "800": {
+        "width": 800,
+        "height": 600,
         "avif": {
-          "file": "capa_noiva_real-717.avif",
-          "bytes": 14254,
-          "kb": "13.9 KB"
+          "file": "capa_noiva_real-800.avif",
+          "bytes": 6227,
+          "kb": "6.1 KB"
         },
         "webp": {
-          "file": "capa_noiva_real-717.webp",
-          "bytes": 19490,
-          "kb": "19.0 KB"
+          "file": "capa_noiva_real-800.webp",
+          "bytes": 7834,
+          "kb": "7.7 KB"
         },
         "jpg": {
-          "file": "capa_noiva_real-717.jpg",
-          "bytes": 34753,
-          "kb": "33.9 KB"
+          "file": "capa_noiva_real-800.jpg",
+          "bytes": 19955,
+          "kb": "19.5 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 900,
+        "avif": {
+          "file": "capa_noiva_real-1200.avif",
+          "bytes": 10957,
+          "kb": "10.7 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_real-1200.webp",
+          "bytes": 14946,
+          "kb": "14.6 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_real-1200.jpg",
+          "bytes": 38270,
+          "kb": "37.4 KB"
+        }
+      },
+      "1600": {
+        "width": 1600,
+        "height": 1200,
+        "avif": {
+          "file": "capa_noiva_real-1600.avif",
+          "bytes": 18541,
+          "kb": "18.1 KB"
+        },
+        "webp": {
+          "file": "capa_noiva_real-1600.webp",
+          "bytes": 24500,
+          "kb": "23.9 KB"
+        },
+        "jpg": {
+          "file": "capa_noiva_real-1600.jpg",
+          "bytes": 59155,
+          "kb": "57.8 KB"
         }
       }
     },
     "availableWidths": [
       480,
-      717
+      800,
+      1200,
+      1600
     ]
   },
   "capa_noiva_terno.png": {
@@ -910,8 +918,8 @@
   "porta_terno_detalhe_real.jpg": {
     "base": "porta_terno_detalhe_real.webp",
     "orig": "porta_terno_detalhe_real.jpg",
-    "width": 800,
-    "height": 600,
+    "width": 1600,
+    "height": 1200,
     "aspectRatio": "1.333",
     "focus": "50% 50%",
     "sizes": {
@@ -920,18 +928,18 @@
         "height": 360,
         "avif": {
           "file": "porta_terno_detalhe_real-480.avif",
-          "bytes": 16828,
-          "kb": "16.4 KB"
+          "bytes": 3645,
+          "kb": "3.6 KB"
         },
         "webp": {
           "file": "porta_terno_detalhe_real-480.webp",
-          "bytes": 29220,
-          "kb": "28.5 KB"
+          "bytes": 4528,
+          "kb": "4.4 KB"
         },
         "jpg": {
           "file": "porta_terno_detalhe_real-480.jpg",
-          "bytes": 29964,
-          "kb": "29.3 KB"
+          "bytes": 9637,
+          "kb": "9.4 KB"
         }
       },
       "800": {
@@ -939,31 +947,71 @@
         "height": 600,
         "avif": {
           "file": "porta_terno_detalhe_real-800.avif",
-          "bytes": 58162,
-          "kb": "56.8 KB"
+          "bytes": 7492,
+          "kb": "7.3 KB"
         },
         "webp": {
           "file": "porta_terno_detalhe_real-800.webp",
-          "bytes": 106420,
-          "kb": "103.9 KB"
+          "bytes": 9928,
+          "kb": "9.7 KB"
         },
         "jpg": {
           "file": "porta_terno_detalhe_real-800.jpg",
-          "bytes": 104400,
-          "kb": "102.0 KB"
+          "bytes": 21646,
+          "kb": "21.1 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 900,
+        "avif": {
+          "file": "porta_terno_detalhe_real-1200.avif",
+          "bytes": 13502,
+          "kb": "13.2 KB"
+        },
+        "webp": {
+          "file": "porta_terno_detalhe_real-1200.webp",
+          "bytes": 18424,
+          "kb": "18.0 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_detalhe_real-1200.jpg",
+          "bytes": 40880,
+          "kb": "39.9 KB"
+        }
+      },
+      "1600": {
+        "width": 1600,
+        "height": 1200,
+        "avif": {
+          "file": "porta_terno_detalhe_real-1600.avif",
+          "bytes": 22006,
+          "kb": "21.5 KB"
+        },
+        "webp": {
+          "file": "porta_terno_detalhe_real-1600.webp",
+          "bytes": 29510,
+          "kb": "28.8 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_detalhe_real-1600.jpg",
+          "bytes": 62271,
+          "kb": "60.8 KB"
         }
       }
     },
     "availableWidths": [
       480,
-      800
+      800,
+      1200,
+      1600
     ]
   },
   "porta_terno_real.jpg": {
     "base": "porta_terno_real.webp",
     "orig": "porta_terno_real.jpg",
-    "width": 960,
-    "height": 720,
+    "width": 1600,
+    "height": 1200,
     "aspectRatio": "1.333",
     "focus": "50% 50%",
     "sizes": {
@@ -972,18 +1020,18 @@
         "height": 360,
         "avif": {
           "file": "porta_terno_real-480.avif",
-          "bytes": 7149,
-          "kb": "7.0 KB"
+          "bytes": 3637,
+          "kb": "3.6 KB"
         },
         "webp": {
           "file": "porta_terno_real-480.webp",
-          "bytes": 10182,
-          "kb": "9.9 KB"
+          "bytes": 4636,
+          "kb": "4.5 KB"
         },
         "jpg": {
           "file": "porta_terno_real-480.jpg",
-          "bytes": 17286,
-          "kb": "16.9 KB"
+          "bytes": 9406,
+          "kb": "9.2 KB"
         }
       },
       "800": {
@@ -991,96 +1039,64 @@
         "height": 600,
         "avif": {
           "file": "porta_terno_real-800.avif",
-          "bytes": 18891,
-          "kb": "18.4 KB"
+          "bytes": 7198,
+          "kb": "7.0 KB"
         },
         "webp": {
           "file": "porta_terno_real-800.webp",
-          "bytes": 27030,
-          "kb": "26.4 KB"
+          "bytes": 10156,
+          "kb": "9.9 KB"
         },
         "jpg": {
           "file": "porta_terno_real-800.jpg",
-          "bytes": 44157,
-          "kb": "43.1 KB"
+          "bytes": 21800,
+          "kb": "21.3 KB"
         }
       },
-      "960": {
-        "width": 960,
-        "height": 720,
+      "1200": {
+        "width": 1200,
+        "height": 900,
         "avif": {
-          "file": "porta_terno_real-960.avif",
-          "bytes": 30123,
-          "kb": "29.4 KB"
+          "file": "porta_terno_real-1200.avif",
+          "bytes": 13479,
+          "kb": "13.2 KB"
         },
         "webp": {
-          "file": "porta_terno_real-960.webp",
-          "bytes": 38424,
-          "kb": "37.5 KB"
+          "file": "porta_terno_real-1200.webp",
+          "bytes": 19824,
+          "kb": "19.4 KB"
         },
         "jpg": {
-          "file": "porta_terno_real-960.jpg",
-          "bytes": 60739,
-          "kb": "59.3 KB"
+          "file": "porta_terno_real-1200.jpg",
+          "bytes": 41694,
+          "kb": "40.7 KB"
+        }
+      },
+      "1600": {
+        "width": 1600,
+        "height": 1200,
+        "avif": {
+          "file": "porta_terno_real-1600.avif",
+          "bytes": 22497,
+          "kb": "22.0 KB"
+        },
+        "webp": {
+          "file": "porta_terno_real-1600.webp",
+          "bytes": 32074,
+          "kb": "31.3 KB"
+        },
+        "jpg": {
+          "file": "porta_terno_real-1600.jpg",
+          "bytes": 63582,
+          "kb": "62.1 KB"
         }
       }
     },
     "availableWidths": [
       480,
       800,
-      960
-    ]
-  },
-  "sacola_tnt.jpg": {
-    "base": "sacola_tnt.webp",
-    "orig": "sacola_tnt.jpg",
-    "width": 500,
-    "height": 375,
-    "aspectRatio": "1.333",
-    "focus": "50% 50%",
-    "sizes": {
-      "480": {
-        "width": 480,
-        "height": 360,
-        "avif": {
-          "file": "sacola_tnt-480.avif",
-          "bytes": 3924,
-          "kb": "3.8 KB"
-        },
-        "webp": {
-          "file": "sacola_tnt-480.webp",
-          "bytes": 5164,
-          "kb": "5.0 KB"
-        },
-        "jpg": {
-          "file": "sacola_tnt-480.jpg",
-          "bytes": 9274,
-          "kb": "9.1 KB"
-        }
-      },
-      "500": {
-        "width": 500,
-        "height": 375,
-        "avif": {
-          "file": "sacola_tnt-500.avif",
-          "bytes": 4361,
-          "kb": "4.3 KB"
-        },
-        "webp": {
-          "file": "sacola_tnt-500.webp",
-          "bytes": 5826,
-          "kb": "5.7 KB"
-        },
-        "jpg": {
-          "file": "sacola_tnt-500.jpg",
-          "bytes": 10200,
-          "kb": "10.0 KB"
-        }
-      }
-    },
-    "availableWidths": [
-      480,
-      500
+      1200,
+      1600
     ]
   },
   "tech.jpg": {
@@ -1158,7 +1174,7 @@
   "og-image.jpg": {
     "width": 1200,
     "height": 630,
-    "bytes": 61385,
+    "bytes": 61478,
     "focus": "50% 50%"
   }
 }

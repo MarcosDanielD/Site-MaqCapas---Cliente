@@ -16,7 +16,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v4';
+const ASSET_VER = '20261116v5';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida.')}`;
@@ -262,7 +262,7 @@ const indexHtml = `<!DOCTYPE html>
   <link rel="canonical" href="${config.domain}/">
 
   <!-- Preload da maior imagem acima da dobra (Hero / Film Scene 0) -->
-  <link rel="preload" as="image" href="assets/images/porta_terno_real-960.webp?v=${ASSET_VER}" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/images/porta_terno_real-1200.webp?v=${ASSET_VER}" type="image/webp" fetchpriority="high">
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
@@ -704,8 +704,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
     <section class="section" id="saiba-mais">
       <div class="container">
         <div class="saiba-mais-card text-center">
-          <span class="section-tag">Saiba Mais</span>
-          <h2 class="section-title">Orçamentos Sob Medida e Outros Materiais</h2>
+          <h2 class="section-title">Saiba Mais</h2>
           <p class="saiba-mais-text">
             Aceitamos orçamentos de capas sob medida para equipamentos e sugestões de outros materiais.
           </p>

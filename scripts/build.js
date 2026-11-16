@@ -16,7 +16,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v5';
+const ASSET_VER = '20261116v6';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida.')}`;
@@ -387,33 +387,33 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">01</span>
-              <span class="film-scene-tag film-scene-tag--real">Vestuário &bull; Foto Real de Fabricação</span>
+              <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
               <h2 class="film-scene-title">O seu terno merece mais<br>do que uma arara.</h2>
               <p class="film-scene-desc">Porta-ternos executivos em TNT respirável com visor em PVC cristal — confeccionados sob medida para proteger o caimento, a gola e a estrutura do tecido.</p>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 2: Informática (FOTO REAL) ── -->
+        <!-- ── Cena 2: Informática ── -->
         <div class="film-scene" id="scene1" role="group" aria-roledescription="slide" aria-label="Cena 2 de 4: Informática e TI">
-          <div class="film-scene-photo film-photo-scene1" aria-label="Conjunto de capas para monitores, gabinete e teclado de fabricação real"></div>
+          <div class="film-scene-photo film-photo-scene1" aria-label="Conjunto de capas para monitores, gabinete e teclado"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">02</span>
-              <span class="film-scene-tag film-scene-tag--real">Informática &bull; Foto Real de Fabricação</span>
+              <span class="film-scene-tag film-scene-tag--real">Informática</span>
               <h2 class="film-scene-title">Poeira e umidade não<br>têm acesso aqui.</h2>
               <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT técnico ou cristal — corte e acabamento artesanal confeccionados em nossa oficina.</p>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 3: Vestido de Noiva (FOTO REAL) ── -->
+        <!-- ── Cena 3: Vestido de Noiva ── -->
         <div class="film-scene" id="scene2" role="group" aria-roledescription="slide" aria-label="Cena 3 de 4: Vestidos de Noiva e Ateliês">
           <div class="film-scene-photo film-photo-scene2" aria-label="Capa protetora para vestido de noiva confeccionada em TNT respirável"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">03</span>
-              <span class="film-scene-tag film-scene-tag--real">Noivas &amp; Alta Costura &bull; Foto Real de Fabricação</span>
+              <span class="film-scene-tag film-scene-tag--real">Noivas &amp; Alta Costura</span>
               <h2 class="film-scene-title">Cada ponto de renda,<br>guardado para sempre.</h2>
               <p class="film-scene-desc">Capas longas para vestidos de noiva com visor em PVC cristal e fechamento por zíper — preservando a textura e o brilho sem amarelar tecidos finos.</p>
             </div>
@@ -500,13 +500,12 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
             <div class="showcase-media">
               ${renderPictureTag({
                 imgKey: 'capa_computador_real.jpg',
-                alt: 'Conjunto de capas para informática fabricadas sob medida na oficina MaqCapas',
+                alt: 'Conjunto de capas para informática fabricadas sob medida pela MaqCapas',
                 id: 'showcasePhoto0',
                 className: 'showcase-img',
                 loading: 'eager',
                 sizes: '(max-width: 768px) 100vw, 380px'
               })}
-              <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Informática &amp; TI</span>
@@ -520,13 +519,12 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
             <div class="showcase-media">
               ${renderPictureTag({
                 imgKey: 'capa_noiva_real.jpg',
-                alt: 'Capa protetora para vestido de noiva confeccionada em TNT respirável na oficina',
+                alt: 'Capa protetora para vestido de noiva confeccionada em TNT respirável',
                 id: 'showcasePhoto1',
                 className: 'showcase-img',
                 loading: 'eager',
                 sizes: '(max-width: 768px) 100vw, 380px'
               })}
-              <span class="showcase-badge showcase-badge--real">Foto Real de Oficina</span>
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Alta Costura &amp; Ateliês</span>
@@ -546,7 +544,6 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                 loading: 'eager',
                 sizes: '(max-width: 768px) 100vw, 380px'
               })}
-              <span class="showcase-badge showcase-badge--real">Produção Real</span>
             </div>
             <div class="showcase-info">
               <span class="showcase-category">Indústria &amp; Oficinas</span>
@@ -652,7 +649,6 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
           <div class="about-media">
             <div class="about-photo-card">
               <div class="about-photo-stage">
-                <div class="about-photo-badge">Registro Original de Fabricação</div>
                 <img src="assets/images/capa_computador_real-800.webp?v=${ASSET_VER}" alt="Foto original de capas para informática fabricadas sob medida pela MaqCapas" id="aboutPhotoMain" class="about-photo" width="1600" height="1200" loading="lazy" decoding="async">
               </div>
               <div class="about-caption" id="aboutPhotoCaption">

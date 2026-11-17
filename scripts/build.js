@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v10';
+const ASSET_VER = '20261116v11';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida (TNT ou PVC Cristal ou Opaco).')}`;
@@ -546,7 +546,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
         <div class="hero-pill">MaqCapas</div>
 
         <h2 class="hero-title">
-          Capas de Proteção Sob Medida para Equipamentos, Vestuário e Indústria
+          Capas Sob Medida
         </h2>
 
         <p class="hero-description">

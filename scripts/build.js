@@ -16,10 +16,10 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v6';
+const ASSET_VER = '20261116v7';
 
 const currentYear = new Date().getFullYear();
-const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida.')}`;
+const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Solicitação de Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida (PVC Cristal ou Opaco / TNT Técnico Respirável).')}`;
 
 console.log('--- Iniciando build do MaqCapas ---');
 console.log(`Domínio configurado: ${config.domain}`);
@@ -383,13 +383,13 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
 
         <!-- ── Cena 1: Porta-Ternos (FOTO REAL) ── -->
         <div class="film-scene is-active" id="scene0" role="group" aria-roledescription="slide" aria-label="Cena 1 de 4: Porta-Ternos Executivos">
-          <div class="film-scene-photo film-photo-scene0" aria-label="Porta-ternos em TNT com visor transparente de produção real"></div>
+          <div class="film-scene-photo film-photo-scene0" aria-label="Porta-ternos em TNT com visor transparente"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">01</span>
               <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
               <h2 class="film-scene-title">O seu terno merece mais<br>do que uma arara.</h2>
-              <p class="film-scene-desc">Porta-ternos executivos em TNT respirável com visor em PVC cristal — confeccionados sob medida para proteger o caimento, a gola e a estrutura do tecido.</p>
+              <p class="film-scene-desc">Porta-ternos executivos em TNT técnico respirável com visor transparente — confeccionados sob medida para proteger o caimento, a gola e a estrutura do tecido.</p>
             </div>
           </div>
         </div>
@@ -402,7 +402,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               <span class="film-scene-num">02</span>
               <span class="film-scene-tag film-scene-tag--real">Informática</span>
               <h2 class="film-scene-title">Poeira e umidade não<br>têm acesso aqui.</h2>
-              <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT técnico ou cristal — corte e acabamento artesanal confeccionados em nossa oficina.</p>
+              <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT gramatura 60 e PVC Cristal ou Opaco 010mm — corte e acabamento confeccionados pela MaqCapas.</p>
             </div>
           </div>
         </div>
@@ -415,7 +415,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               <span class="film-scene-num">03</span>
               <span class="film-scene-tag film-scene-tag--real">Noivas &amp; Alta Costura</span>
               <h2 class="film-scene-title">Cada ponto de renda,<br>guardado para sempre.</h2>
-              <p class="film-scene-desc">Capas longas para vestidos de noiva com visor em PVC cristal e fechamento por zíper — preservando a textura e o brilho sem amarelar tecidos finos.</p>
+              <p class="film-scene-desc">Capas longas para vestidos de noiva em TNT técnico respirável com visor transparente e fechamento por zíper — preservando a textura e o brilho sem amarelar tecidos finos.</p>
             </div>
           </div>
         </div>
@@ -546,7 +546,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               })}
             </div>
             <div class="showcase-info">
-              <span class="showcase-category">Indústria &amp; Oficinas</span>
+              <span class="showcase-category">Indústria &amp; Equipamentos</span>
               <h3 class="showcase-heading">Capa para equipamentos industriais</h3>
               <p class="showcase-copy">Confeccionado com material impermeável e resistente</p>
             </div>
@@ -652,40 +652,40 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                 <img src="assets/images/capa_computador_real-800.webp?v=${ASSET_VER}" alt="Foto original de capas para informática fabricadas sob medida pela MaqCapas" id="aboutPhotoMain" class="about-photo" width="1600" height="1200" loading="lazy" decoding="async">
               </div>
               <div class="about-caption" id="aboutPhotoCaption">
-                <strong id="aboutCaptionTitle">Oficina MaqCapas &bull; Curitiba / PR</strong>
-                <span id="aboutCaptionDesc">Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)</span>
+                <strong id="aboutCaptionTitle">MaqCapas &bull; Curitiba / PR</strong>
+                <span id="aboutCaptionDesc">Confecção sob medida para informática (monitor, gabinete e teclado)</span>
               </div>
-              <div class="about-thumbs" role="tablist" aria-label="Galeria de fotos originais de confecção">
+              <div class="about-thumbs" role="tablist" aria-label="Galeria de fotos de confecção MaqCapas">
                 ${renderAboutThumb({
                   imgKey: 'capa_computador_real.jpg',
                   label: 'Informática',
-                  alt: 'Foto original de capas para informática fabricadas sob medida pela MaqCapas',
-                  title: 'Oficina MaqCapas • Curitiba / PR',
-                  desc: 'Registro autêntico de confecção sob medida para informática (monitor, gabinete e teclado)',
+                  alt: 'Capas para informática fabricadas sob medida pela MaqCapas',
+                  title: 'MaqCapas • Curitiba / PR',
+                  desc: 'Confecção sob medida para informática (monitor, gabinete e teclado)',
                   active: true
                 })}
                 ${renderAboutThumb({
                   imgKey: 'capa_noiva_real.jpg',
                   label: 'Noiva',
-                  alt: 'Capa protetora para vestido de noiva confeccionada na oficina MaqCapas',
+                  alt: 'Capa protetora para vestido de noiva confeccionada pela MaqCapas',
                   title: 'Alta Costura & Noivas • MaqCapas',
-                  desc: 'Capa sob medida em TNT respirável com visor em PVC cristal e fechamento por zíper',
+                  desc: 'Capa sob medida em TNT técnico respirável com visor transparente e fechamento por zíper',
                   active: false
                 })}
                 ${renderAboutThumb({
                   imgKey: 'porta_terno_detalhe_real.jpg',
                   label: 'Porta-Terno',
-                  alt: 'Detalhe de acabamento de porta-terno executivo com visor cristal',
-                  title: 'Alfaiataria • Detalhe de Acabamento',
-                  desc: 'Acabamento refinado de porta-ternos em TNT estruturado com visor transparente e zíper reforçado',
+                  alt: 'Porta-terno executivo confeccionado pela MaqCapas',
+                  title: 'Alfaiataria & Ternos • MaqCapas',
+                  desc: 'Acabamento em TNT técnico respirável com visor transparente e zíper reforçado',
                   active: false
                 })}
                 ${renderAboutThumb({
                   imgKey: 'capa_industrial_real.jpg',
                   label: 'Industrial',
                   alt: 'Capa técnica industrial confeccionada sob medida para maquinário',
-                  title: 'Linha Industrial • Produção Própria',
-                  desc: 'Capas técnicas sob medida de alta resistência para proteção de máquinas e painéis operacionais',
+                  title: 'Linha Industrial • MaqCapas',
+                  desc: 'Capa para equipamentos industriais confeccionada com material impermeável e resistente',
                   active: false
                 })}
               </div>

@@ -312,6 +312,41 @@ async function processAll() {
     focus: '50% 50%'
   };
 
+  // Gera Favicons nos múltiplos de 48px exigidos pelo Google Search + /favicon.ico na raiz
+  console.log('\n--- Gerando Favicons para Google Search (48x48, 96x96, 192x192, favicon.ico) ---');
+  const iconSvg = Buffer.from(`<svg width="192" height="192" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="64" height="64" rx="14" fill="#181614"/>
+    <polygon points="32,8 58,21 6,21" fill="#24211e" stroke="#d4a373" stroke-width="2"/>
+    <rect x="6" y="21" width="52" height="22" fill="#ffffff" stroke="#181614" stroke-width="1.5"/>
+    <polygon points="32,56 58,43 6,43" fill="#24211e" stroke="#d4a373" stroke-width="2"/>
+    <text x="32" y="36" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="11.5" fill="#181614" text-anchor="middle" letter-spacing="0.5">MAQ</text>
+  </svg>`);
+
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon.svg'), iconSvg);
+  await sharp(iconSvg).resize(32, 32).png().toFile(path.join(pubIconsDir, 'favicon-32x32.png'));
+  const png48Buf = await sharp(iconSvg).resize(48, 48).png().toBuffer();
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon-48x48.png'), png48Buf);
+  await sharp(iconSvg).resize(96, 96).png().toFile(path.join(pubIconsDir, 'favicon-96x96.png'));
+  await sharp(iconSvg).resize(180, 180).png().toFile(path.join(pubIconsDir, 'apple-touch-icon.png'));
+  await sharp(iconSvg).resize(192, 192).png().toFile(path.join(pubIconsDir, 'favicon-192x192.png'));
+
+  // Cria /favicon.ico binário (48x48) na raiz de public/ e em public/assets/icons/
+  const icoHeader = Buffer.alloc(22);
+  icoHeader.writeUInt16LE(0, 0); // Reserved
+  icoHeader.writeUInt16LE(1, 2); // Type: 1 = ICO
+  icoHeader.writeUInt16LE(1, 4); // Image count: 1
+  icoHeader.writeUInt8(48, 6);   // Width: 48px
+  icoHeader.writeUInt8(48, 7);   // Height: 48px
+  icoHeader.writeUInt8(0, 8);    // Palette
+  icoHeader.writeUInt8(0, 9);    // Reserved
+  icoHeader.writeUInt16LE(1, 10); // Color planes
+  icoHeader.writeUInt16LE(32, 12); // Bits per pixel
+  icoHeader.writeUInt32LE(png48Buf.length, 14); // Size of PNG data
+  icoHeader.writeUInt32LE(22, 18); // Offset of PNG data
+  const icoBuffer = Buffer.concat([icoHeader, png48Buf]);
+  fs.writeFileSync(path.join(rootDir, 'public', 'favicon.ico'), icoBuffer);
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon.ico'), icoBuffer);
+
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
   console.log(`\n✓ Manifesto salvo em ${manifestPath}`);
   console.log('--- Processamento concluído com sucesso ---');

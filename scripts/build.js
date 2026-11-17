@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v9';
+const ASSET_VER = '20261116v10';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida (TNT ou PVC Cristal ou Opaco).')}`;
@@ -36,17 +36,37 @@ const jsSrc = fs.readFileSync(path.join(srcDir, 'script.js'), 'utf-8');
 fs.writeFileSync(path.join(publicDir, 'script.js'), jsSrc, 'utf-8');
 console.log('✓ script.js atualizado em public/');
 
-// 3. 404.html
+// 3. Script de redirecionamento automático de URLs antigas do Google Search e 404.html
+const redirect404Js = `(function() {
+  var p = (window.location.pathname || '').toLowerCase();
+  if (p && p !== '/404.html' && p !== '/404') {
+    if (p.indexOf('contato') !== -1 || p.indexOf('orcamento') !== -1) {
+      window.location.replace('/#saiba-mais');
+    } else {
+      window.location.replace('/');
+    }
+  }
+})();
+`;
+fs.writeFileSync(path.join(publicDir, 'redirect-404.js'), redirect404Js, 'utf-8');
+
 const html404 = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página Não Encontrada | MaqCapas</title>
+  <title>MaqCapas | Redirecionando...</title>
   <meta name="robots" content="noindex, nofollow">
-  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-  <link rel="stylesheet" href="style.css?v=${ASSET_VER}">
+  <link rel="canonical" href="${config.domain}/">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/favicon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="/style.css?v=${ASSET_VER}">
+  <script src="/redirect-404.js?v=${ASSET_VER}"></script>
 </head>
 <body class="error-page">
   <div class="top-bar">
@@ -150,8 +170,45 @@ const headersTxt = `/*
 `;
 fs.writeFileSync(path.join(publicDir, '_headers'), headersTxt, 'utf-8');
 
-// 7. _redirects
-fs.writeFileSync(path.join(publicDir, '_redirects'), `/index.html / 301\n`, 'utf-8');
+// 7. _redirects (Redireciona todas as URLs antigas indexadas no Google para a página principal)
+const redirectsTxt = `/index.html / 301
+/copia-produtos-da-maqcapas / 301
+/copia-produtos-da-maqcapas/* / 301
+/produtos-da-maqcapas / 301
+/produtos / 301
+/capas-para-roupas / 301
+/contato /#saiba-mais 301
+/contato/* /#saiba-mais 301
+/faca-seu-orcamento /#saiba-mais 301
+/orcamento /#saiba-mais 301
+/sobre /#sobre 301
+`;
+fs.writeFileSync(path.join(publicDir, '_redirects'), redirectsTxt, 'utf-8');
+
+// Cria também rotas físicas para as 2 subpáginas antigas do Google Search (Capas Para Roupas e Faça seu Orçamento)
+const legacyRoutes = [
+  { dir: 'copia-produtos-da-maqcapas', target: '/' },
+  { dir: 'contato', target: '/#saiba-mais' },
+  { dir: 'capas-para-roupas', target: '/' },
+  { dir: 'faca-seu-orcamento', target: '/#saiba-mais' }
+];
+for (const route of legacyRoutes) {
+  const routeDir = path.join(publicDir, route.dir);
+  if (!fs.existsSync(routeDir)) fs.mkdirSync(routeDir, { recursive: true });
+  fs.writeFileSync(path.join(routeDir, 'index.html'), `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=${route.target}">
+  <link rel="canonical" href="${config.domain}/">
+  <title>MaqCapas</title>
+  <script src="/redirect-404.js?v=${ASSET_VER}"></script>
+</head>
+<body>
+  <p><a href="${route.target}">Acessar MaqCapas</a></p>
+</body>
+</html>`, 'utf-8');
+}
 
 // 8. JSON-LD Schema: LocalBusiness
 const jsonLdLocalBusiness = {
@@ -159,6 +216,7 @@ const jsonLdLocalBusiness = {
   "@type": "LocalBusiness",
   "name": "MaqCapas",
   "alternateName": "MAQCAPAS",
+  "logo": `${config.domain}/assets/icons/favicon-192x192.png`,
   "image": `${config.domain}/assets/images/og-image.jpg`,
   "telephone": config.company.telefoneRaw,
   "email": config.company.email,
@@ -263,10 +321,14 @@ const indexHtml = `<!DOCTYPE html>
   <!-- Preload da maior imagem acima da dobra (Hero / Film Scene 0) -->
   <link rel="preload" as="image" href="assets/images/porta_terno_real-1200.webp?v=${ASSET_VER}" type="image/webp" fetchpriority="high">
 
-  <!-- Favicons -->
+  <!-- Favicons (Múltiplos de 48px + /favicon.ico para exibição nos resultados do Google Search) -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/icons/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/favicon-192x192.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">

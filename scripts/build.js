@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261117v2';
+const ASSET_VER = '20261117v3';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MAQCAPAS')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento com a MAQCAPAS.')}`;
@@ -54,11 +54,14 @@ const html404 = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MAQCAPAS | Redirecionando...</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="${config.domain}/">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/icons/favicon-48x48.png">
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
@@ -199,8 +202,13 @@ for (const route of legacyRoutes) {
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="refresh" content="0; url=${route.target}">
   <link rel="canonical" href="${config.domain}/">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <title>MAQCAPAS</title>
   <script src="/redirect-404.js?v=${ASSET_VER}"></script>
 </head>
@@ -312,7 +320,7 @@ const indexHtml = `<!DOCTYPE html>
 <html lang="${config.meta.lang}">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MAQCAPAS | Capas para Proteção</title>
   <meta name="description" content="${config.company.description}">
   <meta name="theme-color" content="${config.meta.themeColor}">
@@ -321,8 +329,11 @@ const indexHtml = `<!DOCTYPE html>
   <!-- Preload da maior imagem acima da dobra (Hero / Film Scene 0) -->
   <link rel="preload" as="image" href="assets/images/porta_terno_real-1200.webp?v=${ASSET_VER}" type="image/webp" fetchpriority="high">
 
-  <!-- Favicons (Múltiplos de 48px + /favicon.ico para exibição nos resultados do Google Search) -->
+  <!-- Favicons gerados a partir de logo_original.png (raiz + assets/icons) -->
   <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/icons/favicon-48x48.png">
   <link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">

@@ -312,25 +312,19 @@ async function processAll() {
     focus: '50% 50%'
   };
 
-  // Gera Favicons nos múltiplos de 48px exigidos pelo Google Search + /favicon.ico na raiz
-  console.log('\n--- Gerando Favicons para Google Search (48x48, 96x96, 192x192, favicon.ico) ---');
-  const iconSvg = Buffer.from(`<svg width="192" height="192" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="64" height="64" rx="14" fill="#181614"/>
-    <polygon points="32,8 58,21 6,21" fill="#24211e" stroke="#d4a373" stroke-width="2"/>
-    <rect x="6" y="21" width="52" height="22" fill="#ffffff" stroke="#181614" stroke-width="1.5"/>
-    <polygon points="32,56 58,43 6,43" fill="#24211e" stroke="#d4a373" stroke-width="2"/>
-    <text x="32" y="36" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="11.5" fill="#181614" text-anchor="middle" letter-spacing="0.5">MAQ</text>
-  </svg>`);
+  // Gera Favicons a partir de assets/images/logo_original.png na raiz do projeto, em public/ e em public/assets/icons/
+  console.log('\n--- Gerando Favicons a partir de logo_original.png (favicon.ico 48x48, favicon-48x48.png, apple-touch-icon.png 180x180, icon-512.png) ---');
+  const logoSrcPath = path.join(srcImagesDir, 'logo_original.png');
+  const transparentBg = { r: 255, g: 255, b: 255, alpha: 0 };
 
-  fs.writeFileSync(path.join(pubIconsDir, 'favicon.svg'), iconSvg);
-  await sharp(iconSvg).resize(32, 32).png().toFile(path.join(pubIconsDir, 'favicon-32x32.png'));
-  const png48Buf = await sharp(iconSvg).resize(48, 48).png().toBuffer();
-  fs.writeFileSync(path.join(pubIconsDir, 'favicon-48x48.png'), png48Buf);
-  await sharp(iconSvg).resize(96, 96).png().toFile(path.join(pubIconsDir, 'favicon-96x96.png'));
-  await sharp(iconSvg).resize(180, 180).png().toFile(path.join(pubIconsDir, 'apple-touch-icon.png'));
-  await sharp(iconSvg).resize(192, 192).png().toFile(path.join(pubIconsDir, 'favicon-192x192.png'));
+  const png32Buf = await sharp(logoSrcPath).resize(32, 32, { fit: 'contain', background: transparentBg }).png().toBuffer();
+  const png48Buf = await sharp(logoSrcPath).resize(48, 48, { fit: 'contain', background: transparentBg }).png().toBuffer();
+  const png96Buf = await sharp(logoSrcPath).resize(96, 96, { fit: 'contain', background: transparentBg }).png().toBuffer();
+  const png180Buf = await sharp(logoSrcPath).resize(180, 180, { fit: 'contain', background: transparentBg }).png().toBuffer();
+  const png192Buf = await sharp(logoSrcPath).resize(192, 192, { fit: 'contain', background: transparentBg }).png().toBuffer();
+  const png512Buf = await sharp(logoSrcPath).resize(512, 512, { fit: 'contain', background: transparentBg }).png().toBuffer();
 
-  // Cria /favicon.ico binário (48x48) na raiz de public/ e em public/assets/icons/
+  // Cria favicon.ico binário (48x48) a partir de png48Buf
   const icoHeader = Buffer.alloc(22);
   icoHeader.writeUInt16LE(0, 0); // Reserved
   icoHeader.writeUInt16LE(1, 2); // Type: 1 = ICO
@@ -344,8 +338,23 @@ async function processAll() {
   icoHeader.writeUInt32LE(png48Buf.length, 14); // Size of PNG data
   icoHeader.writeUInt32LE(22, 18); // Offset of PNG data
   const icoBuffer = Buffer.concat([icoHeader, png48Buf]);
-  fs.writeFileSync(path.join(rootDir, 'public', 'favicon.ico'), icoBuffer);
-  fs.writeFileSync(path.join(pubIconsDir, 'favicon.ico'), icoBuffer);
+
+  // Salva na raiz do projeto (rootDir), na raiz pública (public/) e em public/assets/icons/
+  const targetDirs = [rootDir, path.join(rootDir, 'public'), pubIconsDir];
+  for (const dir of targetDirs) {
+    fs.writeFileSync(path.join(dir, 'favicon.ico'), icoBuffer);
+    fs.writeFileSync(path.join(dir, 'favicon-48x48.png'), png48Buf);
+    fs.writeFileSync(path.join(dir, 'apple-touch-icon.png'), png180Buf);
+    fs.writeFileSync(path.join(dir, 'icon-512.png'), png512Buf);
+  }
+
+  // Mantém também os tamanhos auxiliares em public/assets/icons/
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon-32x32.png'), png32Buf);
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon-96x96.png'), png96Buf);
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon-192x192.png'), png192Buf);
+  const logoBase64 = png192Buf.toString('base64');
+  const iconSvg = Buffer.from(`<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg"><image href="data:image/png;base64,${logoBase64}" width="192" height="192"/></svg>`);
+  fs.writeFileSync(path.join(pubIconsDir, 'favicon.svg'), iconSvg);
 
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
   console.log(`\n✓ Manifesto salvo em ${manifestPath}`);

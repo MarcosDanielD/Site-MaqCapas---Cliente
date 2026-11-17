@@ -142,8 +142,19 @@ async function buildMasterBuffer(filename, srcPath) {
     return { buffer: buf, width: masterW, height: masterH, focus: '50% 50%' };
   }
 
-  // 3. Capa Industrial Real e Arara de Vestuários (enquadramento 4:3 centralizado)
-  if (filename === 'capa_industrial_real.jpg' || filename === 'arara_vestuarios.jpg') {
+  // 3. Capa Industrial Real (já restaurada em HD 4:3): preserva fidelidade natural
+  if (filename === 'capa_industrial_real.jpg') {
+    const cleanW = 1200;
+    const cleanH = 900;
+    const buf = await sharp(srcPath)
+      .resize(cleanW, cleanH, { fit: 'cover', position: 'center' })
+      .sharpen({ sigma: 0.65 })
+      .toBuffer();
+    return { buffer: buf, width: cleanW, height: cleanH, focus: '50% 50%' };
+  }
+
+  // 4. Arara de Vestuários (enquadramento 4:3 centralizado)
+  if (filename === 'arara_vestuarios.jpg') {
     const targetW = origW;
     const targetH = Math.round(origW * 0.75);
 

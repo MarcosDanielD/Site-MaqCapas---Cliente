@@ -310,8 +310,8 @@
   "capa_industrial_real.jpg": {
     "base": "capa_industrial_real.webp",
     "orig": "capa_industrial_real.jpg",
-    "width": 705,
-    "height": 529,
+    "width": 1200,
+    "height": 900,
     "aspectRatio": "1.333",
     "focus": "50% 50%",
     "sizes": {
@@ -320,43 +320,63 @@
         "height": 360,
         "avif": {
           "file": "capa_industrial_real-480.avif",
-          "bytes": 21273,
-          "kb": "20.8 KB"
+          "bytes": 16427,
+          "kb": "16.0 KB"
         },
         "webp": {
           "file": "capa_industrial_real-480.webp",
-          "bytes": 36500,
-          "kb": "35.6 KB"
+          "bytes": 27550,
+          "kb": "26.9 KB"
         },
         "jpg": {
           "file": "capa_industrial_real-480.jpg",
-          "bytes": 39831,
-          "kb": "38.9 KB"
+          "bytes": 33495,
+          "kb": "32.7 KB"
         }
       },
-      "705": {
-        "width": 705,
-        "height": 529,
+      "800": {
+        "width": 800,
+        "height": 600,
         "avif": {
-          "file": "capa_industrial_real-705.avif",
-          "bytes": 45321,
-          "kb": "44.3 KB"
+          "file": "capa_industrial_real-800.avif",
+          "bytes": 38679,
+          "kb": "37.8 KB"
         },
         "webp": {
-          "file": "capa_industrial_real-705.webp",
-          "bytes": 71634,
-          "kb": "70.0 KB"
+          "file": "capa_industrial_real-800.webp",
+          "bytes": 63106,
+          "kb": "61.6 KB"
         },
         "jpg": {
-          "file": "capa_industrial_real-705.jpg",
-          "bytes": 78706,
-          "kb": "76.9 KB"
+          "file": "capa_industrial_real-800.jpg",
+          "bytes": 81628,
+          "kb": "79.7 KB"
+        }
+      },
+      "1200": {
+        "width": 1200,
+        "height": 900,
+        "avif": {
+          "file": "capa_industrial_real-1200.avif",
+          "bytes": 80390,
+          "kb": "78.5 KB"
+        },
+        "webp": {
+          "file": "capa_industrial_real-1200.webp",
+          "bytes": 120228,
+          "kb": "117.4 KB"
+        },
+        "jpg": {
+          "file": "capa_industrial_real-1200.jpg",
+          "bytes": 164665,
+          "kb": "160.8 KB"
         }
       }
     },
     "availableWidths": [
       480,
-      705
+      800,
+      1200
     ]
   },
   "capa_noiva_real.jpg": {

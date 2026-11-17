@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v8';
+const ASSET_VER = '20261116v9';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida (TNT ou PVC Cristal ou Opaco).')}`;

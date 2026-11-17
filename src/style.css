@@ -2057,16 +2057,16 @@ select {
 
 /* Backgrounds padrão (fotos reais) para o Scroll Film sem inline style */
 .film-photo-scene0 {
-  background-image: url('assets/images/porta_terno_real.webp?v=20261116v5');
+  background-image: url('assets/images/porta_terno_real.webp?v=20261116v9');
 }
 .film-photo-scene1 {
-  background-image: url('assets/images/capa_computador_real.webp?v=20261116v5');
+  background-image: url('assets/images/capa_computador_real.webp?v=20261116v9');
 }
 .film-photo-scene2 {
-  background-image: url('assets/images/capa_noiva_real.webp?v=20261116v5');
+  background-image: url('assets/images/capa_noiva_real.webp?v=20261116v9');
 }
 .film-photo-scene3 {
-  background-image: url('assets/images/capa_industrial_real.webp?v=20261116v5');
+  background-image: url('assets/images/capa_industrial_real.webp?v=20261116v9');
 }
 
 /* Lista de Contatos na Cena 04 do Filme */

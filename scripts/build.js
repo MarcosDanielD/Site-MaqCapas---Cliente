@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261117v1';
+const ASSET_VER = '20261117v2';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MAQCAPAS')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento com a MAQCAPAS.')}`;
@@ -503,11 +503,11 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                   <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="film-contact-link">${config.company.telefoneDisplay}</a>
                 </p>
               </div>
+              <!-- CTA final apontando para #saiba-mais dentro do fluxo do conteúdo -->
+              <div class="film-final-cta">
+                <a href="#saiba-mais" class="film-cta-btn">Saiba mais &nbsp;→</a>
+              </div>
             </div>
-          </div>
-          <!-- CTA final apontando para #saiba-mais -->
-          <div class="film-final-cta">
-            <a href="#saiba-mais" class="film-cta-btn">Saiba mais &nbsp;→</a>
           </div>
         </div>
 

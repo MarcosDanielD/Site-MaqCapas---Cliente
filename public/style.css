@@ -2160,16 +2160,31 @@ select {
   }
 }
 
-/* Grid de 2 materiais centralizado */
-.materials-grid--two {
+/* Grid de Produtos (5 itens: 4 em 2x2 + 5º ocupando a base) */
+.materials-grid--two,
+.products-five-grid {
   grid-template-columns: repeat(2, 1fr);
   max-width: 860px;
   margin: 0 auto;
+  gap: 1.5rem;
+}
+
+.products-five-grid .material-card {
+  padding: 1.85rem 2rem;
+}
+
+.products-five-grid .material-card--wide {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 768px) {
-  .materials-grid--two {
+  .materials-grid--two,
+  .products-five-grid {
     grid-template-columns: 1fr;
+  }
+
+  .products-five-grid .material-card--wide {
+    grid-column: 1;
   }
 }
 

@@ -1,7 +1,7 @@
 /**
  * scripts/build.js
  * Compilação e geração dos arquivos estáticos em ./public
- * Textos diretos, simples e fiéis aos materiais da MaqCapas (TNT e PVC Cristal ou Opaco).
+ * Padrão de marca único (MAQCAPAS), sob medida apenas para equipamentos e seção Produtos.
  */
 
 const fs = require('fs');
@@ -15,12 +15,12 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261116v11';
+const ASSET_VER = '20261117v1';
 
 const currentYear = new Date().getFullYear();
-const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MaqCapas')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento de capa sob medida (TNT ou PVC Cristal ou Opaco).')}`;
+const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MAQCAPAS')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento com a MAQCAPAS.')}`;
 
-console.log('--- Iniciando build do MaqCapas ---');
+console.log('--- Iniciando build do MAQCAPAS ---');
 console.log(`Domínio configurado: ${config.domain}`);
 console.log(`Telefone: ${config.company.telefoneDisplay} | E-mail de Orçamento: ${config.company.email}`);
 
@@ -55,7 +55,7 @@ const html404 = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MaqCapas | Redirecionando...</title>
+  <title>MAQCAPAS | Redirecionando...</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="${config.domain}/">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -71,7 +71,7 @@ const html404 = `<!DOCTYPE html>
 <body class="error-page">
   <div class="top-bar">
     <div class="top-bar-inner">
-      <span>MaqCapas &bull; Curitiba/PR &bull; Envio para todo o Brasil</span>
+      <span>MAQCAPAS &bull; Curitiba/PR &bull; Envio para todo o Brasil</span>
       <div class="top-bar-links">
         <a href="tel:${config.company.telefoneRaw}" class="top-phone">${config.company.telefoneDisplay}</a>
       </div>
@@ -80,7 +80,7 @@ const html404 = `<!DOCTYPE html>
 
   <header class="header">
     <div class="header-container">
-      <a href="/" class="brand" aria-label="MaqCapas Início">
+      <a href="/" class="brand" aria-label="MAQCAPAS Início">
         <div class="brand-crest" aria-hidden="true">
           <svg viewBox="0 0 160 70" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg" focusable="false">
             <polygon points="80,4 152,24 8,24" fill="#24211e" stroke="#181614" stroke-width="2"/>
@@ -91,7 +91,7 @@ const html404 = `<!DOCTYPE html>
         </div>
         <div class="brand-text">
           <span class="brand-name">MAQCAPAS</span>
-          <span class="brand-sub">CAPAS PARA PROTEÇÃO SOB MEDIDA</span>
+          <span class="brand-sub">CAPAS PARA PROTEÇÃO</span>
         </div>
       </a>
       <div class="header-action">
@@ -106,14 +106,14 @@ const html404 = `<!DOCTYPE html>
     <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1rem;">404</h1>
     <h2 class="section-title" style="margin-bottom: 1.5rem;">Página Não Encontrada</h2>
     <p class="hero-description" style="max-width: 520px; margin: 0 auto 2rem;">
-      Página não encontrada. Volte para a página inicial da MaqCapas.
+      Página não encontrada. Volte para a página inicial da MAQCAPAS.
     </p>
     <a href="/" class="btn btn-dark btn-lg">Voltar à Página Inicial</a>
   </main>
 
   <footer class="footer">
     <div class="container footer-bottom-inner" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem;">
-      <p>&copy; ${currentYear} MaqCapas &bull; Curitiba &bull; Brasil</p>
+      <p>&copy; ${currentYear} MAQCAPAS &bull; Curitiba &bull; Brasil</p>
     </div>
   </footer>
 </body>
@@ -185,7 +185,7 @@ const redirectsTxt = `/index.html / 301
 `;
 fs.writeFileSync(path.join(publicDir, '_redirects'), redirectsTxt, 'utf-8');
 
-// Cria também rotas físicas para as 2 subpáginas antigas do Google Search (Capas Para Roupas e Faça seu Orçamento)
+// Cria também rotas físicas para as subpáginas antigas do Google Search
 const legacyRoutes = [
   { dir: 'copia-produtos-da-maqcapas', target: '/' },
   { dir: 'contato', target: '/#saiba-mais' },
@@ -201,11 +201,11 @@ for (const route of legacyRoutes) {
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0; url=${route.target}">
   <link rel="canonical" href="${config.domain}/">
-  <title>MaqCapas</title>
+  <title>MAQCAPAS</title>
   <script src="/redirect-404.js?v=${ASSET_VER}"></script>
 </head>
 <body>
-  <p><a href="${route.target}">Acessar MaqCapas</a></p>
+  <p><a href="${route.target}">Acessar MAQCAPAS</a></p>
 </body>
 </html>`, 'utf-8');
 }
@@ -214,7 +214,7 @@ for (const route of legacyRoutes) {
 const jsonLdLocalBusiness = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "name": "MaqCapas",
+  "name": "MAQCAPAS",
   "alternateName": "MAQCAPAS",
   "logo": `${config.domain}/assets/icons/favicon-192x192.png`,
   "image": `${config.domain}/assets/images/og-image.jpg`,
@@ -313,7 +313,7 @@ const indexHtml = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MaqCapas | Capas de Proteção Sob Medida</title>
+  <title>MAQCAPAS | Capas para Proteção</title>
   <meta name="description" content="${config.company.description}">
   <meta name="theme-color" content="${config.meta.themeColor}">
   <link rel="canonical" href="${config.domain}/">
@@ -333,8 +333,8 @@ const indexHtml = `<!DOCTYPE html>
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="${config.meta.locale}">
-  <meta property="og:site_name" content="${config.company.name}">
-  <meta property="og:title" content="MaqCapas | Capas de Proteção Sob Medida">
+  <meta property="og:site_name" content="MAQCAPAS">
+  <meta property="og:title" content="MAQCAPAS | Capas para Proteção">
   <meta property="og:description" content="${config.company.description}">
   <meta property="og:url" content="${config.domain}/">
   <meta property="og:image" content="${config.domain}/assets/images/og-image.jpg">
@@ -343,7 +343,7 @@ const indexHtml = `<!DOCTYPE html>
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="${config.meta.twitterCard}">
-  <meta name="twitter:title" content="MaqCapas | Capas de Proteção Sob Medida">
+  <meta name="twitter:title" content="MAQCAPAS | Capas para Proteção">
   <meta name="twitter:description" content="${config.company.description}">
   <meta name="twitter:image" content="${config.domain}/assets/images/og-image.jpg">
 
@@ -364,7 +364,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
   <!-- Top Announcement Bar -->
   <div class="top-bar">
     <div class="top-bar-inner">
-      <span>MaqCapas &bull; Curitiba/PR &bull; Envio para todo o Brasil</span>
+      <span>MAQCAPAS &bull; Curitiba/PR &bull; Envio para todo o Brasil</span>
       <div class="top-bar-links">
         <a href="tel:${config.company.telefoneRaw}" class="top-phone" data-tracking-placement="top_bar_phone">${config.company.telefoneDisplay}</a>
         <span class="top-dot">&bull;</span>
@@ -378,7 +378,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
     <div class="header-container">
       
       <!-- Brand Logo -->
-      <a href="#hero" class="brand" aria-label="MaqCapas - Página Inicial">
+      <a href="#hero" class="brand" aria-label="MAQCAPAS - Página Inicial">
         <div class="brand-crest" aria-hidden="true">
           <svg viewBox="0 0 160 70" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg" focusable="false">
             <polygon points="80,4 152,24 8,24" fill="#24211e" stroke="#181614" stroke-width="2"/>
@@ -389,7 +389,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
         </div>
         <div class="brand-text">
           <span class="brand-name">MAQCAPAS</span>
-          <span class="brand-sub">CAPAS PARA PROTEÇÃO SOB MEDIDA</span>
+          <span class="brand-sub">CAPAS PARA PROTEÇÃO</span>
         </div>
       </a>
 
@@ -397,7 +397,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       <nav class="nav-menu" aria-label="Menu principal">
         <a href="#hero" class="nav-link">Início</a>
         <a href="#por-que-proteger" class="nav-link">Por Que Proteger?</a>
-        <a href="#materiais" class="nav-link">Materiais</a>
+        <a href="#materiais" class="nav-link">Produtos</a>
         <a href="#saiba-mais" class="nav-link">Saiba Mais</a>
       </nav>
 
@@ -422,7 +422,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       <nav class="mobile-nav" aria-label="Menu móvel">
         <a href="#hero" class="mobile-nav-item">Início</a>
         <a href="#por-que-proteger" class="mobile-nav-item">Por Que Proteger?</a>
-        <a href="#materiais" class="mobile-nav-item">Materiais</a>
+        <a href="#materiais" class="mobile-nav-item">Produtos</a>
         <a href="#saiba-mais" class="mobile-nav-item">Saiba Mais</a>
         <a href="${mailtoQuoteUrl}" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_email">Orçamento por E-mail (${config.company.email})</a>
       </nav>
@@ -433,62 +433,62 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
   <main id="main-content">
 
     <!-- PRIMEIRO TÍTULO DA PÁGINA (H1 estrito para acessibilidade e semântica SEO) -->
-    <h1 class="sr-only">MaqCapas &mdash; Fabricação de Capas para Proteção Sob Medida</h1>
+    <h1 class="sr-only">MAQCAPAS &mdash; Fabricação de Capas para Proteção</h1>
 
     <!-- ════════════════════════════════════════════
          SCROLL FILM / CARROSSEL DIRETO E SIMPLES
          ════════════════════════════════════════════ -->
-    <div class="scroll-film" id="scrollFilm" role="region" aria-roledescription="carousel" aria-label="Apresentação de produtos MaqCapas">
+    <div class="scroll-film" id="scrollFilm" role="region" aria-roledescription="carousel" aria-label="Apresentação de produtos MAQCAPAS">
 
       <div class="film-sticky" id="filmSticky">
 
-        <!-- ── Cena 1: Porta-Ternos ── -->
-        <div class="film-scene is-active" id="scene0" role="group" aria-roledescription="slide" aria-label="Cena 1 de 4: Porta-Ternos">
-          <div class="film-scene-photo film-photo-scene0" aria-label="Porta-terno em TNT"></div>
+        <!-- ── Cena 1: Capas para Ternos ── -->
+        <div class="film-scene is-active" id="scene0" role="group" aria-roledescription="slide" aria-label="Cena 1 de 4: Capas para Ternos">
+          <div class="film-scene-photo film-photo-scene0" aria-label="Capas para ternos em TNT"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">01</span>
               <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
-              <h2 class="film-scene-title">Porta-ternos em TNT</h2>
-              <p class="film-scene-desc">Porta-ternos em TNT gramatura 60 confeccionados sob medida.</p>
+              <h2 class="film-scene-title">Capas para ternos</h2>
+              <p class="film-scene-desc">Capas para ternos em TNT gramatura 60.</p>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 2: Informática ── -->
-        <div class="film-scene" id="scene1" role="group" aria-roledescription="slide" aria-label="Cena 2 de 4: Informática">
-          <div class="film-scene-photo film-photo-scene1" aria-label="Capas para monitores, gabinete e teclado"></div>
+        <!-- ── Cena 2: Equipamentos e Informática (Sob Medida) ── -->
+        <div class="film-scene" id="scene1" role="group" aria-roledescription="slide" aria-label="Cena 2 de 4: Capas para Equipamentos">
+          <div class="film-scene-photo film-photo-scene1" aria-label="Capas sob medida para equipamentos e informática"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">02</span>
-              <span class="film-scene-tag film-scene-tag--real">Informática</span>
-              <h2 class="film-scene-title">Capas para Informática</h2>
-              <p class="film-scene-desc">Capas para monitores, gabinetes e teclados sob medida em TNT ou PVC Cristal ou Opaco.</p>
+              <span class="film-scene-tag film-scene-tag--real">Equipamentos</span>
+              <h2 class="film-scene-title">Capa equipamentos</h2>
+              <p class="film-scene-desc">Capas sob medida para equipamentos, monitores, gabinetes e teclados em TNT ou PVC Cristal ou Opaco.</p>
             </div>
           </div>
         </div>
 
-        <!-- ── Cena 3: Vestidos, Noivas e Festas ── -->
-        <div class="film-scene" id="scene2" role="group" aria-roledescription="slide" aria-label="Cena 3 de 4: Vestidos, Noivas e Festas">
-          <div class="film-scene-photo film-photo-scene2" aria-label="Capa para vestido de noiva e festa em TNT"></div>
+        <!-- ── Cena 3: Vestidos de Noivas, Festas e Daminhas ── -->
+        <div class="film-scene" id="scene2" role="group" aria-roledescription="slide" aria-label="Cena 3 de 4: Vestidos de Noivas, Festas e Daminhas">
+          <div class="film-scene-photo film-photo-scene2" aria-label="Capas para vestidos de noivas, festas e daminhas em TNT"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">03</span>
-              <span class="film-scene-tag film-scene-tag--real">Vestidos &amp; Festas</span>
-              <h2 class="film-scene-title">Capa para Terno, Daminhas, Noivas e Festas</h2>
-              <p class="film-scene-desc">Capas sob medida em TNT gramatura 60.</p>
+              <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
+              <h2 class="film-scene-title">Capas para vestidos de noivas, festas e daminhas</h2>
+              <p class="film-scene-desc">Capas em TNT gramatura 60.</p>
             </div>
           </div>
         </div>
 
         <!-- ── Cena 4: Contato (E-mail, Telefone e WhatsApp) ── -->
-        <div class="film-scene" id="scene3" role="group" aria-roledescription="slide" aria-label="Cena 4 de 4: Contato MaqCapas">
-          <div class="film-scene-photo film-photo-scene3" aria-label="Capa para equipamentos industriais fabricada pela MaqCapas"></div>
+        <div class="film-scene" id="scene3" role="group" aria-roledescription="slide" aria-label="Cena 4 de 4: Contato MAQCAPAS">
+          <div class="film-scene-photo film-photo-scene3" aria-label="Capa sob medida para equipamentos fabricada pela MAQCAPAS"></div>
           <div class="film-scene-panel">
             <div class="film-scene-content">
               <span class="film-scene-num">04</span>
               <span class="film-scene-tag film-scene-tag--real">Contato</span>
-              <h2 class="film-scene-title">Contato MaqCapas</h2>
+              <h2 class="film-scene-title">Contato MAQCAPAS</h2>
               <div class="film-contact-list">
                 <p class="film-contact-item">
                   <strong>E-mail (Orçamentos):</strong><br>
@@ -543,25 +543,25 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
     <section class="hero-section" id="hero">
       <div class="container text-center">
         
-        <div class="hero-pill">MaqCapas</div>
+        <div class="hero-pill">MAQCAPAS</div>
 
         <h2 class="hero-title">
-          Capas Sob Medida
+          Capas para Proteção
         </h2>
 
         <p class="hero-description">
-          Fabricação de capas para proteção sob medida em TNT gramatura 60 e PVC Cristal ou Opaco 010mm.
+          Capas para vestidos de festas, vestidos de noivas, daminhas e ternos, e capas sob medida para equipamentos.
         </p>
 
         <!-- Showcase: FOTOS REAIS COM PICTURE RESPONSIVO -->
         <div class="hero-showcase">
           
-          <!-- Card 1: Informática -->
+          <!-- Card 1: Informática (Equipamentos Sob Medida) -->
           <div class="showcase-card">
             <div class="showcase-media">
               ${renderPictureTag({
                 imgKey: 'capa_computador_real.jpg',
-                alt: 'Capas para informática fabricadas sob medida pela MaqCapas',
+                alt: 'Capas sob medida para equipamentos de informática fabricadas pela MAQCAPAS',
                 id: 'showcasePhoto0',
                 className: 'showcase-img',
                 loading: 'eager',
@@ -569,13 +569,13 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               })}
             </div>
             <div class="showcase-info">
-              <span class="showcase-category">Informática</span>
+              <span class="showcase-category">Equipamentos &bull; Sob Medida</span>
               <h3 class="showcase-heading">Capas para Informática</h3>
               <p class="showcase-copy">TNT gramatura 60 e PVC Cristal ou Opaco 010mm</p>
             </div>
           </div>
 
-          <!-- Card 2: Vestuário & Noivas -->
+          <!-- Card 2: Vestuário & Noivas (Sem "sob medida") -->
           <div class="showcase-card">
             <div class="showcase-media">
               ${renderPictureTag({
@@ -594,12 +594,12 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
             </div>
           </div>
 
-          <!-- Card 3: Indústria -->
+          <!-- Card 3: Equipamentos Industriais (Sob Medida) -->
           <div class="showcase-card">
             <div class="showcase-media">
               ${renderPictureTag({
                 imgKey: 'capa_industrial_real.jpg',
-                alt: 'Capa para equipamentos industriais',
+                alt: 'Capa sob medida para equipamentos industriais',
                 id: 'showcasePhoto2',
                 className: 'showcase-img',
                 loading: 'eager',
@@ -607,7 +607,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               })}
             </div>
             <div class="showcase-info">
-              <span class="showcase-category">Indústria</span>
+              <span class="showcase-category">Equipamentos &bull; Sob Medida</span>
               <h3 class="showcase-heading">Capa para equipamentos industriais</h3>
               <p class="showcase-copy">Confeccionado com material impermeável e resistente</p>
             </div>
@@ -664,30 +664,44 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       </div>
     </section>
 
-    <!-- Section: Materiais (Apenas PVC Cristal ou Opaco e TNT) -->
+    <!-- Section: Produtos (Onde dizia Materiais agora diz Produtos com os 5 itens) -->
     <section class="section" id="materiais">
       <div class="container">
         
         <div class="section-header text-center">
-          <h2 class="section-title">Materiais</h2>
+          <h2 class="section-title">Produtos</h2>
         </div>
 
-        <div class="materials-grid materials-grid--two">
+        <div class="materials-grid products-five-grid">
           
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
-            <h3 class="material-name">PVC Cristal ou Opaco</h3>
-            <p class="material-text">
-              PVC Cristal ou Opaco 010mm impermeável para proteção de equipamentos e informática.
-            </p>
+            <h3 class="material-name">Capas para vestido de festas</h3>
+            <p class="material-text">TNT gramatura 60</p>
           </div>
 
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
-            <h3 class="material-name">TNT Gramatura 60</h3>
-            <p class="material-text">
-              TNT gramatura 60 para capas de terno, daminhas, noivas, festas e informática.
-            </p>
+            <h3 class="material-name">Capas para vestidos de noivas</h3>
+            <p class="material-text">TNT gramatura 60</p>
+          </div>
+
+          <div class="material-card">
+            <div class="material-marker" aria-hidden="true">&mdash;</div>
+            <h3 class="material-name">Capas para daminhas</h3>
+            <p class="material-text">TNT gramatura 60</p>
+          </div>
+
+          <div class="material-card">
+            <div class="material-marker" aria-hidden="true">&mdash;</div>
+            <h3 class="material-name">Capas para ternos</h3>
+            <p class="material-text">TNT gramatura 60</p>
+          </div>
+
+          <div class="material-card material-card--wide">
+            <div class="material-marker" aria-hidden="true">&mdash;</div>
+            <h3 class="material-name">Capa equipamentos</h3>
+            <p class="material-text">Sob medida em TNT gramatura 60 e PVC Cristal ou Opaco 010mm</p>
           </div>
 
         </div>
@@ -695,50 +709,50 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       </div>
     </section>
 
-    <!-- Section: Fotos Reais MaqCapas -->
+    <!-- Section: Fotos Reais MAQCAPAS -->
     <section class="section section-alt" id="sobre">
       <div class="container">
         <div class="about-single-wrapper">
           <div class="about-media">
             <div class="about-photo-card">
               <div class="about-photo-stage">
-                <img src="assets/images/capa_computador_real-800.webp?v=${ASSET_VER}" alt="Capas para informática fabricadas sob medida pela MaqCapas" id="aboutPhotoMain" class="about-photo" width="1600" height="1200" loading="lazy" decoding="async">
+                <img src="assets/images/capa_computador_real-800.webp?v=${ASSET_VER}" alt="Capas sob medida para equipamentos de informática fabricadas pela MAQCAPAS" id="aboutPhotoMain" class="about-photo" width="1600" height="1200" loading="lazy" decoding="async">
               </div>
               <div class="about-caption" id="aboutPhotoCaption">
-                <strong id="aboutCaptionTitle">MaqCapas &bull; Informática</strong>
-                <span id="aboutCaptionDesc">Capas para monitores, gabinetes e teclados sob medida em TNT ou PVC Cristal ou Opaco</span>
+                <strong id="aboutCaptionTitle">MAQCAPAS &bull; Equipamentos</strong>
+                <span id="aboutCaptionDesc">Capas sob medida para equipamentos, monitores, gabinetes e teclados em TNT ou PVC Cristal ou Opaco</span>
               </div>
-              <div class="about-thumbs" role="tablist" aria-label="Galeria de fotos MaqCapas">
+              <div class="about-thumbs" role="tablist" aria-label="Galeria de fotos MAQCAPAS">
                 ${renderAboutThumb({
                   imgKey: 'capa_computador_real.jpg',
                   label: 'Informática',
-                  alt: 'Capas para informática fabricadas sob medida pela MaqCapas',
-                  title: 'MaqCapas • Informática',
-                  desc: 'Capas para monitores, gabinetes e teclados sob medida em TNT ou PVC Cristal ou Opaco',
+                  alt: 'Capas sob medida para equipamentos de informática fabricadas pela MAQCAPAS',
+                  title: 'MAQCAPAS • Equipamentos',
+                  desc: 'Capas sob medida para equipamentos, monitores, gabinetes e teclados em TNT ou PVC Cristal ou Opaco',
                   active: true
                 })}
                 ${renderAboutThumb({
                   imgKey: 'capa_noiva_real.jpg',
                   label: 'Noiva',
-                  alt: 'Capa para vestido de noiva confeccionada pela MaqCapas',
-                  title: 'MaqCapas • Noivas e Festas',
-                  desc: 'Capa para terno, daminhas, noivas e festas em TNT gramatura 60',
+                  alt: 'Capas para vestidos de noivas confeccionadas pela MAQCAPAS',
+                  title: 'MAQCAPAS • Noivas e Festas',
+                  desc: 'Capas para vestidos de noivas, vestido de festas e daminhas em TNT gramatura 60',
                   active: false
                 })}
                 ${renderAboutThumb({
                   imgKey: 'porta_terno_detalhe_real.jpg',
                   label: 'Porta-Terno',
-                  alt: 'Porta-terno em TNT confeccionado pela MaqCapas',
-                  title: 'MaqCapas • Porta-Terno',
-                  desc: 'Porta-terno em TNT gramatura 60 confeccionado sob medida',
+                  alt: 'Capas para ternos em TNT confeccionadas pela MAQCAPAS',
+                  title: 'MAQCAPAS • Ternos',
+                  desc: 'Capas para ternos em TNT gramatura 60',
                   active: false
                 })}
                 ${renderAboutThumb({
                   imgKey: 'capa_industrial_real.jpg',
-                  label: 'Industrial',
-                  alt: 'Capa para equipamentos industriais confeccionada pela MaqCapas',
-                  title: 'MaqCapas • Industrial',
-                  desc: 'Capa para equipamentos industriais confeccionada com material impermeável e resistente',
+                  label: 'Equipamentos',
+                  alt: 'Capa sob medida para equipamentos confeccionada pela MAQCAPAS',
+                  title: 'MAQCAPAS • Equipamentos',
+                  desc: 'Capa sob medida para equipamentos confeccionada com material impermeável e resistente',
                   active: false
                 })}
               </div>
@@ -777,10 +791,10 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       <div class="footer-col-main">
         <div class="footer-brand">
           <span class="footer-title">MAQCAPAS</span>
-          <span class="footer-subtitle">CAPAS PARA PROTEÇÃO SOB MEDIDA</span>
+          <span class="footer-subtitle">CAPAS PARA PROTEÇÃO</span>
         </div>
         <p class="footer-copy">
-          Fabricação de capas para proteção sob medida.
+          Fabricação de capas para proteção.
         </p>
         
         <!-- Bloco Oficial: E-mail e Telefone -->
@@ -792,11 +806,13 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       </div>
 
       <div class="footer-col">
-        <h4 class="footer-heading">Linhas</h4>
+        <h4 class="footer-heading">Produtos</h4>
         <ul class="footer-menu">
-          <li><a href="#hero">Informática</a></li>
-          <li><a href="#hero">Vestidos, noivas e festas</a></li>
-          <li><a href="#hero">Capas Industriais</a></li>
+          <li><a href="#materiais">Capas para vestido de festas</a></li>
+          <li><a href="#materiais">Capas para vestidos de noivas</a></li>
+          <li><a href="#materiais">Capas para daminhas</a></li>
+          <li><a href="#materiais">Capas para ternos</a></li>
+          <li><a href="#materiais">Capa equipamentos</a></li>
         </ul>
       </div>
 
@@ -805,7 +821,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
         <ul class="footer-menu">
           <li><a href="#hero">Início</a></li>
           <li><a href="#por-que-proteger">Por Que Proteger?</a></li>
-          <li><a href="#materiais">Materiais</a></li>
+          <li><a href="#materiais">Produtos</a></li>
           <li><a href="#saiba-mais">Saiba Mais</a></li>
         </ul>
       </div>
@@ -814,13 +830,13 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
 
     <div class="footer-bottom">
       <div class="container footer-bottom-inner">
-        <p>&copy; <span id="currentYear">${currentYear}</span> MaqCapas &bull; Todos os direitos reservados.</p>
+        <p>&copy; <span id="currentYear">${currentYear}</span> MAQCAPAS &bull; Todos os direitos reservados.</p>
         <p>Curitiba &bull; Brasil</p>
       </div>
       <div class="container">
         <!-- ASSINATURA MARQ LAB -->
         <div class="marqlab-credit marqlab-credit--dark">
-          <a href="https://wa.me/554187084183?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20MaqCapas%20e%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20Marq%20Lab."
+          <a href="https://wa.me/554187084183?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20MAQCAPAS%20e%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20Marq%20Lab."
              target="_blank" rel="noopener" class="marqlab-credit__link"
              title="Falar com a Marq Lab no WhatsApp (+55 41 8708-4183)"
              data-tracking-placement="footer_marqlab">

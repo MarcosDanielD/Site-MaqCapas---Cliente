@@ -97,7 +97,7 @@ async function runAudit() {
   const scriptContent = fs.readFileSync(path.join(publicDir, 'script.js'), 'utf-8');
   
   const has1987InHtml = html.includes('1987');
-  const hasFooterDynamicYear = html.includes(`&copy; <span id="currentYear">${currentYear}</span> MaqCapas`);
+  const hasFooterDynamicYear = html.includes(`&copy; <span id="currentYear">${currentYear}</span> MAQCAPAS`) || html.includes(`&copy; <span id="currentYear">${currentYear}</span> MaqCapas`);
 
   if (!has1987InHtml && hasFooterDynamicYear) {
     pass('2.DynamicYears', `Menções a 1987 removidas conforme pedido do cliente e rodapé dinâmico com apenas © ${currentYear} MaqCapas.`);
@@ -197,7 +197,7 @@ async function runAudit() {
       const parsed = JSON.parse(block);
       if (parsed['@type'] === 'LocalBusiness') {
         if (
-          parsed.name === 'MaqCapas' &&
+          (parsed.name === 'MAQCAPAS' || parsed.name === 'MaqCapas') &&
           parsed.telephone === config.company.telefoneRaw &&
           parsed.address?.addressLocality === 'Curitiba' &&
           parsed.areaServed?.name === 'Brasil'

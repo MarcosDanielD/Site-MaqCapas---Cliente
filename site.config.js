@@ -7,10 +7,10 @@ module.exports = {
   domain: process.env.SITE_DOMAIN || 'https://maqcapas.com.br',
 
   company: {
-    name: 'MaqCapas',
+    name: 'MAQCAPAS',
     brandName: 'MAQCAPAS',
-    tagline: 'Capas para Proteção Sob Medida',
-    description: 'Fabricação de capas para proteção sob medida em TNT e PVC Cristal ou Opaco. Capas para informática, ternos, daminhas, noivas, festas e equipamentos industriais em Curitiba/PR.',
+    tagline: 'Capas para Proteção',
+    description: 'Fabricação de capas para proteção: capas para vestidos de festas, vestidos de noivas, daminhas, ternos e capas sob medida para equipamentos em Curitiba/PR.',
     
     // Dados de contato oficiais informados pelo cliente
     email: 'luizmarnunes18@gmail.com',

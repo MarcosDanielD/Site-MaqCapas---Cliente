@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261117v4';
+const ASSET_VER = '20261117v6';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=Solicita%C3%A7%C3%A3o%20de%20or%C3%A7amento&body=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento`;
@@ -436,7 +436,8 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
         <a href="#por-que-proteger" class="mobile-nav-item">Por Que Proteger?</a>
         <a href="#materiais" class="mobile-nav-item">Produtos</a>
         <a href="#saiba-mais" class="mobile-nav-item">Saiba Mais</a>
-        <a href="${mailtoQuoteUrl}" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_email">Orçamento por E-mail (${config.company.email})</a>
+        <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-dark w-full" data-tracking-placement="mobile_drawer_whatsapp">Orçamento pelo WhatsApp: ${config.company.telefoneDisplay}</a>
+        <a href="${mailtoQuoteUrl}" class="btn btn-outline-dark w-full" data-tracking-placement="mobile_drawer_email">Orçamento por E-mail: ${config.company.email}</a>
       </nav>
     </div>
   </header>
@@ -503,15 +504,15 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               <h2 class="film-scene-title">Contato MAQCAPAS</h2>
               <div class="film-contact-list">
                 <p class="film-contact-item">
-                  <strong>E-mail (Orçamentos):</strong><br>
+                  <strong>E-mail (Orçamentos):</strong>
                   <a href="${mailtoQuoteUrl}" class="film-contact-link" data-tracking-placement="film_scene_email">${config.company.email}</a>
                 </p>
                 <p class="film-contact-item">
-                  <strong>Telefone:</strong><br>
+                  <strong>Telefone:</strong>
                   <a href="tel:${config.company.telefoneRaw}" class="film-contact-link">${config.company.telefoneDisplay}</a>
                 </p>
                 <p class="film-contact-item">
-                  <strong>WhatsApp:</strong><br>
+                  <strong>WhatsApp:</strong>
                   <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="film-contact-link">${config.company.telefoneDisplay}</a>
                 </p>
               </div>
@@ -783,12 +784,21 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
           <p class="saiba-mais-text">
             Aceitamos orçamentos de capas sob medida para equipamentos e sugestões de outros materiais.
           </p>
-          <div class="saiba-mais-actions">
-            <a href="${mailtoQuoteUrl}" class="btn btn-dark btn-lg" data-tracking-placement="saiba_mais_email">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              <span>Solicitar Orçamento por E-mail</span>
-            </a>
-            <a href="${mailtoQuoteUrl}" class="saiba-mais-email-link">${config.company.email}</a>
+          <div class="saiba-mais-actions saiba-mais-actions--dual">
+            <div class="saiba-mais-option">
+              <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-lg saiba-mais-btn" data-tracking-placement="saiba_mais_whatsapp">
+                <svg class="whatsapp-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                <span>Solicitar Orçamento por WhatsApp</span>
+              </a>
+              <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="saiba-mais-email-link" data-tracking-placement="saiba_mais_whatsapp_link">${config.company.telefoneDisplay}</a>
+            </div>
+            <div class="saiba-mais-option">
+              <a href="${mailtoQuoteUrl}" class="btn btn-outline-dark btn-lg saiba-mais-btn" data-tracking-placement="saiba_mais_email">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <span>Solicitar Orçamento por E-mail</span>
+              </a>
+              <a href="${mailtoQuoteUrl}" class="saiba-mais-email-link" data-tracking-placement="saiba_mais_email_link">${config.company.email}</a>
+            </div>
           </div>
         </div>
       </div>
@@ -809,10 +819,11 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
           Fabricação de capas para proteção.
         </p>
         
-        <!-- Bloco Oficial: E-mail e Telefone -->
+        <!-- Bloco Oficial: E-mail, Telefone e WhatsApp -->
         <div class="footer-contact-block">
           <p class="footer-contact-item"><strong>E-mail (Orçamentos):</strong> <a href="${mailtoQuoteUrl}" class="footer-link">${config.company.email}</a></p>
-          <p class="footer-contact-item"><strong>Telefone / WhatsApp:</strong> <a href="tel:${config.company.telefoneRaw}" class="footer-link">${config.company.telefoneDisplay}</a></p>
+          <p class="footer-contact-item"><strong>Telefone:</strong> <a href="tel:${config.company.telefoneRaw}" class="footer-link">${config.company.telefoneDisplay}</a></p>
+          <p class="footer-contact-item"><strong>WhatsApp:</strong> <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="footer-link">${config.company.telefoneDisplay}</a></p>
           <p class="footer-contact-item">${config.company.cidade} &mdash; ${config.company.estado} &mdash; ${config.company.pais}</p>
         </div>
       </div>

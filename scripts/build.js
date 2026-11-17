@@ -15,10 +15,11 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261117v3';
+const ASSET_VER = '20261117v4';
 
 const currentYear = new Date().getFullYear();
-const mailtoQuoteUrl = `mailto:${config.company.email}?subject=${encodeURIComponent('Orçamento - MAQCAPAS')}&body=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento com a MAQCAPAS.')}`;
+const mailtoQuoteUrl = `mailto:${config.company.email}?subject=Solicita%C3%A7%C3%A3o%20de%20or%C3%A7amento&body=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento`;
+const whatsappQuoteUrl = `https://wa.me/${config.company.whatsappNumber}?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento`;
 
 console.log('--- Iniciando build do MAQCAPAS ---');
 console.log(`Domínio configurado: ${config.domain}`);
@@ -461,7 +462,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               <span class="film-scene-num">01</span>
               <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
               <h2 class="film-scene-title">Capas para ternos</h2>
-              <p class="film-scene-desc">Capas para ternos em TNT gramatura 60.</p>
+              <p class="film-scene-desc">Capas para ternos em TNT gramatura 60 &bull; Medida: 1.05 alt. x 60 larg.</p>
             </div>
           </div>
         </div>
@@ -487,7 +488,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               <span class="film-scene-num">03</span>
               <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
               <h2 class="film-scene-title">Capas para vestidos de noivas, festas e daminhas</h2>
-              <p class="film-scene-desc">Capas em TNT gramatura 60.</p>
+              <p class="film-scene-desc">Capas em TNT gramatura 60 &bull; Noiva: 1.80 alt. x 55 larg. com fole nas laterais &bull; Festas: 1.75x55 &bull; Daminha: 1.40 alt. x 55 larg.</p>
             </div>
           </div>
         </div>
@@ -511,7 +512,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                 </p>
                 <p class="film-contact-item">
                   <strong>WhatsApp:</strong><br>
-                  <a href="https://wa.me/${config.company.whatsappNumber}" target="_blank" rel="noopener" class="film-contact-link">${config.company.telefoneDisplay}</a>
+                  <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="film-contact-link">${config.company.telefoneDisplay}</a>
                 </p>
               </div>
               <!-- CTA final apontando para #saiba-mais dentro do fluxo do conteúdo -->
@@ -601,7 +602,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
             <div class="showcase-info">
               <span class="showcase-category">Vestuário</span>
               <h3 class="showcase-heading">Capa para Terno, Daminhas, Noivas e Festas</h3>
-              <p class="showcase-copy">TNT gramatura 60</p>
+              <p class="showcase-copy">TNT gramatura 60 &bull; Terno: 1.05 alt. x 60 larg. &bull; Daminha: 1.40 alt. x 55 larg. &bull; Festas: 1.75x55 &bull; Noiva: 1.80 alt. x 55 larg. com fole nas laterais.</p>
             </div>
           </div>
 
@@ -688,25 +689,25 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
             <h3 class="material-name">Capas para vestido de festas</h3>
-            <p class="material-text">TNT gramatura 60</p>
+            <p class="material-text">TNT gramatura 60 &bull; Medida: 1.75x55</p>
           </div>
 
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
             <h3 class="material-name">Capas para vestidos de noivas</h3>
-            <p class="material-text">TNT gramatura 60</p>
+            <p class="material-text">TNT gramatura 60 &bull; Medida: 1.80 alt. x 55 larg. com fole nas laterais.</p>
           </div>
 
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
             <h3 class="material-name">Capas para daminhas</h3>
-            <p class="material-text">TNT gramatura 60</p>
+            <p class="material-text">TNT gramatura 60 &bull; Medida: 1.40 alt. x 55 larg.</p>
           </div>
 
           <div class="material-card">
             <div class="material-marker" aria-hidden="true">&mdash;</div>
             <h3 class="material-name">Capas para ternos</h3>
-            <p class="material-text">TNT gramatura 60</p>
+            <p class="material-text">TNT gramatura 60 &bull; Medida: 1.05 alt. x 60 larg.</p>
           </div>
 
           <div class="material-card material-card--wide">
@@ -747,7 +748,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                   label: 'Noiva',
                   alt: 'Capas para vestidos de noivas confeccionadas pela MAQCAPAS',
                   title: 'MAQCAPAS • Noivas e Festas',
-                  desc: 'Capas para vestidos de noivas, vestido de festas e daminhas em TNT gramatura 60',
+                  desc: 'TNT gramatura 60 • Noiva: 1.80 alt. x 55 larg. com fole nas laterais • Festas: 1.75x55 • Daminha: 1.40 alt. x 55 larg.',
                   active: false
                 })}
                 ${renderAboutThumb({
@@ -755,7 +756,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                   label: 'Porta-Terno',
                   alt: 'Capas para ternos em TNT confeccionadas pela MAQCAPAS',
                   title: 'MAQCAPAS • Ternos',
-                  desc: 'Capas para ternos em TNT gramatura 60',
+                  desc: 'Capas para ternos em TNT gramatura 60 • Medida: 1.05 alt. x 60 larg.',
                   active: false
                 })}
                 ${renderAboutThumb({
@@ -847,8 +848,8 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
       <div class="container">
         <!-- ASSINATURA MARQ LAB -->
         <div class="marqlab-credit marqlab-credit--dark">
-          <a href="https://wa.me/554187084183?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20MAQCAPAS%20e%20gostaria%20de%20um%20or%C3%A7amento%20com%20a%20Marq%20Lab."
-             target="_blank" rel="noopener" class="marqlab-credit__link"
+          <a href="https://wa.me/554187084183?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento"
+             target="_blank" rel="noopener noreferrer" class="marqlab-credit__link"
              title="Falar com a Marq Lab no WhatsApp (+55 41 8708-4183)"
              data-tracking-placement="footer_marqlab">
             <span class="marqlab-credit__text">Desenvolvido por</span>

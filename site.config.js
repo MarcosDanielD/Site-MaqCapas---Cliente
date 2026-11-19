@@ -14,10 +14,10 @@ module.exports = {
     
     // Dados de contato oficiais informados pelo cliente
     email: 'luizmarnunes18@gmail.com',
-    telefone: '+55 41 9934-3814',
-    telefoneRaw: '+554199343814',
-    telefoneDisplay: '(41) 9934-3814',
-    whatsappNumber: '554199343814',
+    telefone: '+55 41 99934-3814',
+    telefoneRaw: '+5541999343814',
+    telefoneDisplay: '(41) 99934-3814',
+    whatsappNumber: '5541999343814',
     
     cidade: 'Curitiba',
     estado: 'PR',

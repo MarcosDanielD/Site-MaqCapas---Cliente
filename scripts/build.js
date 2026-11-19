@@ -15,7 +15,7 @@ const manifestPath = path.join(rootDir, 'scripts', 'images-manifest.json');
 
 const config = require(configPath);
 const manifest = fs.existsSync(manifestPath) ? require(manifestPath) : {};
-const ASSET_VER = '20261117v6';
+const ASSET_VER = '20261119v1';
 
 const currentYear = new Date().getFullYear();
 const mailtoQuoteUrl = `mailto:${config.company.email}?subject=Solicita%C3%A7%C3%A3o%20de%20or%C3%A7amento&body=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento`;
@@ -464,6 +464,16 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
               <span class="film-scene-tag film-scene-tag--real">Vestuário</span>
               <h2 class="film-scene-title">Capas para ternos</h2>
               <p class="film-scene-desc">Capas para ternos em TNT gramatura 60 &bull; Medida: 1.05 alt. x 60 larg.</p>
+              <div class="film-opening-contact">
+                <a href="${whatsappQuoteUrl}" target="_blank" rel="noopener noreferrer" class="film-opening-link" data-tracking-placement="film_scene0_whatsapp">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  <span>${config.company.telefoneDisplay}</span>
+                </a>
+                <a href="${mailtoQuoteUrl}" class="film-opening-link" data-tracking-placement="film_scene0_email">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  <span>${config.company.email}</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -622,7 +632,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
             <div class="showcase-info">
               <span class="showcase-category">Equipamentos &bull; Sob Medida</span>
               <h3 class="showcase-heading">Capa para equipamentos industriais</h3>
-              <p class="showcase-copy">Confeccionado com material impermeável e resistente</p>
+              <p class="showcase-copy">Material impermeável e resistente</p>
             </div>
           </div>
 
@@ -765,7 +775,7 @@ ${JSON.stringify(jsonLdLocalBusiness, null, 2)}
                   label: 'Equipamentos',
                   alt: 'Capa sob medida para equipamentos confeccionada pela MAQCAPAS',
                   title: 'MAQCAPAS • Equipamentos',
-                  desc: 'Capa sob medida para equipamentos confeccionada com material impermeável e resistente',
+                  desc: 'Material impermeável e resistente',
                   active: false
                 })}
               </div>

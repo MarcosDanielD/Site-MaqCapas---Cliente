@@ -299,9 +299,9 @@ button:focus-visible {
 .top-bar {
   background-color: var(--color-noir);
   color: #d6d1c7;
-  font-size: 0.775rem;
-  letter-spacing: 0.02em;
-  padding: 0.5rem 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.015em;
+  padding: 0.45rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -324,10 +324,15 @@ button:focus-visible {
 .top-phone {
   font-weight: 500;
   color: #ffffff;
+  transition: color var(--transition);
+}
+
+.top-phone:hover {
+  color: #d4a373;
 }
 
 .top-dot {
-  opacity: 0.35;
+  opacity: 0.4;
 }
 
 .top-tradition {
@@ -347,11 +352,11 @@ button:focus-visible {
   z-index: 1;
 }
 
-/* Canvas fixo que prende na viewport */
+/* Canvas fixo que prende logo abaixo do header sticky */
 .film-sticky {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: 94px;
+  height: calc(100vh - 94px);
   width: 100%;
   overflow: hidden;
   background: #0c0b09;
@@ -393,7 +398,7 @@ button:focus-visible {
   background: #0c0b09;
   display: flex;
   align-items: center;
-  padding: 6.5rem clamp(2rem, 4vw, 3.5rem) 3rem clamp(2rem, 4vw, 3.5rem);
+  padding: clamp(1.75rem, 4vw, 3.5rem);
   z-index: 2;
 }
 
@@ -597,35 +602,85 @@ button:focus-visible {
   }
 }
 
+/* Contato rápido visível logo na primeira cena (assim que abre o site) */
+.film-opening-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 1.25rem;
+  margin-top: 0.35rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(240, 236, 228, 0.14);
+}
+
+.film-opening-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #d4a373;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.film-opening-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.film-opening-link svg {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
 /* ── Responsivo ── */
 @media (max-width: 768px) {
+  .film-sticky {
+    top: 64px;
+    height: calc(100vh - 64px);
+    height: calc(100dvh - 64px);
+  }
+
   .film-scene {
     grid-template-columns: 1fr;
-    grid-template-rows: 50vh 50vh;
+    grid-template-rows: minmax(190px, 1fr) auto;
   }
 
   .film-scene-photo {
     grid-column: 1;
     grid-row: 1;
-    mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 75%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 86%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 86%, transparent 100%);
   }
 
   .film-scene-panel {
     grid-column: 1;
     grid-row: 2;
     align-items: flex-start;
-    padding: 1rem 1rem 4.5rem 1rem;
+    padding: 0.75rem 1rem calc(4.75rem + env(safe-area-inset-bottom, 0px)) 1rem;
     background: #0c0b09;
   }
 
   .film-scene-content {
-    gap: 0.5rem;
+    gap: 0.4rem;
     max-width: 100%;
   }
 
   .film-scene-title {
-    font-size: clamp(1.35rem, 5.5vw, 1.85rem);
+    font-size: clamp(1.35rem, 5.5vw, 1.8rem);
+  }
+
+  .film-opening-contact {
+    gap: 0 1rem;
+    margin-top: 0.25rem;
+    padding-top: 0.45rem;
+  }
+
+  .film-opening-link {
+    min-height: 40px;
+    font-size: 0.925rem;
   }
 
   .film-progress-bar {
@@ -637,35 +692,35 @@ button:focus-visible {
   }
 
   #scene3 {
-    grid-template-rows: 32vh 68vh;
+    grid-template-rows: minmax(160px, 1fr) auto;
   }
 
   #scene3 .film-scene-panel {
     align-items: flex-start;
-    padding: 0.75rem 1rem 4.5rem 1rem;
+    padding: 0.65rem 1rem calc(5.25rem + env(safe-area-inset-bottom, 0px)) 1rem;
   }
 
   #scene3 .film-scene-content {
-    gap: 0.35rem;
+    gap: 0.3rem;
   }
 
   #scene3 .film-contact-list {
-    gap: 0.25rem;
+    gap: 0.1rem;
     margin-top: 0;
   }
 
   #scene3 .film-contact-item {
     font-size: 1rem;
-    line-height: 1.35;
+    line-height: 1.3;
   }
 
   .film-final-cta {
-    margin-top: 0.25rem;
+    margin-top: 0.35rem;
   }
 
   .film-cta-btn {
     min-height: 44px;
-    padding: 0.6rem 1.35rem;
+    padding: 0.55rem 1.35rem;
     font-size: 0.95rem;
   }
 }
@@ -1959,7 +2014,24 @@ button:focus-visible {
 
 @media (max-width: 768px) {
   .top-bar {
+    display: block;
+    padding: 0.38rem 0;
+    font-size: 0.8125rem;
+  }
+
+  .top-bar-inner {
+    justify-content: center;
+    padding: 0 0.75rem;
+  }
+
+  .top-bar-inner > span {
     display: none;
+  }
+
+  .top-bar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.2rem 0.5rem;
   }
 
   .nav-menu {
@@ -2040,6 +2112,12 @@ button:focus-visible {
   }
 
   .discreet-tooltip {
+    display: none;
+  }
+}
+
+@media (max-width: 359px) {
+  .top-dot {
     display: none;
   }
 }
@@ -2234,16 +2312,16 @@ button:focus-visible {
 
 /* Backgrounds padrão (fotos reais) para o Scroll Film sem inline style */
 .film-photo-scene0 {
-  background-image: url('assets/images/porta_terno_real.webp?v=20261117v6');
+  background-image: url('assets/images/porta_terno_real.webp?v=20261119v1');
 }
 .film-photo-scene1 {
-  background-image: url('assets/images/capa_computador_real.webp?v=20261117v6');
+  background-image: url('assets/images/capa_computador_real.webp?v=20261119v1');
 }
 .film-photo-scene2 {
-  background-image: url('assets/images/capa_noiva_real.webp?v=20261117v6');
+  background-image: url('assets/images/capa_noiva_real.webp?v=20261119v1');
 }
 .film-photo-scene3 {
-  background-image: url('assets/images/capa_industrial_real.webp?v=20261117v6');
+  background-image: url('assets/images/capa_industrial_real.webp?v=20261119v1');
 }
 
 /* Lista de Contatos na Cena 04 do Filme (alinhamento uniforme em todas as telas) */
@@ -2514,7 +2592,7 @@ button:focus-visible {
 
 @media (min-width: 769px) {
   .film-controls {
-    bottom: 1.5rem;
+    bottom: 2rem;
     left: auto;
     right: 6.5rem;
   }

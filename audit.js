@@ -131,7 +131,7 @@ async function runAudit() {
   // ---------------------------------------------------------------------------
   const hasNewCard1 = html.includes('Capas para Informática') && html.includes('TNT gramatura 60 e PVC Cristal ou Opaco 010mm');
   const hasNewCard2 = html.includes('Capa para Terno, Daminhas, Noivas e Festas');
-  const hasNewCard3 = html.includes('Capa para equipamentos industriais') && html.includes('Confeccionado com material impermeável e resistente');
+  const hasNewCard3 = html.includes('Capa para equipamentos industriais') && html.includes('Material impermeável e resistente');
   const hasPvcOpaco = html.includes('PVC Cristal ou Opaco') && !html.includes('PVC Cristal Calandrado') && !html.includes('Solda Eletrônica de Alta Frequência');
   const hasSaibaMais = html.includes('id="saiba-mais"') && html.includes('Aceitamos orçamentos de capas sob medida para equipamentos e sugestões de outros materiais');
   const hasRemovedSections = html.includes('id="produtos"') || html.includes('id="simulador"') || html.includes('id="faq"');

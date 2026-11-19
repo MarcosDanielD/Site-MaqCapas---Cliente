@@ -65,16 +65,20 @@ function initScrollFilm() {
 
   function getScrollMetrics() {
     const filmH = film.offsetHeight;
-    const viewH = window.innerHeight;
-    const filmScroll = Math.max(1, filmH - viewH);
-    return { filmH, viewH, filmScroll, filmTop: film.offsetTop };
+    const stickyEl = document.getElementById('filmSticky');
+    const headerEl = document.getElementById('header');
+    const stickyH = stickyEl ? stickyEl.offsetHeight : window.innerHeight;
+    const headerH = headerEl ? headerEl.offsetHeight : 0;
+    const filmScroll = Math.max(1, filmH - stickyH);
+    const filmTop = Math.max(0, film.offsetTop - headerH);
+    return { filmH, viewH: stickyH, filmScroll, filmTop };
   }
 
   function scrollToScene(index) {
     const clampedIndex = clamp(index, 0, TOTAL - 1);
     const { filmTop, filmScroll } = getScrollMetrics();
     const targetP = clampedIndex === 0 ? 0 : (clampedIndex + 0.35) * SCENE_SPAN;
-    const targetY = filmTop + (targetP * filmScroll);
+    const targetY = clampedIndex === 0 ? 0 : filmTop + (targetP * filmScroll);
     const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: targetY, behavior: prefersReduced ? 'auto' : 'smooth' });
   }

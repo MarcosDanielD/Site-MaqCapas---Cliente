@@ -321,21 +321,24 @@ async function run() {
         }
         const uniqueGallerySources = new Set(gallerySources).size;
 
-        // Testa o carrossel de rolagem: o bloco sticky deve ficar preso no topo e a cena correta visível
+        // Testa o carrossel de rolagem: o bloco sticky deve ficar preso abaixo do header e a cena correta visível
         const film = document.getElementById('scrollFilm');
         const sticky = document.getElementById('filmSticky');
+        const header = document.getElementById('header');
         const filmScenes = Array.from(document.querySelectorAll('.film-scene'));
         const filmChecks = [];
         if (film && sticky) {
-          const filmScroll = film.offsetHeight - window.innerHeight;
+          const headerH = header ? Math.round(header.getBoundingClientRect().height) : 0;
+          const filmScroll = Math.max(1, film.offsetHeight - sticky.offsetHeight);
+          const filmTop = Math.max(0, film.offsetTop - headerH);
           const probes = [0.05, 0.37, 0.62, 0.9];
           for (let i = 0; i < probes.length; i++) {
-            window.scrollTo({ top: film.offsetTop + probes[i] * filmScroll, behavior: 'instant' });
+            window.scrollTo({ top: filmTop + probes[i] * filmScroll, behavior: 'instant' });
             await new Promise(r => setTimeout(r, 200));
             const top = Math.round(sticky.getBoundingClientRect().top);
             const opacities = filmScenes.map(s => parseFloat(getComputedStyle(s).opacity));
             const visibleIdx = opacities.indexOf(Math.max(...opacities));
-            filmChecks.push({ probe: probes[i], stickyTop: top, visibleIdx, expected: i, ok: Math.abs(top) <= 1 && visibleIdx === i && opacities[i] > 0.9 });
+            filmChecks.push({ probe: probes[i], stickyTop: top, expectedTop: headerH, visibleIdx, expected: i, ok: Math.abs(top - headerH) <= 2 && visibleIdx === i && opacities[i] > 0.9 });
           }
         }
         const filmOk = filmChecks.length === 4 && filmChecks.every(c => c.ok);
